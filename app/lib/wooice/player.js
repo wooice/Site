@@ -81,14 +81,14 @@
 
                             soundData.currentSound = soundData.soundList[this.id];
                             soundManager._writeDebug('Starting sound: '+this.id);
-                            $.trigger('onPlay');
+                            $.trigger('onPlay', this.id);
                         },
                         whileloading: function() {
                             soundManager._writeDebug(this.id + ': loading ' + this.bytesLoaded + ' / ' + this.bytesTotal);
                         },
-                        onplay: function() {
-                            soundManager._writeDebug('Starting sound: '+this.id);
-                            $.trigger('onPlay');
+                        onpause: function() {
+                            soundManager._writeDebug('Sound paused: '+this.id);
+                            $.trigger('onPause', this.id);
                         }
                     });
 
@@ -128,7 +128,6 @@
                 soundToJump.stop();
                 soundToJump.setPosition(sound.from);
                 this.play(sound);
-                $.trigger('onJump');
             }
         });
 
@@ -153,7 +152,13 @@
             }
         });
 
+        function setupEvents()
+        {
+            $.bind('onJump', this.jump(sound));
+            $.bind('onToggle', this.toggle(sound));
+        }
         var soundData = init();
+        setupEvents();
         $('body').data('singleton', this);
         return this;
     }

@@ -1,15 +1,15 @@
 (function ($) {
-    $.fn.wave = function(options)
+    $.fn.soundWave = function(options)
     {
-        if ($('body').data('singleton')) {
-            return $('body').data('singleton');
+        if ($('body').data('soundWave')) {
+            return $('body').data('soundWave');
         }
 
         function init()
         {
             var soundData = {};
             //init sound list, which will cache sounds
-            c = [];
+            soundData.soundList = [];
             soundData.currentSound = null;
 
             return soundData;
@@ -25,12 +25,17 @@
         $.extend(this, {
             render : function(sound)
             {
-                 if ($('#soundWave-'+sound.id).data('rendered'))
+                if (!soundData.soundList[sound.id])
+                {
+                    soundData.soundList[sound.id] = sound;
+                }
+
+                 if ($('#sound_wave_'+sound.id).data('rendered'))
                  {
                      return;
                  }
                 var stage = new Kinetic.Stage({
-                    container: 'soundWave'+sound.id,
+                    container: 'sound_wave_'+sound.id,
                     width: window.innerWidth,
                     height: window.innerHeight
                 });
@@ -44,22 +49,25 @@
                 $.each(sound.waveData, function(index, data)
                 {
                     var mainLine = new Kinetic.Line({
+                        name: 'lines',
                         points: [index * widthPerLine, stage.getWidth()*0.7*(1-data), index * widthPerLine, stage.getWidth()*0.7],
                         stroke: 'black',
                         strokeWidth: widthPerLine,
                         lineJoin: 'round'
                     });
                     var shadowLine = new Kinetic.Line({
+                        name: 'shadows',
                         points: [index * widthPerLine, stage.getWidth()*0.7, index * widthPerLine, stage.getWidth()*(0.7+data*0.3 *0.3)],
                         stroke: 'gray',
                         strokeWidth: widthPerLine,
                         lineJoin: 'round'
                     });
+                    //TODO: add click event to each line(jump and play)
                     layer.add(mainLine);
                     layer.add(shadowLine);
                     stage.add(layer);
                 });
-                $('#soundWave-'+sound.id).data('stage', stage);
+                $('#sound_wave-'+sound.id).data('stage', stage);
             }
         });
 
@@ -74,7 +82,7 @@
 
                 function run()
                 {
-                    var stage = $('#soundWave-'+sound.id).data('stage');
+                    var stage = $('#sound_wave-'+sound.id).data('stage');
                     var layer = stage.get('#wave-form');
                     var mainLine = new Kinetic.Line({
                         points: [point * widthPerLine, stage.getWidth()*0.7*(1-data), point * widthPerLine, stage.getWidth()*0.7],
@@ -107,9 +115,11 @@
             jump : function(sound, toWavePoint)
             {
                 var soundToJump = soundData.soundList[sound.id];
+
+                //From current line of wave data to toWavePoint line of wave data.
                 for(var point=soundToJump.currentWavePoint; point<toWavePoint; point++)
                 {
-                    var stage = $('#soundWave-'+sound.id).data('stage');
+                    var stage = $('#sound_wave-'+sound.id).data('stage');
                     var layer = stage.get('#wave-form');
                     var mainLine = new Kinetic.Line({
                         points: [point * widthPerLine, stage.getWidth()*0.7*(1-data), point * widthPerLine, stage.getWidth()*0.7],
@@ -126,7 +136,7 @@
                     layer.add(mainLine);
                     layer.add(shadowLine);
                 }
-                $.trigger('onJump',
+                $('body').trigger('onJump',
                     {
                         id : sound.id,
                         from : 1000 * (soundToJump*soundToJump.duration/soundToJump.waveData.length)
@@ -137,14 +147,20 @@
 
         function setupListeners()
         {
-            $.bind('onPlay', this.play(sound));
-            $.bind('onPause', this.pause(sound));
+            $('body').bind('onPlay', function(sound)
+            {
+                this.play(sound);
+            });
+            $('body').bind('onPause', function(sound)
+            {
+                this.pause(sound);
+            });
         }
 
         setupListeners();
 
         var soundData = init();
-        $('body').data('singleton', this);
+        $('body').data('soundWave', this);
         return this;
     }
 })(jQuery);

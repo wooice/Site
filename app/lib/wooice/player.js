@@ -1,8 +1,8 @@
 (function ($) {
     $.fn.soundPlayer = function(options)
     {
-        if ($('body').data('singleton')) {
-            return $('body').data('singleton');
+        if ($('body').data('soundPlayer')) {
+            return $('body').data('soundPlayer');
         }
 
         function init()
@@ -67,7 +67,7 @@
                         autoLoad  : playOption.autoLoad,
                         autoPlay  : playOption.autoPlay,
                         stream     : playOption.stream,
-                        multiShot :playOption.multiShot,
+                        multiShot : playOption.multiShot,
 
                         onload:  function()
                         {
@@ -81,25 +81,28 @@
 
                             soundData.currentSound = soundData.soundList[this.id];
                             soundManager._writeDebug('Starting sound: '+this.id);
-                            $.trigger('onPlay', this.id);
+                            $('body').trigger('onPlay', this.id);
                         },
                         whileloading: function() {
                             soundManager._writeDebug(this.id + ': loading ' + this.bytesLoaded + ' / ' + this.bytesTotal);
                         },
                         onpause: function() {
                             soundManager._writeDebug('Sound paused: '+this.id);
-                            $.trigger('onPause', this.id);
+                            $('body').trigger('onPause', this.id);
                         }
                     });
 
-                    this.play(playOption);
                     var soundObj = {
                         id : playOption.id,
                         soundStream :  soundStream
                     };
                     soundData.soundList[soundObj.id] = soundObj;
-                    soundData.currentSound.pause();
                     soundData.currentSound = soundObj;
+
+                    if (playOption.autoPlay)
+                    {
+                        this.play(playOption);
+                    }
                 },
 
                 ontimeout: function()
@@ -154,12 +157,18 @@
 
         function setupEvents()
         {
-            $.bind('onJump', this.jump(sound));
-            $.bind('onToggle', this.toggle(sound));
+            $('body').bind('onJump', function(sound)
+            {
+                this.jump(sound)
+            });
+            $('body').bind('onToggle', function(sound)
+            {
+                this.toggle(sound)
+            });
         }
         var soundData = init();
         setupEvents();
-        $('body').data('singleton', this);
+        $('body').data('soundPlayer', this);
         return this;
     }
 })(jQuery);

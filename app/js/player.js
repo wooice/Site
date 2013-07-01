@@ -17,37 +17,38 @@
 
         function renderFrame()
         {
-            $('<div/>', {
+            $("#sound_streams").append($(document.createElement('div')));
+            $(document.createElement('div'), {
                 id: 'sound_' + id,
-                css: 'row-fluid'
+                css: 'row-flout'
             }).appendTo('#sound_streams');
 
-            jQuery('<div/>', {
+            jQuery(document.createElement('div'), {
                 id: 'sound_art_' + id,
                 css: 'span2'
             }).appendTo('#sound_' + id);
 
-            jQuery('<div/>', {
+            jQuery(document.createElement('div'), {
                 id: 'sound_player_' + id,
                 css: 'span10 row-fluid'
             }).appendTo('#sound_' + id);
 
-            jQuery('<div/>', {
+            jQuery(document.createElement('div'), {
                 id: 'sound_cover_' + id,
                 css: ''
             }).appendTo('#sound_art' + id);
 
-            jQuery('<div/>', {
+            jQuery(document.createElement('div'), {
                 id: 'sound_player_header_' + id,
                 css: ''
             }).appendTo('#sound_player_' + id);
 
-            jQuery('<div/>', {
+            jQuery(document.createElement('div'), {
                 id: 'sound_player_body_' + id,
                 css: ''
             }).appendTo('#sound_player_' + id);
 
-            jQuery('<div/>', {
+            jQuery(document.createElement('div'), {
                 id: 'sound_player_footer_' + id,
                 css: ''
             }).appendTo('#sound_player_' + id);
@@ -79,7 +80,7 @@
 
         function renderPlayer()
         {
-            jQuery('<i/>', {
+            jQuery(document.createElement('i'), {
                 id: 'sound_player_button_' + id,
                 css: 'icon-play'
             }).appendTo('#sound_player_header_' + id);
@@ -98,7 +99,7 @@
 
         function renderSoundSummary()
         {
-            jQuery('<div/>', {
+            jQuery(document.createElement('div'), {
                 id: 'sound_summary_' + id
             }).appendTo('#sound_player_header_' + id);
         };
@@ -115,7 +116,7 @@
 
         function renderWave()
         {
-            jQuery('<div/>', {
+            jQuery(document.createElement('div'), {
                 id: 'sound_wave_' + sound.id
             }).appendTo('#sound_player_body_' + sound.id);
             var wave = $('sound_wave_' + sound.id).soundWave({});

@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <title>My AngularJS App</title>
   <link rel="stylesheet" href="css/app.css"/>
+  <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="lib/font-awesome/css/font-awesome.min.css">
 </head>
 <body>
@@ -15,7 +16,8 @@
   <div ng-view></div>
 
   <div>Angular seed app: v<span app-version></span></div>
-
+  <div id="sound_streams">
+  </div>
   <!-- In production use:
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
   -->
@@ -26,17 +28,14 @@
   <script src="js/filters.js"></script>
   <script src="js/directives.js"></script>
 
-  <script src="lib/bootstrap/bootstrap.min.js"></script>
   <script src="lib/jquery/jquery-2.0.2.min.js"></script>
+  <script src="lib/bootstrap/js/bootstrap.min.js"></script>
   <script src="lib/kineticjs/kinetic-v4.5.4.min.js"></script>
   <script src="lib/soundmanager/script/soundmanager2.js"></script>
   <script src="js/player.js"></script>
   <script src="lib/wooice/player.js"></script>
   <script src="lib/wooice/wave.js"></script>
-
-
-
-  <script>
+  <script type="text/javascript">
       var waveData = [];
 
       for(var i =0; i< 1800; i++)
@@ -50,6 +49,5 @@
       });
       player.renderSound();
   </script>
-
 </body>
 </html>

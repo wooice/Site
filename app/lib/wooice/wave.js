@@ -34,10 +34,11 @@
                  {
                      return;
                  }
+
                 var stage = new Kinetic.Stage({
                     container: 'sound_wave_'+sound.id,
-                    width: window.innerWidth,
-                    height: window.innerHeight
+                    width: $('#sound_wave_'+sound.id).width(),
+                    height: $('#sound_wave_'+sound.id).height()
                 });
 
                 sound =  soundData.soundList[sound.id];
@@ -45,19 +46,20 @@
                     id : 'wave-form'
                 });
                 var widthPerLine = stage.getWidth()/sound.waveData.length;
-
+                var mainLinePerctg = 0.7, shadowPerctg = 0.3;
                 $.each(sound.waveData, function(index, data)
                 {
                     var mainLine = new Kinetic.Line({
                         name: 'lines',
-                        points: [index * widthPerLine, stage.getWidth()*0.7*(1-data), index * widthPerLine, stage.getWidth()*0.7],
+                        points: [index * widthPerLine, stage.getHeight()*mainLinePerctg*(1-data), index * widthPerLine, stage.getHeight()*mainLinePerctg],
                         stroke: 'black',
                         strokeWidth: widthPerLine,
-                        lineJoin: 'round'
+                        lineJoin: 'round',
+                        lineCap: 'round'
                     });
                     var shadowLine = new Kinetic.Line({
                         name: 'shadows',
-                        points: [index * widthPerLine, stage.getWidth()*0.7, index * widthPerLine, stage.getWidth()*(0.7+data*0.3 *0.3)],
+                        points: [index * widthPerLine, stage.getHeight()*mainLinePerctg, index * widthPerLine, stage.getHeight()*(mainLinePerctg+data*shadowPerctg)],
                         stroke: 'gray',
                         strokeWidth: widthPerLine,
                         lineJoin: 'round'
@@ -65,8 +67,8 @@
                     //TODO: add click event to each line(jump and play)
                     layer.add(mainLine);
                     layer.add(shadowLine);
-                    stage.add(layer);
                 });
+                stage.add(layer);
                 $('#sound_wave-'+sound.id).data('stage', stage);
             }
         });
@@ -82,16 +84,18 @@
 
                 function run()
                 {
+                    var mainLinePerctg = 0.7, shadowPerctg = 0.3;
                     var stage = $('#sound_wave-'+sound.id).data('stage');
                     var layer = stage.get('#wave-form');
                     var mainLine = new Kinetic.Line({
-                        points: [point * widthPerLine, stage.getWidth()*0.7*(1-data), point * widthPerLine, stage.getWidth()*0.7],
-                        stroke: 'red',
+                        points: [point * widthPerLine, stage.getWidth()*mainLinePerctg*(1-data), point * widthPerLine, stage.getWidth()*mainLinePerctg],
+                        stroke: 'orange',
                         strokeWidth: widthPerLine,
-                        lineJoin: 'round'
+                        lineJoin: 'round',
+                        lineCap: 'round'
                     });
                     var shadowLine = new Kinetic.Line({
-                        points: [point * widthPerLine, stage.getWidth()*0.7, point * widthPerLine, stage.getWidth()*(0.7+data*0.3 *0.3)],
+                        points: [point * widthPerLine, stage.getWidth()*mainLinePerctg, point * widthPerLine, stage.getWidth()*(mainLinePerctg+data*shadowPerctg)],
                         stroke: 'orange',
                         strokeWidth: widthPerLine,
                         lineJoin: 'round'

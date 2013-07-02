@@ -5,6 +5,7 @@
         var id = sound.id;
         var waveData = sound.waveData;
         var url = sound.url;
+        var title = sound.title;
 
         this.renderSound = function()
         {
@@ -17,40 +18,39 @@
 
         function renderFrame()
         {
-            $("#sound_streams").append($(document.createElement('div')));
-            $(document.createElement('div'), {
+            jQuery("<div/>", {
                 id: 'sound_' + id,
-                css: 'row-flout'
+                class: 'row-flout'
             }).appendTo('#sound_streams');
 
-            jQuery(document.createElement('div'), {
+            jQuery("<div/>", {
                 id: 'sound_art_' + id,
-                css: 'span2'
+                class: 'span2'
             }).appendTo('#sound_' + id);
 
-            jQuery(document.createElement('div'), {
+            jQuery("<div/>", {
                 id: 'sound_player_' + id,
-                css: 'span10 row-fluid'
+                class: 'span10 row-fluid sound_player'
             }).appendTo('#sound_' + id);
 
-            jQuery(document.createElement('div'), {
+            jQuery("<div/>", {
                 id: 'sound_cover_' + id,
-                css: ''
+                class: ''
             }).appendTo('#sound_art' + id);
 
-            jQuery(document.createElement('div'), {
+            jQuery("<div/>", {
                 id: 'sound_player_header_' + id,
-                css: ''
+                class: ''
             }).appendTo('#sound_player_' + id);
 
-            jQuery(document.createElement('div'), {
+            jQuery("<div/>", {
                 id: 'sound_player_body_' + id,
-                css: ''
+                class: 'sound_player_body'
             }).appendTo('#sound_player_' + id);
 
-            jQuery(document.createElement('div'), {
+            jQuery("<div/>", {
                 id: 'sound_player_footer_' + id,
-                css: ''
+                class: ''
             }).appendTo('#sound_player_' + id);
         }
 
@@ -80,17 +80,18 @@
 
         function renderPlayer()
         {
-            jQuery(document.createElement('i'), {
+            jQuery("<i/>", {
                 id: 'sound_player_button_' + id,
-                css: 'icon-play'
+                class: 'icon-play'
             }).appendTo('#sound_player_header_' + id);
 
-            $('sound_player_button_' + id).soundPlayer().setup({
+            $('#sound_player_button_' + id).soundPlayer().setup({
                id: id,
                url: url
             });
 
-            $('sound_player_button_' + id).click(function(){
+            $('#sound_player_button_' + id).click(function(){
+                alert('ddd');
                 $('sound_player_button_' + id).soundPlayer().toggle({
                     id: id
                 });
@@ -99,7 +100,7 @@
 
         function renderSoundSummary()
         {
-            jQuery(document.createElement('div'), {
+            jQuery("<div/>", {
                 id: 'sound_summary_' + id
             }).appendTo('#sound_player_header_' + id);
         };
@@ -116,8 +117,9 @@
 
         function renderWave()
         {
-            jQuery(document.createElement('div'), {
-                id: 'sound_wave_' + sound.id
+            jQuery("<div/>", {
+                id: 'sound_wave_' + sound.id,
+                class: 'sound_player_wave'
             }).appendTo('#sound_player_body_' + sound.id);
             var wave = $('sound_wave_' + sound.id).soundWave({});
              wave.render(

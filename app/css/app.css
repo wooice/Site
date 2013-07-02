@@ -28,3 +28,15 @@
   content: "";
   padding: 0;
 }
+
+.sound_player {
+  height: 100px
+}
+
+.sound_player_body {
+    height: 90px
+}
+
+.sound_player_wave {
+    height: 80px
+}

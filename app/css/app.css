@@ -40,15 +40,21 @@
   float:left;
 }
 
+.sound_player_header {
+    height: 45px
+}
+
 .sound_player_body {
     height: 110px
 }
 
 .sound_player_wave {
-    height: 100px
+    height: 75px
 }
 
 .poster_img {
    height: 150px;
-   weight: 150px;
+   width: 83%;
+   margin-left: 10px;
 }
+

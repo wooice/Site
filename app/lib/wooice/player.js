@@ -61,6 +61,8 @@
                         },
                         sound
                     );
+                    var miliSecPerMove = 1800/sound.duration;
+
                     var soundStream = soundManager.createSound({
                         id         : playOption.id,
                         url        : playOption.url,
@@ -69,7 +71,7 @@
                         stream     : playOption.stream,
                         multiShot : playOption.multiShot,
 
-                        onload:  function()
+                        onload: function()
                         {
                             soundManager._writeDebug(this.id + ' loaded.');
                         },
@@ -81,16 +83,45 @@
 
                             soundData.currentSound = soundData.soundList[this.id];
                             soundManager._writeDebug('Starting sound: '+this.id);
-                            $('body').trigger('onPlay', this.id);
                         },
                         whileloading: function() {
                             soundManager._writeDebug(this.id + ': loading ' + this.bytesLoaded + ' / ' + this.bytesTotal);
                         },
+                        whileplaying: function() {
+                            $('body').trigger('onPlay', {
+                                id: this.id
+                            });
+                        },
                         onpause: function() {
                             soundManager._writeDebug('Sound paused: '+this.id);
-                            $('body').trigger('onPause', this.id);
+                            $('body').trigger('onPause', {
+                                id: this.id
+                            });
+                        },
+                        onresume: function() {
+                            if (soundData.currentSound.id != this.id)
+                            {
+                                soundManager.pause(soundData.currentSound.id);
+                            }
+
+                            soundData.currentSound = soundData.soundList[this.id];
+                            soundManager._writeDebug('Resuming sound: '+this.id);
                         }
                     });
+
+                    soundStream.onPosition(500, function(eventPosition) { // fire at 0.5 seconds
+                        alert(eventPosition);
+                    });
+
+                    for(var i=0;i< 1800;i++)
+                    {
+                        soundManager.onPosition(playOption.id,i*miliSecPerMove*1000, function(eventPosition) {
+                            alert(eventPosition);
+                            $('body').trigger('onOneMove', {
+                                id: this.id
+                            });
+                        });
+                    }
 
                     var soundObj = {
                         id : playOption.id,
@@ -157,11 +188,11 @@
 
         function setupListeners()
         {
-            $('body').bind('onJump', $.proxy(function(sound)
+            $('body').bind('onJump', $.proxy(function(event, sound)
             {
                 this.jump(sound)
             }, this));
-            $('body').bind('onToggle', $.proxy(function(sound)
+            $('body').bind('onToggle', $.proxy(function(event, sound)
             {
                 this.toggle(sound)
             }, this));

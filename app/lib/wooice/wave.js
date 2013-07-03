@@ -50,6 +50,7 @@
                 $.each(sound.waveData, function(index, data)
                 {
                     var mainLine = new Kinetic.Line({
+                        id: 'mainLine_'+ index,
                         name: 'lines',
                         points: [index * widthPerLine, stage.getHeight()*mainLinePerctg*(1-data), index * widthPerLine, stage.getHeight()*mainLinePerctg],
                         stroke: 'black',
@@ -58,6 +59,7 @@
                         lineCap: 'round'
                     });
                     var shadowLine = new Kinetic.Line({
+                        id: 'shadowLine_'+ index,
                         name: 'shadows',
                         points: [index * widthPerLine, stage.getHeight()*mainLinePerctg, index * widthPerLine, stage.getHeight()*(mainLinePerctg+data*shadowPerctg)],
                         stroke: 'gray',
@@ -69,47 +71,69 @@
                     layer.add(shadowLine);
                 });
                 stage.add(layer);
-                $('#sound_wave-'+sound.id).data('stage', stage);
+                $('#sound_wave_'+sound.id).data('stage', stage);
+                $('#sound_wave_'+sound.id).data('rendered', true)
             }
         });
 
         $.extend(this, {
             play : function(sound)
             {
+                if($('#sound_wave_'+sound.id).data('isPlaying'))
+                {
+                    return ;
+                }
+                $('#sound_wave_'+sound.id).data('isPlaying', true);
                 var soundToPlay = soundData.soundList[sound.id];
                 var point = soundToPlay.currentWavePoint;
-                var secondPerLine = soundToPlay.duration/soundToPlay.wave.length;
-                var timerId = setInterval(run, 1000*secondPerLine);
+                point = (point)? point:0;
+                var misiSecPerLine = soundToPlay.duration/soundToPlay.waveData.length;
+                var timerId = setInterval(run, misiSecPerLine);
                 soundToPlay.timerId = timerId;
+                var stage = $('#sound_wave_'+sound.id).data('stage');
+                var layer = stage.get('#wave-form')[0];
 
                 function run()
                 {
+                    if (point>= soundToPlay.waveData.length)
+                    {
+                        clearInterval(timerId);
+                    }
                     var mainLinePerctg = 0.7, shadowPerctg = 0.3;
-                    var stage = $('#sound_wave-'+sound.id).data('stage');
-                    var layer = stage.get('#wave-form');
-                    var mainLine = new Kinetic.Line({
-                        points: [point * widthPerLine, stage.getWidth()*mainLinePerctg*(1-data), point * widthPerLine, stage.getWidth()*mainLinePerctg],
-                        stroke: 'orange',
-                        strokeWidth: widthPerLine,
-                        lineJoin: 'round',
-                        lineCap: 'round'
-                    });
-                    var shadowLine = new Kinetic.Line({
-                        points: [point * widthPerLine, stage.getWidth()*mainLinePerctg, point * widthPerLine, stage.getWidth()*(mainLinePerctg+data*shadowPerctg)],
-                        stroke: 'orange',
-                        strokeWidth: widthPerLine,
-                        lineJoin: 'round'
-                    });
-                    layer.add(mainLine);
-                    layer.add(shadowLine);
+                    var widthPerLine = stage.getWidth()/soundToPlay.waveData.length;
+                    var mainLine = layer.get('#mainLine_'+point)[0];
+                    mainLine.setStroke('blue');
+                    var shadowLine = layer.get('#shadowLine_'+point)[0];
+                    shadowLine.setStroke('yellow');
+                    layer.draw();
                     soundToPlay.currentWavePoint = point++;
                 }
             }
         });
 
         $.extend(this, {
+            move : function(sound)
+            {
+                var soundToPlay = soundData.soundList[sound.id];
+                var point = soundToPlay.currentWavePoint;
+                point = (point)? point: 0;
+                var stage = $('#sound_wave_'+sound.id).data('stage');
+                var layer = stage.get('#wave-form')[0];
+
+                var mainLinePerctg = 0.7, shadowPerctg = 0.3;
+                var mainLine = layer.get('#mainLine_'+point)[0];
+                mainLine.setStroke('blue');
+                var shadowLine = layer.get('#shadowLine_'+point)[0];
+                shadowLine.setStroke('yellow');
+                layer.draw();
+                soundToPlay.currentWavePoint = point++;
+            }
+        });
+
+        $.extend(this, {
             pause : function(sound)
             {
+                $('#sound_wave_'+sound.id).data('isPlaying', false);
                 var soundToPause = soundData.soundList[sound.id];
                 clearInterval(soundToPause.timerId);
             }
@@ -151,11 +175,15 @@
 
         function setupListeners()
         {
-            $('body').bind('onPlay', $.proxy(function(sound)
+            $('body').bind('onPlay', $.proxy(function(event, sound)
             {
                 this.play(sound);
             },this));
-            $('body').bind('onPause', $.proxy(function(sound)
+            $('body').bind('onOneMove', $.proxy(function(event, sound)
+            {
+                this.move(sound);
+            },this));
+            $('body').bind('onPause', $.proxy(function(event,sound)
             {
                 this.pause(sound);
             },this));

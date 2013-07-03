@@ -6,6 +6,7 @@
         var waveData = sound.waveData;
         var url = sound.url;
         var title = sound.title;
+        var poster = sound.poster;
 
         this.renderSound = function()
         {
@@ -19,18 +20,17 @@
         function renderFrame()
         {
             jQuery("<div/>", {
-                id: 'sound_' + id,
-                class: 'row-flout'
+                id: 'sound_' + id
             }).appendTo('#sound_streams');
 
             jQuery("<div/>", {
                 id: 'sound_art_' + id,
-                class: 'span2'
+                class: 'sound_art'
             }).appendTo('#sound_' + id);
 
             jQuery("<div/>", {
                 id: 'sound_player_' + id,
-                class: 'span10 row-fluid sound_player'
+                class: 'sound_player'
             }).appendTo('#sound_' + id);
 
             jQuery("<div/>", {
@@ -56,7 +56,12 @@
 
         function renderCover()
         {
+            jQuery("<ul/>", {
+                id: 'sound_cover_ul_' + id,
+                class: 'thumbnails'
+            }).appendTo('#sound_art_' + id);
 
+            jQuery("<li><a href='#' class='thumbnail'><img class='poster_img' src=" + poster + "></a></li>").appendTo('#sound_cover_ul_' + id);
         };
 
         function renderHeader()
@@ -91,7 +96,6 @@
             });
 
             $('#sound_player_button_' + id).click(function(){
-                alert('ddd');
                 $('sound_player_button_' + id).soundPlayer().toggle({
                     id: id
                 });

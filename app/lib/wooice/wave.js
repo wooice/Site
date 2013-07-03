@@ -151,18 +151,17 @@
 
         function setupListeners()
         {
-            $('body').bind('onPlay', function(sound)
+            $('body').bind('onPlay', $.proxy(function(sound)
             {
                 this.play(sound);
-            });
-            $('body').bind('onPause', function(sound)
+            },this));
+            $('body').bind('onPause', $.proxy(function(sound)
             {
                 this.pause(sound);
-            });
+            },this));
         }
 
-        setupListeners();
-
+        $.proxy(setupListeners,this)();
         var soundData = init();
         $('body').data('soundWave', this);
         return this;

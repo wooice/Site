@@ -29,14 +29,26 @@
   padding: 0;
 }
 
+.sound_art{
+  width: 12%;
+  float:left;
+}
+
 .sound_player {
-  height: 100px
+  height: 120px;
+  width: 88%;
+  float:left;
 }
 
 .sound_player_body {
-    height: 90px
+    height: 110px
 }
 
 .sound_player_wave {
-    height: 80px
+    height: 100px
+}
+
+.poster_img {
+   height: 150px;
+   weight: 150px;
 }

@@ -155,19 +155,19 @@
             }
         });
 
-        function setupEvents()
+        function setupListeners()
         {
-            $('body').bind('onJump', function(sound)
+            $('body').bind('onJump', $.proxy(function(sound)
             {
                 this.jump(sound)
-            });
-            $('body').bind('onToggle', function(sound)
+            }, this));
+            $('body').bind('onToggle', $.proxy(function(sound)
             {
                 this.toggle(sound)
-            });
+            }, this));
         }
         var soundData = init();
-        setupEvents();
+        $.proxy(setupListeners,this)();
         $('body').data('soundPlayer', this);
         return this;
     }

@@ -15,9 +15,9 @@
 
   <div ng-view></div>
 
-  <div>Angular seed app: v<span app-version></span></div>
   <div id="sound_streams">
   </div>
+
   <!-- In production use:
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
   -->
@@ -32,7 +32,10 @@
   <script src="lib/bootstrap/js/bootstrap.min.js"></script>
   <script src="lib/kineticjs/kinetic-v4.5.4.min.js"></script>
   <script src="lib/soundmanager/script/soundmanager2.js"></script>
+  <script src="lib/imsky-holder/holder.js"></script>
+
   <script src="js/player.js"></script>
+  <script src="lib/wooice/wave.js"></script>
   <script src="lib/wooice/player.js"></script>
   <script src="lib/wooice/wave.js"></script>
   <script type="text/javascript">
@@ -46,8 +49,8 @@
           id: 1,
           waveData: waveData,
           url: 'resources/test8bit.wav',
-          poster: '',
-          title: '',
+          poster: 'resources/images.jpg',
+          title: 'Aren\'t u glad',
           owner: {alis:'', route:''}
       });
       player.renderSound();

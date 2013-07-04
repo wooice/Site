@@ -106,13 +106,15 @@
 
                             soundData.currentSound = soundData.soundList[this.id];
                             soundManager._writeDebug('Resuming sound: '+this.id);
+                        },
+                        onfinish: function() {
+                            $('body').trigger('onPause', {
+                                id: this.id
+                            });
                         }
                     });
 
-                    soundStream.onPosition(500, function(eventPosition) { // fire at 0.5 seconds
-                        alert(eventPosition);
-                    });
-
+                    //Best solution, but not work...
                     for(var i=0;i< 1800;i++)
                     {
                         soundManager.onPosition(playOption.id,i*miliSecPerMove*1000, function(eventPosition) {

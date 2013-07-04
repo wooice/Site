@@ -53,7 +53,7 @@
                         id: 'mainLine_'+ index,
                         name: 'lines',
                         points: [index * widthPerLine, stage.getHeight()*mainLinePerctg*(1-data), index * widthPerLine, stage.getHeight()*mainLinePerctg],
-                        stroke: 'black',
+                        stroke: '#242424',
                         strokeWidth: widthPerLine,
                         lineJoin: 'round',
                         lineCap: 'round'
@@ -62,7 +62,7 @@
                         id: 'shadowLine_'+ index,
                         name: 'shadows',
                         points: [index * widthPerLine, stage.getHeight()*mainLinePerctg, index * widthPerLine, stage.getHeight()*(mainLinePerctg+data*shadowPerctg)],
-                        stroke: 'gray',
+                        stroke: '#9E9E9E',
                         strokeWidth: widthPerLine,
                         lineJoin: 'round'
                     });
@@ -93,18 +93,21 @@
                 var stage = $('#sound_wave_'+sound.id).data('stage');
                 var layer = stage.get('#wave-form')[0];
 
+                //TODO: This approach isn't reliable, need to change to whileplaying event handler to control wave move speed later.
+                //TODO: For js execution, use web worker later
                 function run()
                 {
                     if (point>= soundToPlay.waveData.length)
                     {
                         clearInterval(timerId);
+                        return ;
                     }
                     var mainLinePerctg = 0.7, shadowPerctg = 0.3;
                     var widthPerLine = stage.getWidth()/soundToPlay.waveData.length;
                     var mainLine = layer.get('#mainLine_'+point)[0];
-                    mainLine.setStroke('blue');
+                    mainLine.setStroke('#00B2EE');
                     var shadowLine = layer.get('#shadowLine_'+point)[0];
-                    shadowLine.setStroke('yellow');
+                    shadowLine.setStroke('#A4D3EE');
                     layer.draw();
                     soundToPlay.currentWavePoint = point++;
                 }

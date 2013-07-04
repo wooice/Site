@@ -6,6 +6,7 @@
         var waveData = sound.waveData;
         var url = sound.url;
         var title = sound.title;
+        var owner = sound.owner;
         var poster = sound.poster;
         var duration = sound.duration;
 
@@ -57,12 +58,12 @@
 
         function renderCover()
         {
-            jQuery("<ul/>", {
+            jQuery("<div/>", {
                 id: 'sound_cover_ul_' + id,
-                class: 'thumbnails'
+                class: 'poster_img'
             }).appendTo('#sound_art_' + id);
 
-            jQuery("<li class='poster_img'><a href='#' class='thumbnail'><img  src=" + poster + "></a></li>").appendTo('#sound_cover_ul_' + id);
+            jQuery("<a href='#' ><img  src=" + poster + "></a>").appendTo('#sound_cover_ul_' + id);
         };
 
         function renderHeader()
@@ -86,10 +87,8 @@
 
         function renderPlayer()
         {
-            jQuery("<i/>", {
-                id: 'sound_player_button_' + id,
-                class: 'icon-play'
-            }).appendTo('#sound_player_header_' + id);
+            jQuery("<div class='sound_player_control'><i id='sound_player_button_"+ id +"' class='icon-play sound_player_button'></i></div>"
+             ).appendTo('#sound_player_header_' + id);
 
             $('#sound_player_button_' + id).soundPlayer().setup({
                id: id,
@@ -98,9 +97,14 @@
             });
 
             $('#sound_player_button_' + id).click(function(){
-                $('sound_player_button_' + id).soundPlayer().toggle({
+                $('#sound_player_button_' + id).soundPlayer().toggle({
                     id: id
                 });
+                $('#sound_player_button_' + id).toggleClass('icon-play icon-pause');
+            });
+
+            $('#sound_player_button_' + id).hover(function() {
+                $(this).css('cursor','pointer');
             });
         };
 
@@ -109,6 +113,18 @@
             jQuery("<div/>", {
                 id: 'sound_summary_' + id
             }).appendTo('#sound_player_header_' + id);
+            jQuery("<div/>", {
+                id: 'sound_owner_' + id
+            }).appendTo('#sound_summary_' + id);
+            jQuery("<a class='sound_owner'>"+ owner.alias + "</a>", {
+                href: owner.route
+            }).appendTo('#sound_owner_' + id);
+            jQuery("<div/>", {
+                id: 'sound_title_' + id
+            }).appendTo('#sound_summary_' + id);
+            jQuery("<a class='sound_title'>"+ title.alias + "</a>", {
+                href: title.route
+            }).appendTo('#sound_title_' + id);
         };
 
         function renderSoundActionsInHead()

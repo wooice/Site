@@ -3,9 +3,12 @@
 <head>
   <meta charset="utf-8">
   <title>My AngularJS App</title>
-  <link rel="stylesheet" href="css/app.css"/>
+
   <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="lib/Buttons/css/buttons.css">
+  <link rel="stylesheet" href="css/app.css"/>
+
 </head>
 <body>
   <ul class="menu">
@@ -48,11 +51,11 @@
       var player = new $.player({
           id: 1,
           waveData: waveData,
-          url: 'resources/test8bit.wav',
+          url: 'resources/sound.mp3',
           poster: 'resources/images.jpg',
-          title: 'Aren\'t u glad',
-          owner: {alis:'', route:''},
-          duration: 120*1000
+          title: {alias: '富士山下', route:'#'},
+          owner: {alias:'Eason Chen', route:'#'},
+          duration: 256*1000
       });
       player.renderSound();
   </script>

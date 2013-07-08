@@ -116,6 +116,11 @@
                     var soundToPlay = soundData.soundList[sound.id];
                     var point = soundToPlay.currentWavePoint;
                     point = (point)? point: 0;
+
+                    if (point >= soundToPlay.waveData.length)
+                    {
+                         return ;
+                    }
                     var stage = $('#sound_wave_'+sound.id).data('stage');
                     var layer = stage.get('#wave-form')[0];
                     var mainLine = layer.get('#mainLine_'+point)[0];

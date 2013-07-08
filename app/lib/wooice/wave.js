@@ -85,33 +85,49 @@
                 }
                 $('#sound_wave_'+sound.id).data('isPlaying', true);
                 var soundToPlay = soundData.soundList[sound.id];
-                var point = soundToPlay.currentWavePoint;
-                point = (point)? point:0;
                 var misiSecPerLine = soundToPlay.duration/soundToPlay.waveData.length;
-                var timerId = setInterval(run, misiSecPerLine);
-                soundToPlay.timerId = timerId;
-                var stage = $('#sound_wave_'+sound.id).data('stage');
-                var layer = stage.get('#wave-form')[0];
 
-                //TODO: This approach isn't reliable, need to change to whileplaying event handler to control wave move speed later.
-                //TODO: For js execution, use web worker later
-                function run()
+                if (soundToPlay.worker == null)
                 {
-                    if (point>= soundToPlay.waveData.length)
-                    {
-                        clearInterval(timerId);
-                        return ;
-                    }
-                    var mainLinePerctg = 0.7, shadowPerctg = 0.3;
-                    var widthPerLine = stage.getWidth()/soundToPlay.waveData.length;
+                    soundToPlay.worker =new Worker("./lib/wooice/wavePlayer.js");
+                    soundToPlay.worker.postMessage({
+                       action: 'init',
+                       soundId: sound.id,
+                        misiSecPerLine: misiSecPerLine
+                    });
+                }
+
+                soundToPlay.worker.postMessage({
+                    action: 'play'
+                });
+
+                soundToPlay.worker.onmessage = function (event)
+                {
+                     if (event.data.action == 'move')
+                     {
+                         move({
+                             id: event.data.id
+                         });
+                     }
+                }
+
+                function move(sound)
+                {
+                    var soundToPlay = soundData.soundList[sound.id];
+                    var point = soundToPlay.currentWavePoint;
+                    point = (point)? point: 0;
+                    var stage = $('#sound_wave_'+sound.id).data('stage');
+                    var layer = stage.get('#wave-form')[0];
                     var mainLine = layer.get('#mainLine_'+point)[0];
                     mainLine.setStroke('#00B2EE');
                     var shadowLine = layer.get('#shadowLine_'+point)[0];
                     shadowLine.setStroke('#A4D3EE');
                     layer.draw();
-                    soundToPlay.currentWavePoint = point++;
+                    soundToPlay.currentWavePoint = ++point;
                 }
             }
+
+
         });
 
         $.extend(this, {
@@ -122,12 +138,10 @@
                 point = (point)? point: 0;
                 var stage = $('#sound_wave_'+sound.id).data('stage');
                 var layer = stage.get('#wave-form')[0];
-
-                var mainLinePerctg = 0.7, shadowPerctg = 0.3;
                 var mainLine = layer.get('#mainLine_'+point)[0];
-                mainLine.setStroke('blue');
+                mainLine.setStroke('#00B2EE');
                 var shadowLine = layer.get('#shadowLine_'+point)[0];
-                shadowLine.setStroke('yellow');
+                shadowLine.setStroke('#A4D3EE');
                 layer.draw();
                 soundToPlay.currentWavePoint = point++;
             }
@@ -138,7 +152,9 @@
             {
                 $('#sound_wave_'+sound.id).data('isPlaying', false);
                 var soundToPause = soundData.soundList[sound.id];
-                clearInterval(soundToPause.timerId);
+                soundToPause.worker.postMessage({
+                    action: 'pause'
+                });
             }
         });
 

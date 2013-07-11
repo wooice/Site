@@ -45,6 +45,32 @@
                 var layer = new Kinetic.Layer({
                     id : 'wave-form'
                 });
+
+                var background = new Kinetic.Rect({
+                    x: 0,
+                    y: 0,
+                    width: stage.getWidth(),
+                    height: stage.getHeight(),
+                    fill: 'gray',
+                    stroke: 'gray',
+                    strokeWidth: 1,
+                    opacity: 0.0
+                });
+                background.on('mouseenter', function(){
+                    $('#sound_wave_'+sound.id).css('cursor','pointer');
+                    $.each(layer.get('.lines'), function(index, line){
+                        line.setOpacity(1);
+                    });
+                    layer.draw();
+                });
+                background.on('mouseleave', function(){
+                    $.each(layer.get('.lines'), function(index, line){
+                        line.setOpacity(0.8);
+                    });
+                    layer.draw();
+                });
+                layer.add(background);
+
                 var widthPerLine = stage.getWidth()/sound.waveData.length;
                 var mainLinePerctg = 0.7, shadowPerctg = 0.3;
                 $.each(sound.waveData, function(index, data)
@@ -56,7 +82,11 @@
                         stroke: '#242424',
                         strokeWidth: widthPerLine,
                         lineJoin: 'round',
-                        lineCap: 'round'
+                        lineCap: 'round',
+                        opacity: 0.8
+                    });
+                    mainLine.on('click', function(evt){
+                           alert('d');
                     });
                     var shadowLine = new Kinetic.Line({
                         id: 'shadowLine_'+ index,
@@ -64,9 +94,12 @@
                         points: [index * widthPerLine, stage.getHeight()*mainLinePerctg, index * widthPerLine, stage.getHeight()*(mainLinePerctg+data*shadowPerctg)],
                         stroke: '#9E9E9E',
                         strokeWidth: widthPerLine,
-                        lineJoin: 'round'
+                        lineJoin: 'round',
+                        opacity: 0.8
                     });
-                    //TODO: add click event to each line(jump and play)
+                    shadowLine.on('click', function(){
+                        alert('d');
+                    });
                     layer.add(mainLine);
                     layer.add(shadowLine);
                 });

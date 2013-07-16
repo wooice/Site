@@ -34,39 +34,27 @@
                 {
                     return;
                 }
+                var canvas = document.createElement('canvas');
+                canvas.id = 'sound_wave_canvas_'+sound.id;
+                canvas.width =  $('#sound_wave_'+sound.id).width();
+                canvas.height =  $('#sound_wave_'+sound.id).height();
+                jQuery(canvas).appendTo('#sound_wave_' + sound.id);
 
-                jQuery("<canvas/>", {
-                    id: 'sound_wave_canvas_' + sound.id,
-                    width: $('#sound_wave_'+sound.id).width(),
-                    height: $('#sound_wave_'+sound.id).height()
-                }).appendTo('#sound_wave_' + sound.id);
-
-                var stage = new createjs.Stage('sound_wave_canvas_'+sound.id);
+                var stage = new createjs.Stage(canvas);
                 sound =  soundData.soundList[sound.id];
-
-                var widthPerLine = stage.canvas.width/sound.waveData.length;
+                var widthPerLine = $(canvas).width()/sound.waveData.length;
                 console.log(widthPerLine);
                 var mainLinePerctg = 0.7, shadowPerctg = 0.3;
+                var waveShape = new createjs.Shape();
                 $.each(sound.waveData, function(index, data)
                 {
-                    var mainLine = new createjs.Shape();
-                    mainLine.graphics.beginFill("#242424").drawRect(
-                        index * widthPerLine,
-                        stage.canvas.height * mainLinePerctg * (1-data),
-                        widthPerLine,
-                        stage.canvas.height*mainLinePerctg*data
-                    );
-                    stage.addChild(mainLine);
+                    waveShape.graphics.setStrokeStyle(widthPerLine, "round").beginStroke("#242424").moveTo(index * widthPerLine, stage.canvas.clientHeight * mainLinePerctg * (1-data))
+                        .lineTo(index * widthPerLine,stage.canvas.clientHeight * mainLinePerctg).closePath();
 
-                    var shadowLine = new createjs.Shape();
-                    shadowLine.graphics.beginFill("#242424").drawRect(
-                        index * widthPerLine,
-                        stage.canvas.height * mainLinePerctg,
-                        widthPerLine,
-                        stage.canvas.height*mainLinePerctg + stage.canvas.height*shadowPerctg* data
-                    );
-                    stage.addChild(shadowLine);
+                    waveShape.graphics.setStrokeStyle(widthPerLine, "round").beginStroke("#9E9E9E").moveTo(index * widthPerLine, stage.canvas.clientHeight * mainLinePerctg)
+                        .lineTo(index * widthPerLine, stage.canvas.clientHeight*mainLinePerctg + stage.canvas.clientHeight*shadowPerctg* data).closePath();
                 });
+                stage.addChild(waveShape);
                 stage.update();
                 $('#sound_wave_'+sound.id).data('stage', stage);
                 $('#sound_wave_'+sound.id).data('rendered', true)

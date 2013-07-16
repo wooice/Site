@@ -48,11 +48,29 @@
                 var waveShape = new createjs.Shape();
                 $.each(sound.waveData, function(index, data)
                 {
-                    waveShape.graphics.setStrokeStyle(widthPerLine, "round").beginStroke("#242424").moveTo(index * widthPerLine, stage.canvas.clientHeight * mainLinePerctg * (1-data))
-                        .lineTo(index * widthPerLine,stage.canvas.clientHeight * mainLinePerctg).closePath();
+//                    waveShape.graphics.setStrokeStyle(widthPerLine, "round", 'round').beginStroke("#242424").beginFill("#242424").moveTo(index * widthPerLine, stage.canvas.clientHeight * mainLinePerctg * (1-data))
+//                        .lineTo(index * widthPerLine,stage.canvas.clientHeight * mainLinePerctg).endFill().closePath();
+//
+//                    waveShape.graphics.setStrokeStyle(widthPerLine, "round", 'round').beginStroke("#9E9E9E").beginFill("#9E9E9E").moveTo(index * widthPerLine, stage.canvas.clientHeight * mainLinePerctg)
+//                        .lineTo(index * widthPerLine, stage.canvas.clientHeight*mainLinePerctg + stage.canvas.clientHeight*shadowPerctg* data).endFill().closePath();
 
-                    waveShape.graphics.setStrokeStyle(widthPerLine, "round").beginStroke("#9E9E9E").moveTo(index * widthPerLine, stage.canvas.clientHeight * mainLinePerctg)
-                        .lineTo(index * widthPerLine, stage.canvas.clientHeight*mainLinePerctg + stage.canvas.clientHeight*shadowPerctg* data).closePath();
+                    var mainLine = new createjs.Shape();
+                    mainLine.graphics.beginFill("#242424").drawRect(
+                        index * widthPerLine,
+                        stage.canvas.clientHeight * mainLinePerctg * (1-data),
+                        widthPerLine,
+                        stage.canvas.clientHeight * mainLinePerctg * data
+                    );
+                    stage.addChild(mainLine);
+
+                    var shadowLine = new createjs.Shape();
+                    shadowLine.graphics.beginFill("#9E9E9E").drawRect(
+                        index * widthPerLine,
+                        stage.canvas.clientHeight * mainLinePerctg,
+                        widthPerLine,
+                        stage.canvas.clientHeight*mainLinePerctg + stage.canvas.clientHeight*shadowPerctg* data
+                    );
+                    stage.addChild(shadowLine);
                 });
                 stage.addChild(waveShape);
                 stage.update();

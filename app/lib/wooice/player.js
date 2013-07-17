@@ -83,6 +83,10 @@
 
                             soundData.currentSound = soundData.soundList[this.id];
                             soundManager._writeDebug('Starting sound: '+this.id);
+
+                            $('body').trigger('onPlay', {
+                                id: this.id
+                            });
                         },
                         whileloading: function() {
                             soundManager._writeDebug(this.id + ': loading ' + this.bytesLoaded + ' / ' + this.bytesTotal);
@@ -93,7 +97,7 @@
                             });
                         },
                         whileplaying: function() {
-                            $('body').trigger('onPlay', {
+                            $('body').trigger('onPlaying', {
                                 id: this.id,
                                 soundPosition: this.position
                             });
@@ -112,24 +116,16 @@
 
                             soundData.currentSound = soundData.soundList[this.id];
                             soundManager._writeDebug('Resuming sound: '+this.id);
+                            $('body').trigger('onResume', {
+                                id: this.id
+                            });
                         },
                         onfinish: function() {
-                            $('body').trigger('onPause', {
+                            $('body').trigger('onFinish', {
                                 id: this.id
                             });
                         }
                     });
-
-                    //Best solution, but not work...
-                    for(var i=0;i< 1800;i++)
-                    {
-                        soundManager.onPosition(playOption.id,i*miliSecPerMove*1000, function(eventPosition) {
-                            alert(eventPosition);
-                            $('body').trigger('onOneMove', {
-                                id: this.id
-                            });
-                        });
-                    }
 
                     var soundObj = {
                         id : playOption.id,
@@ -167,9 +163,12 @@
                     soundToJump = soundData.soundList[sound.id];
                     soundData.currentSound.pause();
                 }
-                soundToJump.stop();
-                soundToJump.setPosition(sound.from);
-                this.play(sound);
+
+                if (!isNaN(sound.from))
+                {
+                    console.log(sound.from);
+                    soundToJump.soundStream.setPosition(sound.from);
+                }
             }
         });
 
@@ -198,11 +197,11 @@
         {
             $('body').bind('onJump', $.proxy(function(event, sound)
             {
-                this.jump(sound)
+                this.jump(sound);
             }, this));
             $('body').bind('onToggle', $.proxy(function(event, sound)
             {
-                this.toggle(sound)
+                this.toggle(sound);
             }, this));
         }
         var soundData = init();

@@ -39,6 +39,7 @@
                 sound =  soundData.soundList[sound.id];
 
                 var waveForm = new $.waveForm({
+                    soundId: sound.id,
                     canvas: canvas,
                     waveData: sound.waveData,
                     soundPosition: 0,
@@ -73,6 +74,22 @@
         });
 
         $.extend(this, {
+            stop : function(sound)
+            {
+                var waveForm = $('#sound_wave_'+sound.id).data('waveForm');
+                waveForm.stop();
+            }
+        });
+
+        $.extend(this, {
+            play : function(sound)
+            {
+                var waveForm = $('#sound_wave_'+sound.id).data('waveForm');
+                waveForm.play();
+            }
+        });
+
+        $.extend(this, {
             jump : function(sound, toWavePoint)
             {
                 var waveForm = $('#sound_wave_'+sound.id).data('waveForm');
@@ -90,19 +107,34 @@
 
         function setupListeners()
         {
-            $('body').bind('onPlay', $.proxy(function(event, sound)
+            $('body').bind('onPlaying', $.proxy(function(event, sound)
             {
                 this.move(sound);
             },this));
 
-            $('body').bind('onLoad', $.proxy(function(event, sound)
+            $('body').bind('onLoading', $.proxy(function(event, sound)
             {
                 this.load(sound);
             },this));
 
-            $('body').bind('onPause', $.proxy(function(event,sound)
+            $('body').bind('onPlay', $.proxy(function(event, sound)
             {
-                this.pause(sound);
+                this.play(sound);
+            },this));
+
+            $('body').bind('onPause', $.proxy(function(event, sound)
+            {
+                this.stop(sound);
+            },this));
+
+            $('body').bind('onResume', $.proxy(function(event, sound)
+            {
+                this.play(sound);
+            },this));
+
+            $('body').bind('onFinish', $.proxy(function(event, sound)
+            {
+                this.stop(sound);
             },this));
         }
 

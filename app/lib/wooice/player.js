@@ -86,10 +86,16 @@
                         },
                         whileloading: function() {
                             soundManager._writeDebug(this.id + ': loading ' + this.bytesLoaded + ' / ' + this.bytesTotal);
+                            $('body').trigger('onLoading', {
+                                id: this.id,
+                                soundBytesloaded: this.bytesLoaded,
+                                soundBytesTotal: this.bytesTotal
+                            });
                         },
                         whileplaying: function() {
                             $('body').trigger('onPlay', {
-                                id: this.id
+                                id: this.id,
+                                soundPosition: this.position
                             });
                         },
                         onpause: function() {

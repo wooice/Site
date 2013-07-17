@@ -92,7 +92,7 @@
 
                 if (soundToPlay.worker == null)
                 {
-                    soundToPlay.worker =new Worker("./lib/wooice/wavePlayer.js");
+                    soundToPlay.worker =new Worker("./lib/wooice/waveForm.js");
                     soundToPlay.worker.postMessage({
                         action: 'init',
                         soundId: sound.id,

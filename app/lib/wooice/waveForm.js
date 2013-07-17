@@ -17,7 +17,7 @@
 
         this.redraw = function()
         {
-            context.fillStyle = "white";
+            context.fillStyle = "transparent";
             context.clearRect(0, 0, context.canvas.width, context.canvas.height);
             context.fillRect(0, 0, context.canvas.width, context.canvas.height);
             var widthPerLine = context.canvas.width / waveData.length;
@@ -25,13 +25,13 @@
 
             $.each(waveData, function(index, data)
             {
-                context.fillStyle = getColor(index/context.canvas.width, 'upper');
-                context.clearRect(index * widthPerLine, context.canvas.height*mainLinePerctg*(1-data), index * widthPerLine, context.canvas.height*mainLinePerctg);
-                context.fillRect(index * widthPerLine, context.canvas.height*mainLinePerctg*(1-data), index * widthPerLine, context.canvas.height*mainLinePerctg);
+                context.fillStyle = getColor(index*widthPerLine/context.canvas.width, 'upper');
+                context.clearRect(index * widthPerLine, context.canvas.height*mainLinePerctg*(1-data),  widthPerLine, context.canvas.height*mainLinePerctg*data);
+                context.fillRect(index * widthPerLine, context.canvas.height*mainLinePerctg*(1-data), widthPerLine, context.canvas.height*mainLinePerctg*data);
 
-                context.fillStyle = getColor(index/context.canvas.width, 'lower');
-                context.clearRect(index * widthPerLine, context.canvas.height*mainLinePerctg, index * widthPerLine, context.canvas.height*mainLinePerctg + context.canvas.height*shadowPerctg*data);
-                context.fillRect(index * widthPerLine, context.canvas.height*mainLinePerctg, index * widthPerLine, context.canvas.height*mainLinePerctg + context.canvas.height*shadowPerctg*data);
+                context.fillStyle = getColor(index*widthPerLine/context.canvas.width, 'lower');
+                context.clearRect(index * widthPerLine, context.canvas.height*mainLinePerctg, widthPerLine, context.canvas.height*shadowPerctg*data);
+                context.fillRect(index * widthPerLine, context.canvas.height*mainLinePerctg, widthPerLine, context.canvas.height*shadowPerctg*data);
             });
         }
 
@@ -48,19 +48,19 @@
             return   y == 'upper'?  defaultUpperColor: defaultLowerColor;
         }
 
-        this.setSoundPosition = function (soundPosition)
+        this.setSoundPosition = function (position)
         {
-            this.soundPosition = soundPosition;
+            soundPosition = position;
         }
 
-        this.setSoundBytesloaded = function(soundBytesloaded)
+        this.setSoundBytesloaded = function(bytesloaded)
         {
-            this.soundBytesloaded = soundBytesloaded;
+            soundBytesloaded = bytesloaded;
         }
 
-        this.setSoundBytesTotal = function (soundBytesTotal)
+        this.setSoundBytesTotal = function (bytesTotal)
         {
-            this.soundBytesTotal = soundBytesTotal;
+            soundBytesTotal = bytesTotal;
         }
     };
  })(jQuery);

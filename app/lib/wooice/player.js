@@ -11,8 +11,8 @@
             var soundData = {};
             settings = $.extend(
                 {
-                    'swfUrl': '../soundmanager/swf/',
-                    'preferFlash': false,
+                    'swfUrl': 'lib/soundmanager/swf/',
+                    'preferFlash': true,
                     'volume': 50,
                     'multiShot': false
                 },
@@ -73,6 +73,7 @@
 
                         onload: function()
                         {
+                            console.log(this.id + ' loaded.');
                             soundManager._writeDebug(this.id + ' loaded.');
                         },
                         onplay: function() {
@@ -164,11 +165,27 @@
                     soundData.currentSound.pause();
                 }
 
-                if (!isNaN(sound.from))
-                {
-                    console.log(sound.from);
-                    soundToJump.soundStream.setPosition(sound.from);
+                var soundToJump = soundManager.getSoundById(sound.id);
+
+                if (!soundToJump) {
+                    return false;
                 }
+
+                if (soundToJump.readyState === 0) { // hasn't started loading yet...
+                    // load the whole sound, and play when it's done
+                    soundToJump.load({
+                        onload: function() {
+                            this.play({
+                                position: sound.from
+                            });
+                        }
+                    });
+                } else if (soundToJump.readyState === 3) {
+                    soundToJump.setPosition(sound.from);
+                    // sound has already loaded, ready to go
+                    soundToJump.play();
+                }
+
             }
         });
 

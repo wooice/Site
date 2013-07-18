@@ -19,26 +19,12 @@
                 options
             );
             soundData.settings = settings;
-            //init sound list, which will cache sounds
+            //init sound's id list, which will cache sounds
             soundData.soundList = [];
+            //current sound id.
             soundData.currentSound = null;
 
             return soundData;
-        }
-
-        function play(sound)
-        {
-            soundManager.play(sound.id,
-                {
-                    onfinish: function()
-                    {
-                        soundManager._writeDebug('Sound play finished. '+this.id);
-                    },
-                    onstop: function() {
-                        soundManager._writeDebug('sound stopped at position ' + this.position);
-                    }
-                }
-            );
         }
 
         $.extend(this, {
@@ -77,12 +63,12 @@
                             soundManager._writeDebug(this.id + ' loaded.');
                         },
                         onplay: function() {
-                            if (soundData.currentSound.id != this.id)
+                            if (soundData.currentSound != this.id)
                             {
-                                soundManager.pause(soundData.currentSound.id);
+                                soundManager.pause(soundData.currentSound);
                             }
 
-                            soundData.currentSound = soundData.soundList[this.id];
+                            soundData.currentSound = this.id;
                             soundManager._writeDebug('Starting sound: '+this.id);
 
                             $('body').trigger('onPlay', {
@@ -110,12 +96,12 @@
                             });
                         },
                         onresume: function() {
-                            if (soundData.currentSound.id != this.id)
+                            if (soundData.currentSound != this.id)
                             {
-                                soundManager.pause(soundData.currentSound.id);
+                                soundManager.pause(soundData.currentSound);
                             }
 
-                            soundData.currentSound = soundData.soundList[this.id];
+                            soundData.currentSound = this.id;
                             soundManager._writeDebug('Resuming sound: '+this.id);
                             $('body').trigger('onResume', {
                                 id: this.id
@@ -128,12 +114,8 @@
                         }
                     });
 
-                    var soundObj = {
-                        id : playOption.id,
-                        soundStream :  soundStream
-                    };
-                    soundData.soundList[soundObj.id] = soundObj;
-                    soundData.currentSound = soundObj;
+                    soundData.soundList.push(playOption.id);
+                    soundData.currentSound = playOption.id;
 
                     if (playOption.autoPlay)
                     {
@@ -157,15 +139,14 @@
         $.extend(this, {
             jump: function(sound) {
                 var soundToJump = null;
-                if (soundData.currentSound && soundData.currentSound.id == sound.id) {
+                if (soundData.currentSound && soundData.currentSound == sound.id) {
                     soundToJump = soundData.currentSound;
                 }
                 else {
-                    soundToJump = soundData.soundList[sound.id];
-                    soundData.currentSound.pause();
+                    soundToJump = sound.id;
                 }
 
-                var soundToJump = soundManager.getSoundById(sound.id);
+                var soundToJump = soundManager.getSoundById(soundToJump);
 
                 if (!soundToJump) {
                     return false;
@@ -182,8 +163,6 @@
                     });
                 } else if (soundToJump.readyState === 3) {
                     soundToJump.setPosition(sound.from);
-                    // sound has already loaded, ready to go
-                    soundToJump.play();
                 }
 
             }

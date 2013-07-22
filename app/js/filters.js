@@ -8,3 +8,10 @@ angular.module('myApp.filters', []).
       return String(text).replace(/\%VERSION\%/mg, version);
     }
   }]);
+
+angular.module('musiccatFilters', []).filter('checkmark', function() {
+	  return function(input) {
+	    return input ? '\u2713' : '\u2718';
+	  };
+	});
+

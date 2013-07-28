@@ -8,3 +8,14 @@ angular.module('myApp', ['myApp.filters', 'myApp.services', 'myApp.directives', 
     $routeProvider.when('/view2', {templateUrl: 'partials/partial2.html', controller: 'MyCtrl2'});
     $routeProvider.otherwise({redirectTo: '/view1'});
   }]);
+
+
+/* App Module */
+angular.module('MusicShare', ['musiccatFilters', 'musiccatServices', 'userServices']).
+  config(['$routeProvider', function($routeProvider) {
+  $routeProvider.
+      when('/musics', {templateUrl: 'partials/music-list.html',   controller: MusicListCtrl}).
+      when('/musics/:musicId', {templateUrl: 'partials/music-detail.html', controller: MusicDetailCtrl}).
+      when('/profile', {templateUrl: 'partials/user-profile.html', controller: UserCtrl}).
+      otherwise({redirectTo: '/musics'});
+}]);

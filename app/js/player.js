@@ -1,6 +1,7 @@
 // 1. Init the player button on the page, binding player button events.
 // 2.Render wave data, binding wave events:2.1 Bind click event on each line of wave data(jump) 2.2 Bind click event to all wave(play/pause). 2.3 bind havor event on each line of wave data to highlight one line.
 (function ($) {
+	"use strict";
     $.player = function (sound) {
         var id = sound.id;
         var waveData = sound.waveData;
@@ -64,26 +65,26 @@
             }).appendTo('#sound_art_' + id);
 
             jQuery("<a href='#' ><img  src=" + poster + "></a>").appendTo('#sound_cover_ul_' + id);
-        };
+        }
 
         function renderHeader()
         {
             renderPlayer();
             renderSoundSummary();
             renderSoundActionsInHead();
-        };
+        }
 
         function renderBody()
         {
             renderWave();
             renderCommentBox();
-        };
+        }
 
         function renderFooter()
         {
              renderSoundActionsInFoot();
              renderSoundSocialData();
-        };
+        }
 
         function renderPlayer()
         {
@@ -106,7 +107,7 @@
             $('#sound_player_button_' + id).hover(function() {
                 $(this).css('cursor','pointer');
             });
-        };
+        }
 
         function renderSoundSummary()
         {
@@ -125,17 +126,17 @@
             jQuery("<a class='sound_title'>"+ title.alias + "</a>", {
                 href: title.route
             }).appendTo('#sound_title_' + id);
-        };
+        }
 
         function renderSoundActionsInHead()
         {
              // No actions in default player..
-        };
+        }
 
         function renderSoundActionsInFoot()
         {
 
-        };
+        }
 
         function renderWave()
         {
@@ -151,12 +152,12 @@
                     duration: duration
                 }
             );
-        };
+        }
 
         function renderCommentBox()
         {
 
-        };
+        }
 
         function renderSoundSocialData()
         {

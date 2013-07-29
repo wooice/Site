@@ -1,15 +1,15 @@
 'use strict';
 
-
-// Declare app level module which depends on filters, and services
-angular.module('myApp', ['myApp.filters', 'myApp.services', 'myApp.directives', 'myApp.controllers', 'myApp.config', 'myApp.upload']).
+/* App Module */
+angular.module('musicShare', ['musicShare.filters', 'musicShare.directives', 'musicShare.controllers', 'musicShare.config', 'musicShare.module.upload', 'musicShare.service.musiccat', 'musicShare.service.user']).
   config(['$routeProvider', function($routeProvider) {
-    $routeProvider.when('/view1', {templateUrl: 'partials/partial1.html', controller: 'MyCtrl1'});
-    $routeProvider.when('/view2', {templateUrl: 'partials/partial2.html', controller: 'MyCtrl2'});
-    $routeProvider.when('/upload', {templateUrl: 'partials/upload.html'});
-    $routeProvider.otherwise({redirectTo: '/view1'});
-  }])
+  $routeProvider.
+      when('/musics', {templateUrl: 'partials/music-list.html',   controller: MusicListCtrl}).
+      when('/musics/:musicId', {templateUrl: 'partials/music-detail.html', controller: MusicDetailCtrl}).
+      when('/profile', {templateUrl: 'partials/user-profile.html', controller: UserCtrl}).
+      when('/upload', {templateUrl: 'partials/upload.html', resolve: function(){alert(1);}).
+      otherwise({redirectTo: '/musics'});
+}])
 	.run(function($rootScope, config){
 		$rootScope.config = config;
 	});
-

@@ -17,7 +17,7 @@
 
 
 
-    angular.module('myApp.upload', [
+    angular.module('musicShare.module.upload', [
         'blueimp.fileupload', 'myApp.config'
     ])
 

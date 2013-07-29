@@ -2,7 +2,7 @@
 
 
 // Declare app level module which depends on filters, and services
-angular.module('myApp.config', []).constant(
+angular.module('musicShare.config', []).constant(
 	'config',
 	{
 		site : {

@@ -1,32 +1,41 @@
 <!doctype html>
-<html lang="en" ng-app="musicShare">
+<html lang="en" ng-app="wooice">
 <head>
   <meta charset="utf-8">
-  <title>My AngularJS App</title>
+  <title>Wooice</title>
 
+  <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="lib/bootstrap/css/bootstrap-responsive.css">
   <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="lib/font-awesome/css/font-awesome.min.css">
   <link rel="stylesheet" href="lib/Buttons/css/buttons.css">
   <link rel="stylesheet" href="css/app.css"/>
 
   <!-- Upload -->
-  <!-- Bootstrap CSS Toolkit styles -->
-  <link rel="stylesheet" href="http://blueimp.github.io/cdn/css/bootstrap.min.css">
   <!-- Generic page styles -->
   <link rel="stylesheet" href="css/upload/style.css">
-  <!-- Bootstrap styles for responsive website layout, supporting different screen sizes -->
-  <link rel="stylesheet" href="http://blueimp.github.io/cdn/css/bootstrap-responsive.min.css">
   <!-- blueimp Gallery styles -->
   <link rel="stylesheet" href="http://blueimp.github.io/Gallery/css/blueimp-gallery.min.css">
   <!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
 <link rel="stylesheet" href="css/upload/jquery.fileupload-ui.css">
 </head>
 <body>
-  <ul class="menu">
-    <li><a href="#/musics">musics</a></li>
-    <li><a href="#/profile">profile</a></li>
-    <li><a href="#/upload">upload</a></li>
-  </ul>
+
+<div class="navbar">
+    <div class="navbar-inner">
+        <a class="brand" href="#"><img width="60" height="60" src="img/logo.jpg"/></a>
+        <ul class="nav">
+            <li class="active"><a href="#/stream">stream</a></li>
+        </ul>
+        <form class="navbar-search pull-left" action="">
+            <input type="text" class="search-query span2" placeholder="Find a sound">
+        </form>
+        <ul class="nav pull-right">
+            <li class="pull-right"><a href="#/profile">profile</a></li>
+            <li class="pull-right"><a href="#/upload">upload</a></li>
+        </ul>
+    </div>
+</div>
 
   <div ng-view></div>
 
@@ -71,23 +80,5 @@
   <!-- The main upload script -->
   <script src="js/upload.js"></script>
 
-  <script type="text/javascript">
-      var waveData = [];
-
-      for(var i =0; i< 1800; i++)
-      {
-          waveData[i] = Math.random();
-      }
-      var player = new $.player({
-          id: 1,
-          waveData: waveData,
-          url: 'resources/sound.mp3',
-          poster: 'resources/images.jpg',
-          title: {alias: '富士山下', route:'#'},
-          owner: {alias:'Eason Chen', route:'#'},
-          duration: 256*1000
-      });
-//      player.renderSound();
-  </script>
 </body>
 </html>

@@ -2,7 +2,7 @@
 
 
 // Declare app level module which depends on filters, and services
-angular.module('musicShare.config', []).constant(
+angular.module('wooice.config', []).constant(
 	'config',
 	{
 		site : {

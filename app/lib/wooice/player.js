@@ -66,6 +66,8 @@
                             if (soundData.currentSound != this.id)
                             {
                                 soundManager.pause(soundData.currentSound);
+                                $('#sound_player_button_' + soundData.currentSound).removeClass('icon-pause');
+                                $('#sound_player_button_' + soundData.currentSound).addClass('icon-play');
                             }
 
                             soundData.currentSound = this.id;
@@ -74,6 +76,8 @@
                             $('body').trigger('onPlay', {
                                 id: this.id
                             });
+                            $('#sound_player_button_' + this.id).removeClass('icon-play');
+                            $('#sound_player_button_' + this.id).addClass('icon-pause');
                         },
                         whileloading: function() {
                             soundManager._writeDebug(this.id + ': loading ' + this.bytesLoaded + ' / ' + this.bytesTotal);
@@ -90,15 +94,19 @@
                             });
                         },
                         onpause: function() {
-                            soundManager._writeDebug('Sound paused: '+this.id);
+                            soundManager._writeDebug('Sound paused: '+ this.id);
                             $('body').trigger('onPause', {
                                 id: this.id
                             });
+                            $('#sound_player_button_' + this.id).removeClass('icon-pause');
+                            $('#sound_player_button_' + this.id).addClass('icon-play');
                         },
                         onresume: function() {
                             if (soundData.currentSound != this.id)
                             {
                                 soundManager.pause(soundData.currentSound);
+                                $('#sound_player_button_' + soundData.currentSound).removeClass('icon-pause');
+                                $('#sound_player_button_' + soundData.currentSound).addClass('icon-play');
                             }
 
                             soundData.currentSound = this.id;
@@ -106,6 +114,9 @@
                             $('body').trigger('onResume', {
                                 id: this.id
                             });
+
+                            $('#sound_player_button_' + this.id).removeClass('icon-play');
+                            $('#sound_player_button_' + this.id).addClass('icon-pause');
                         },
                         onfinish: function() {
                             $('body').trigger('onFinish', {

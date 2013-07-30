@@ -1,14 +1,15 @@
 'use strict';
 
 /* App Module */
-angular.module('musicShare', ['musicShare.filters', 'musicShare.controllers', 'musicShare.config', 'musicShare.module.upload']).
+angular.module('wooice', ['wooice.filters', 'wooice.controllers', 'wooice.config', 'wooice.module.upload']).
   config(['$routeProvider', function($routeProvider) {
   $routeProvider.
-      when('/musics', {templateUrl: 'partials/music-list.html',   controller: 'MusicListCtrl'}).
-      when('/musics/:musicId', {templateUrl: 'partials/music-detail.html', controller: 'MusicDetailCtrl'}).
+      when('/stream', {templateUrl: 'partials/stream.html',   controller: 'streamCtrl'}).
+      when('/stream/:userId', {templateUrl: 'partials/user-stream.html', controller: 'userStreamCtrl'}).
+      when('/sound/:soundId', {templateUrl: 'partials/sound-detail.html', controller: 'soundDetailCtrl'}).
       when('/profile', {templateUrl: 'partials/user-profile.html', controller: 'UserCtrl'}).
       when('/upload', {templateUrl: 'partials/upload.html'}).
-      otherwise({redirectTo: '/musics'});
+      otherwise({redirectTo: '/stream'});
 }])
 	.run(function($rootScope, config){
 		$rootScope.config = config;

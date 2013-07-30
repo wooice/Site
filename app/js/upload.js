@@ -18,7 +18,7 @@
 
 
     angular.module('musicShare.module.upload', [
-        'blueimp.fileupload', 'myApp.config'
+        'blueimp.fileupload', 'musicShare.config'
     ])
 
         .controller('FileUploadController', [

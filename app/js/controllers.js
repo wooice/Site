@@ -2,7 +2,7 @@
 
 /* Controllers */
 
-angular.module('myApp.controllers', []).
+angular.module('musicShare.controllers', ['musicShare.service.musiccat', 'musicShare.service.user']).
   controller('MusicListCtrl', ['$scope', 'Music',function($scope, Music) {
 
 		$scope.$musics = Music.query();

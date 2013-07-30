@@ -23,7 +23,8 @@
         function renderFrame()
         {
             jQuery("<div/>", {
-                id: 'sound_' + id
+                id: 'sound_' + id,
+                class: 'sound_item'
             }).appendTo('#sound_streams');
 
             jQuery("<div/>", {
@@ -53,7 +54,7 @@
 
             jQuery("<div/>", {
                 id: 'sound_player_footer_' + id,
-                class: ''
+                class: 'sound_player_footer'
             }).appendTo('#sound_player_' + id);
         }
 
@@ -101,7 +102,6 @@
                 $('#sound_player_button_' + id).soundPlayer().toggle({
                     id: id
                 });
-                $('#sound_player_button_' + id).toggleClass('icon-play icon-pause');
             });
 
             $('#sound_player_button_' + id).hover(function() {

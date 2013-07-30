@@ -37,21 +37,25 @@
 }
 
 .sound_player {
-  height: 120px;
+  height: 100%;
   width: 86%;
   float:left;
 }
 
 .sound_player_header {
-    height: 45px
+    height: 25%
 }
 
 .sound_player_body {
-    height: 110px
+    height: 55%
+}
+
+.sound_player_footer{
+    height: 20%
 }
 
 .sound_player_wave {
-    height: 75px;
+    height: 100%;
     width:98%
 }
 
@@ -81,10 +85,60 @@
 
 .sound_owner{
     font-family:Interstate, 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Garuda, Verdana, Tahoma, sans-serif;
-    font-size: 14px;
+    font-size: 11px;
 }
 
 .sound_title{
     font-family: Interstate, 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Garuda, Verdana, Tahoma, sans-serif;
-    font-size: 16px;
+    font-size: 13px;
+}
+
+/* override nav bar color */
+.navbar-inner {
+    background: rgb(69,72,77); /* Old browsers */
+    background: -moz-linear-gradient(top,  rgba(69,72,77,1) 0%, rgba(0,0,0,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(69,72,77,1)), color-stop(100%,rgba(0,0,0,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  rgba(69,72,77,1) 0%,rgba(0,0,0,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  rgba(69,72,77,1) 0%,rgba(0,0,0,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  rgba(69,72,77,1) 0%,rgba(0,0,0,1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  rgba(69,72,77,1) 0%,rgba(0,0,0,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#45484d', endColorstr='#000000',GradientType=0 ); /* IE6-9 */
+}
+
+.navbar-inner, .navbar .btn-navbar {
+    background: rgb(69,72,77); /* Old browsers */
+    background: -moz-linear-gradient(top,  rgba(69,72,77,1) 0%, rgba(0,0,0,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(69,72,77,1)), color-stop(100%,rgba(0,0,0,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  rgba(69,72,77,1) 0%,rgba(0,0,0,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  rgba(69,72,77,1) 0%,rgba(0,0,0,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  rgba(69,72,77,1) 0%,rgba(0,0,0,1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  rgba(69,72,77,1) 0%,rgba(0,0,0,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#45484d', endColorstr='#000000',GradientType=0 ); /* IE6-9 */
+}
+
+.navbar .divider-vertical {
+    background-color: rgba(0,0,0,1);
+    border-right: 1px solid rgba(69,72,77,1);
+}
+
+.navbar .nav .active > a, .navbar .nav .active > a:hover {
+    background-color: rgba(0,0,0,1);
+}
+
+.navbar .nav > li > a {
+    color: lightgray;
+}
+
+.navbar-fixed-top .brand {
+    color: gray;color: lightgray;
+}
+
+.navbar .nav > li > a:hover {color:white;}
+
+.navbar .nav .active > a, .navbar .nav .active > a:hover {color:white;}
+
+.sound_item {
+    height: 150px;
+    margin-bottom: 25px;
+    padding-top: 10px;
 }

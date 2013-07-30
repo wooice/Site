@@ -17,8 +17,8 @@
 
 
 
-    angular.module('musicShare.module.upload', [
-        'blueimp.fileupload', 'musicShare.config'
+    angular.module('wooice.module.upload', [
+        'blueimp.fileupload', 'wooice.config'
     ])
 
         .controller('FileUploadController', [

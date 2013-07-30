@@ -1,21 +1,15 @@
 'use strict';
 
-
-// Declare app level module which depends on filters, and services
-angular.module('myApp', ['myApp.filters', 'myApp.services', 'myApp.directives', 'myApp.controllers']).
-  config(['$routeProvider', function($routeProvider) {
-    $routeProvider.when('/view1', {templateUrl: 'partials/partial1.html', controller: 'MyCtrl1'});
-    $routeProvider.when('/view2', {templateUrl: 'partials/partial2.html', controller: 'MyCtrl2'});
-    $routeProvider.otherwise({redirectTo: '/view1'});
-  }]);
-
-
 /* App Module */
-angular.module('MusicShare', ['musiccatFilters', 'musiccatServices', 'userServices']).
+angular.module('musicShare', ['musicShare.filters', 'musicShare.controllers', 'musicShare.config', 'musicShare.module.upload']).
   config(['$routeProvider', function($routeProvider) {
   $routeProvider.
-      when('/musics', {templateUrl: 'partials/music-list.html',   controller: MusicListCtrl}).
-      when('/musics/:musicId', {templateUrl: 'partials/music-detail.html', controller: MusicDetailCtrl}).
-      when('/profile', {templateUrl: 'partials/user-profile.html', controller: UserCtrl}).
+      when('/musics', {templateUrl: 'partials/music-list.html',   controller: 'MusicListCtrl'}).
+      when('/musics/:musicId', {templateUrl: 'partials/music-detail.html', controller: 'MusicDetailCtrl'}).
+      when('/profile', {templateUrl: 'partials/user-profile.html', controller: 'UserCtrl'}).
+      when('/upload', {templateUrl: 'partials/upload.html'}).
       otherwise({redirectTo: '/musics'});
-}]);
+}])
+	.run(function($rootScope, config){
+		$rootScope.config = config;
+	});

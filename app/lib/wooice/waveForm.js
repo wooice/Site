@@ -8,7 +8,8 @@
 
         var defaultUpperColor = '#404040';
         var defaultLowerColor = '#9E9E9E';
-        var loadedUpperColor = '#202020';
+        var loadedUpperColor = '#262626';
+        var loadedUpperDeeperColor = '#191919';
         var loadedLowerColor = '#9E9E9E';
         var playedUpperColor = '#00B2EE';
         var playedLowerColor = '#A4D3EE';
@@ -116,7 +117,7 @@
             }
             if (x < soundBytesloaded/soundBytesTotal)
             {
-                return y == 'upper'?  loadedUpperColor: loadedLowerColor;
+                return y == 'upper'?  (!playStatus&&onHover)?loadedUpperDeeperColor:loadedUpperColor: loadedLowerColor;
             }
             return   y == 'upper'?  (!playStatus&&onHover)?loadedUpperColor:defaultUpperColor: defaultLowerColor;
         }

@@ -68,7 +68,7 @@
             {
                 var waveForm = $('#sound_wave_'+sound.id).data('waveForm');
                 waveForm.setSoundBytesloaded(sound.soundBytesloaded);
-                waveForm.setSoundBytesTotal(sound.bytesTotal);
+                waveForm.setSoundBytesTotal(sound.soundBytesTotal);
                 waveForm.redraw();
             }
         });

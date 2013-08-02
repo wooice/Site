@@ -10,7 +10,7 @@ angular.module('wooice.config', []).constant(
 		},
 
 		service : {
-			url : 'http://localhost:8983/commonService'
+			url : 'http://localhost\\:8080/commonService'
 		}
 
 	}

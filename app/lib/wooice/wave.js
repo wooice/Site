@@ -32,6 +32,7 @@
 
                 var canvas = document.createElement('canvas');
                 canvas.id = 'sound_wave_canvas_'+sound.id;
+                var temp =   $('#sound_wave_'+sound.id);
                 canvas.width =  $('#sound_wave_'+sound.id).width();
                 canvas.height =  $('#sound_wave_'+sound.id).height();
                 jQuery(canvas).appendTo('#sound_wave_' + sound.id);
@@ -68,7 +69,7 @@
             {
                 var waveForm = $('#sound_wave_'+sound.id).data('waveForm');
                 waveForm.setSoundBytesloaded(sound.soundBytesloaded);
-                waveForm.setSoundBytesTotal(sound.bytesTotal);
+                waveForm.setSoundBytesTotal(sound.soundBytesTotal);
                 waveForm.redraw();
             }
         });

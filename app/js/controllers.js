@@ -2,98 +2,114 @@
 
 /* Controllers */
 
-angular.module('wooice.controllers', ['wooice.service.musiccat', 'wooice.service.user']).
-  controller('streamCtrl', ['$scope', 'Music',function($scope, Music) {
-		$scope.$musics = Music.query();
-		$scope.orderProp = 'age';
+angular.module('wooice.controllers', []).
+  controller('streamCtrl', ['$scope','Stream',function($scope, Stream) {
 
-		$scope.musics_top = Music.queryTop();
-		$scope.orderProp = 'age';
+        $scope.togglePause = function(id){
+            $('body').soundPlayer().toggle({
+                id: id
+            });
+        };
 
 		$scope.$on('$viewContentLoaded', function(){
-			for (var j=0; j< 6; j++)
-			{
-				var waveData = [];
+            $scope.pageNum = 0;
+            var soundsData = Stream.stream({user:'',userAlias:'robot', pageNum:$scope.pageNum},function()
+            {
+                $scope.sounds = [];
+                $.each(soundsData, function(index, soundRecord) {
+                    var sound = {
+                        id: index+1,
+                        waveData: soundRecord.sound.soundData.wave[0],
+                        url: soundRecord.sound.soundData.url,
+                        poster: soundRecord.sound.profile.poster.url,
+                        title: {alias: soundRecord.sound.profile.name, route:'#'},
+                        owner: {alias: soundRecord.owner.profile.alias, route:'#'},
+                        duration: soundRecord.sound.soundData.duration*1000
+                    };
+                    $scope.sounds.push(sound);
+                });
 
-				for(var i =0; i< 1800; i++)
-				{
-					waveData[i] = Math.random();
-				}
-				var player = new $.player({
-					id: j+1,
-					waveData: waveData,
-					url: 'resources/sound.mp3',
-					poster: 'resources/images.jpg',
-					title: {alias: 'Fushi Mountain', route:'#'},
-					owner: {alias:'Eason Chen', route:'#'},
-					duration: 256*1000
-				});
-				player.renderSound();
-			}
+                //TODO
+                $scope.$apply();
+                $.each($scope.sounds, function(index, sound) {
+                    var player = new $.player(sound);
+                    player.renderSound();
+                });
+
+                $scope.pageNum++;
+            });
 		});
+
 	}])
 
-    .controller('userStreamCtrl', ['$scope', 'Music',function($scope, Music) {
-        $scope.$musics = Music.query();
-        $scope.orderProp = 'age';
+    .controller('userStreamCtrl', ['$scope','$routeParams','Stream',function($scope,$routeParams, Stream) {
 
-        $scope.musics_top = Music.queryTop();
-        $scope.orderProp = 'age';
+        $scope.togglePause = function(id){
+            $('body').soundPlayer().toggle({
+                id: id
+            });
+        };
 
         $scope.$on('$viewContentLoaded', function(){
-            for (var j=0; j< 6; j++)
+            $scope.pageNum = 0;
+            var soundsData = Stream.stream({user:$routeParams.userId,pageNum:$scope.pageNum},function()
             {
-                var waveData = [];
-
-                for(var i =0; i< 1800; i++)
-                {
-                    waveData[i] = Math.random();
-                }
-                var player = new $.player({
-                    id: j+1,
-                    waveData: waveData,
-                    url: 'resources/sound.mp3',
-                    poster: 'resources/images.jpg',
-                    title: {alias: 'Fushi Mountain', route:'#'},
-                    owner: {alias:'Eason Chen', route:'#'},
-                    duration: 256*1000
+                $scope.sounds = [];
+                $.each(soundsData, function(index, soundRecord) {
+                    var sound = {
+                        id: index+1,
+                        waveData: soundRecord.sound.soundData.wave[0],
+                        url: soundRecord.sound.soundData.url,
+                        poster: soundRecord.sound.profile.poster.url,
+                        title: {alias: soundRecord.sound.profile.name, route:'#'},
+                        owner: {alias: soundRecord.owner.profile.alias, route:'#'},
+                        duration: soundRecord.sound.soundData.duration*1000
+                    };
+                    $scope.sounds.push(sound);
                 });
-                player.renderSound();
-            }
+
+                //TODO
+                $scope.$apply();
+                $.each($scope.sounds, function(index, sound) {
+                    var player = new $.player(sound);
+                    player.renderSound();
+                });
+
+                $scope.pageNum++;
+            });
         });
     }])
 
-  .controller('soundDetailCtrl', ['$scope', '$routeParams', 'Music',function($scope, $routeParams, Music) {
-	//	$scope.music = Music.get({phoneId: $routeParams.phoneId}, function(phone) {
-	//		$scope.mainImageUrl = $scope.music.images[0];
-	//	});
+  .controller('soundDetailCtrl', ['$scope', '$routeParams', 'Sound',function($scope, $routeParams, Sound) {
 
-	//	$scope.setImage = function(imageUrl) {
-	//		$scope.mainImageUrl = imageUrl;
-	//	};
+        $scope.togglePause = function(id){
+            $('body').soundPlayer().toggle({
+                id: id
+            });
+        };
 
         $scope.$on('$viewContentLoaded', function(){
-                var waveData = [];
+                var sound = Sound.load({sound:$routeParams.soundId}, function(){
+                    $scope.sound = {
+                        id: 1,
+                        waveData: sound.soundData.wave[0],
+                        url: sound.soundData.url,
+                        poster: sound.profile.poster.url,
+                        title: {alias: sound.profile.name, route:'#'},
+                        owner: {alias: sound.profile.owner.profile.alias, route:'#'},
+                        duration: sound.soundData.duration*1000
+                    };
+                    //TODO
+                    $scope.$apply();
 
-                for(var i =0; i< 1800; i++)
-                {
-                    waveData[i] = Math.random();
-                }
-                var player = new $.player({
-                    id: 1,
-                    waveData: waveData,
-                    url: 'resources/sound.mp3',
-                    poster: 'resources/images.jpg',
-                    title: {alias: 'Fushi Mountain', route:'#'},
-                    owner: {alias:'Eason Chen', route:'#'},
-                    duration: 256*1000
+                    var player = new $.player($scope.sound);
+                    player.renderSound();
                 });
-                player.renderSound();
         });
 	}])
 
-	.controller('UserCtrl', ['$scope', '$routeParams', 'User', function($scope, $routeParams, User) {
-		$scope.profile = User.query();
+	.controller('UserCtrl', ['$scope', '$routeParams', function($scope, $routeParams, $http) {
+
 	}])
 ;
 

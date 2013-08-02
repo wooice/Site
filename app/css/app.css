@@ -51,12 +51,13 @@
 }
 
 .sound_player_footer{
-    height: 20%
+    height: 20%;
+    padding-top: 10px;
 }
 
 .sound_player_wave {
     height: 100%;
-    width:98%
+    width:100%
 }
 
 .sound_cover{
@@ -141,4 +142,12 @@
     height: 150px;
     margin-bottom: 25px;
     padding-top: 10px;
+}
+
+.action-button {
+    margin-left:6px
+}
+
+.stat_icon {
+    margin-right:6px
 }

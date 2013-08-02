@@ -4,6 +4,44 @@
         <div class="span11">
             <!--Body content-->
             <div id="sound_streams">
+                <div id="sound_{{sound.id}}" class='sound_item'>
+                    <div id="sound_art_{{sound.id}}" class='sound_art'>
+                        <div id="sound_cover_{{sound.id}}">
+                            <div id="sound_cover_ul_{{sound.id}}"  class= 'poster_img'>
+                                <a href='#' ><img  ng-src="{{sound.poster}}"></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="sound_player_{{sound.id}}" class='sound_player'>
+                        <div id="sound_player_header_{{sound.id}}" class='sound_player_header'>
+                            <div class='sound_player_control'>
+                                <i style="cursor:pointer" id='sound_player_button_{{sound.id}}' class='icon-play sound_player_button'  ng-click="togglePause(sound.id)"></i>
+                            </div>
+                            <div id="sound_summary_{{sound.id}}">
+                                <div id="sound_owner_{{sound.id}}">
+                                    <a class='sound_owner'>{{sound.owner.alias}}</a>
+                                </div>
+                                <div id="sound_title_{{sound.id}}">
+                                    <a class='sound_title' href="{{sound.title.route}}">{{sound.title.alias}}</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="sound_player_body_{{sound.id}}" class='sound_player_body'>
+                            <div id="sound_wave_{{sound.id}}" class='sound_player_wave'>
+                            </div>
+                        </div>
+                        <div id="sound_player_footer_{{sound.id}}" class='sound_player_footer'>
+                            <a href="#" class="button button-small button-flat action-button"><i class="icon-heart"></i></i>  Like</a>
+                            <a href="#" class="button button-small button-flat action-button"><i class="icon-retweet"></i></i>  Repost</a>
+                            <div class="pull-right">
+                                <i class="icon-play-sign stat_icon"></i>{{}}
+                                |
+                                <i class="icon-heart stat_icon"></i>{{}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <!-- Script for wave -->
         </div>

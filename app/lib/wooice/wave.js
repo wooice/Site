@@ -32,6 +32,7 @@
 
                 var canvas = document.createElement('canvas');
                 canvas.id = 'sound_wave_canvas_'+sound.id;
+                var temp =   $('#sound_wave_'+sound.id);
                 canvas.width =  $('#sound_wave_'+sound.id).width();
                 canvas.height =  $('#sound_wave_'+sound.id).height();
                 jQuery(canvas).appendTo('#sound_wave_' + sound.id);

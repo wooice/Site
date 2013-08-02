@@ -2,18 +2,24 @@
 
 /* Services */
 
-angular.module('wooice.service.musiccat', ['ngResource']).
-factory('Music', ['$resource', function($resource){
-return $resource('musics/:musicId.json', {}, {
-query: {method:'GET', params:{musicId:'sounds'}, isArray:true},
-queryTop: {method:'GET', params:{musicId:'phones-top'}, isArray:true}
-
+angular.module('wooice.service.sound', ['ngResource'])
+.factory('Stream', ['$resource', 'config', function($resource,config){
+return $resource(config.service.url + '/sound/streams/:user', {}, {
+stream: {method:'GET', params:{user:'current', pageNum:0, soundsPerPage: 5}, isArray:true}
 });
-}]);
+}
+])
+.factory('Sound', ['$resource', 'config', function($resource,config){
+    return $resource(config.service.url + '/sound/:sound', {}, {
+        load: {method:'GET', params:{sound:'current'}, isArray:false},
+        delete: {method:'DELETE', params:{sound:'current'}, isArray:false}
+    });
+}
+]);
 
 angular.module('wooice.service.user', []).
 factory('User', ['$resource', function($resource){
 return $resource('users/:userId.json', {}, {
-query: {method:'GET', params:{userId:'current'}, isArray:false},
+query: {method:'GET', params:{userId:'current'}, isArray:false}
 });
 }]);

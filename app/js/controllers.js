@@ -11,6 +11,10 @@ angular.module('wooice.controllers', []).
             });
         };
 
+        $scope.toggleLike = function(id){
+
+        }
+
 		$scope.$on('$viewContentLoaded', function(){
             $scope.pageNum = 0;
             var soundsData = Stream.stream({user:'',userAlias:'robot', pageNum:$scope.pageNum},function()
@@ -24,7 +28,9 @@ angular.module('wooice.controllers', []).
                         poster: soundRecord.sound.profile.poster.url,
                         title: {alias: soundRecord.sound.profile.name, route:'#'},
                         owner: {alias: soundRecord.owner.profile.alias, route:'#'},
-                        duration: soundRecord.sound.soundData.duration*1000
+                        duration: soundRecord.sound.soundData.duration*1000,
+                        soundSocial: soundRecord.sound.soundSocial,
+                        soundUserPrefer: soundRecord.sound.userRrefer
                     };
                     $scope.sounds.push(sound);
                 });
@@ -63,7 +69,9 @@ angular.module('wooice.controllers', []).
                         poster: soundRecord.sound.profile.poster.url,
                         title: {alias: soundRecord.sound.profile.name, route:'#'},
                         owner: {alias: soundRecord.owner.profile.alias, route:'#'},
-                        duration: soundRecord.sound.soundData.duration*1000
+                        duration: soundRecord.sound.soundData.duration*1000,
+                        soundSocial: soundRecord.sound.soundSocial,
+                        soundUserPrefer: soundRecord.sound.userRrefer
                     };
                     $scope.sounds.push(sound);
                 });
@@ -97,7 +105,9 @@ angular.module('wooice.controllers', []).
                         poster: sound.profile.poster.url,
                         title: {alias: sound.profile.name, route:'#'},
                         owner: {alias: sound.profile.owner.profile.alias, route:'#'},
-                        duration: sound.soundData.duration*1000
+                        duration: sound.soundData.duration*1000,
+                        soundSocial: sound.soundSocial,
+                        soundUserPrefer: soundRecord.sound.userRrefer
                     };
                     //TODO
                     $scope.$apply();

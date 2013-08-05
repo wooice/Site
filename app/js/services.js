@@ -18,10 +18,11 @@ stream: {method:'GET', params:{user:'current', pageNum:0, soundsPerPage: 5}, isA
 ])
 .factory('SoundSocial', ['$resource', 'config', function($resource,config){
     return $resource(config.service.url + '/soundActivity/:user/:action/:sound', {}, {
-        like: {method:'PUT', params:{sound:'current'}, isArray:false},
-        unlike: {method:'DELETE', params:{sound:'current'}, isArray:false},
-        repost: {method:'PUT', params:{sound:'current'}, isArray:false},
-        unrepost: {method:'DELETE', params:{sound:'current'}, isArray:false}
+        play: {method:'PUT', params:{action:'play'}, isArray:false},
+        like: {method:'PUT', params:{action:'like'}, isArray:false},
+        unlike: {method:'DELETE', params:{action:'like'}, isArray:false},
+        repost: {method:'PUT', params:{action:'repost'}, isArray:false},
+        unrepost: {method:'DELETE', params:{action:'repost'}, isArray:false}
     });
 }
 ]);

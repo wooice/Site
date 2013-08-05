@@ -33,8 +33,8 @@
                              </div>
                         </div>
                         <div id="sound_player_footer_{{sound.id}}" class='sound_player_footer'>
-                            <a href="#" class="button button-small button-flat action-button"><i class="icon-heart" ng-click="toggleLike(sound.id)"></i></i>  Like</a>
-                            <a href="#" class="button button-small button-flat action-button"><i class="icon-retweet" ng-click="toggleRepost(sound.id)"></i></i>  Repost</a>
+                            <a href="#" class="button button-small button-flat action-button" onclick="return false;" ng-click="toggleLike(sound.id)"><i class="icon-heart"></i></i> {{sound.soundUserPrefer.likeWording}}</a>
+                            <a href="#" class="button button-small button-flat action-button" onclick="return false;" ng-click="toggleRepost(sound.id)"><i class="icon-retweet"></i></i> {{sound.soundUserPrefer.repostWording}}</a>
                             <div class="pull-right">
                                 <i class="icon-play-sign stat_icon"></i>{{sound.soundSocial.playedCount}}
                                 |

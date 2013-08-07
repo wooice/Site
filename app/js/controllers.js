@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('wooice.controllers', []).
-  controller('streamCtrl', ['$scope','Stream', 'SoundSocial' ,function($scope, Stream, SoundSocial) {
+  controller('streamCtrl', ['$scope','Stream', 'SoundSocial', 'config', function($scope, Stream, SoundSocial, config) {
 
         $scope.togglePause = function(id){
             $('body').soundPlayer().toggle({
@@ -63,7 +63,7 @@ angular.module('wooice.controllers', []).
         }
 
 		$scope.$on('$viewContentLoaded', function(){
-            $scope.pageNum = 0;
+            $scope.pageNum = 1;
             var soundsData = Stream.stream({user:'',userAlias:'robot', pageNum:$scope.pageNum},function()
             {
                 $scope.sounds = [];
@@ -92,6 +92,19 @@ angular.module('wooice.controllers', []).
                     var player = new $.player(sound);
                     player.renderSound();
                     sound.waveData = null;
+
+                    $('#sound_commentbox_input_' + sound.id).bind('keyup',function(event) {
+                        if (event.keyCode==13)
+                        {
+                            var comment = $('#sound_commentbox_input_' +  + sound.id).val();
+                            var sec = $("#sound_comment_point_" + sound.id).val();
+                            SoundSocial.comment({user:'robot', sound:sound.title.alias, comment:comment, pointAt:sec}, null, function(count){
+                                sound.soundSocial.commentsCount = parseInt(count[0]);
+                                $('#sound_commentbox_input_' + sound.id).val('');
+                                $('#sound_commentbox_input_' + sound.id).attr("placeholder", "Thank you for your comment!");
+                            });
+                        }
+                    });
                 });
 
                 $scope.pageNum++;
@@ -184,9 +197,27 @@ angular.module('wooice.controllers', []).
                     player.renderSound();
 
                     $scope.sound.waveData = null;
+
+                    $('#sound_commentbox_input_' + $scope.sound.id).bind('keyup',function(event) {
+                        if (event.keyCode==13)
+                        {
+                            var comment = $('#sound_commentbox_input_' +  + $scope.sound.id).val();
+                            var sec = $("#sound_comment_point_" + $scope.sound.id).val();
+                            SoundSocial.comment({user:'robot', sound:$scope.sound.title.alias, comment:comment, pointAt:sec}, null, function(count){
+                                $scope.sound.soundSocial.commentsCount = parseInt(count[0]);
+                                $('#sound_commentbox_input_' + sound.id).val('');
+                                $('#sound_commentbox_input_' + sound.id).attr("placeholder", "Thank you for your comment!");
+                            });
+                        }
+                    });
                 });
         });
 	}])
+
+    .controller('soundCommentsCtrl', ['$scope', '$routeParams', 'SoundSocialList', function($scope, $routeParams, SoundSocialList) {
+        $scope.commentPageNum = 1;
+//        SoundSocialList.comment({sound:$scope.sound.title.alias, pageNum: $scope.commentPageNum});
+    }])
 
 	.controller('userBasicController', ['$scope', '$routeParams', function($scope, $routeParams, $http) {
 

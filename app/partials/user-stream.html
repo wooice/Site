@@ -35,6 +35,10 @@
                             </div>
                         </div>
                         <div id="sound_player_footer_{{sound.id}}" class='sound_player_footer'>
+                            <div id="sound_commentbox_{{sound.id}}" class="hide">
+                                <input type="text" id="sound_commentbox_input_{{sound.id}}" class="input-block-level"  placeholder="Leave your comment...">
+                                <input type="hidden" id="sound_comment_point_{{sound.id}}">
+                            </div>
                             <a href="#" class="button button-small button-flat action-button" onclick="return false;" ng-click="toggleLike(sound.id)"><i class="icon-heart"></i></i> {{sound.soundUserPrefer.likeWording}}</a>
                             <a href="#" class="button button-small button-flat action-button" onclick="return false;" ng-click="toggleRepost(sound.id)"><i class="icon-retweet"></i></i> {{sound.soundUserPrefer.repostWording}}</a>
                             <div class="pull-right">

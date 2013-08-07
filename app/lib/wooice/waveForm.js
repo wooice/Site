@@ -20,7 +20,8 @@
         var soundPosition =  options.soundPosition;
         var soundBytesloaded = options.soundBytesloaded;
         var soundBytesTotal = options.soundBytesTotal;
-        var pointPosition = -1;
+        var pointUpperPosition = -1;
+        var pointLowerPosition = -1;
         var mainLinePerctg = 0.7;
         var shadowPerctg = 0.3;
         var playStatus = 0; //0: stop. 1: playing
@@ -106,7 +107,7 @@
 
         function getColor(index, x, y)
         {
-            if (playStatus && index == pointPosition && y == 'upper')
+            if (playStatus && ((index == pointUpperPosition && y == 'upper') || (index == pointLowerPosition && y == 'lower')))
             {
                  return playedUpperPoint;
             }
@@ -119,7 +120,7 @@
             {
                 return y == 'upper'?  (!playStatus&&onHover)?loadedUpperDeeperColor:loadedUpperColor: loadedLowerColor;
             }
-            return   y == 'upper'?  (!playStatus&&onHover)?loadedUpperColor:defaultUpperColor: defaultLowerColor;
+            return   y == 'upper'?  ((!playStatus&&onHover)?loadedUpperColor:defaultUpperColor): (defaultLowerColor);
         }
 
         canvas.addEventListener('mousemove', onMouseMove);
@@ -130,12 +131,13 @@
             var layerY = evt.layerY;
             var widthPerLine = waveWidth / waveData.length;
             var index = Math.floor(layerX);
-            var prePosition = pointPosition;
+            var preUpperPosition = pointUpperPosition;
+            var preLowerPosition = pointLowerPosition;
 
             if (layerY > waveHeight*mainLinePerctg*(1-waveData[index]) && layerY <= waveHeight*mainLinePerctg)
             {
                 //If current point is on a upper line, change position and change color of the line.
-                pointPosition = index;
+                pointUpperPosition = index;
 
                 //set new point to played color
                 context.fillStyle = getColor(index,index/waveWidth, 'upper');
@@ -145,13 +147,38 @@
             else
             {
                 // If point leaves upper lines, mark it.
-                pointPosition = -1;
+                pointUpperPosition = -1;
             }
 
-            //set previous point to the color it should be
-            context.fillStyle = getColor(prePosition,prePosition/waveWidth, 'upper');
-            context.clearRect(prePosition * widthPerLine, waveHeight*mainLinePerctg*(1-waveData[prePosition]),  widthPerLine, waveHeight*mainLinePerctg*waveData[prePosition]);
-            context.fillRect(prePosition * widthPerLine, waveHeight*mainLinePerctg*(1-waveData[prePosition]), widthPerLine, waveHeight*mainLinePerctg*waveData[prePosition]);
+            if (layerY > waveHeight*mainLinePerctg && layerY< waveHeight*(mainLinePerctg + shadowPerctg*waveData[index]))
+            {
+                pointLowerPosition = index;
+
+                //set new point to played color
+                context.fillStyle = getColor(index,index/waveWidth, 'lower');
+                context.clearRect(index * widthPerLine, waveHeight*mainLinePerctg, widthPerLine, waveHeight*shadowPerctg*waveData[index]);
+                context.fillRect(index * widthPerLine, waveHeight*mainLinePerctg, widthPerLine, waveHeight*shadowPerctg*waveData[index]);
+            }
+            else
+            {
+                pointLowerPosition = -1;
+            }
+
+            if (-1 != preUpperPosition)
+            {
+                //set previous upper point to the color it should be
+                context.fillStyle = getColor(preUpperPosition,preUpperPosition/waveWidth, 'upper');
+                context.clearRect(preUpperPosition * widthPerLine, waveHeight*mainLinePerctg*(1-waveData[preUpperPosition]),  widthPerLine, waveHeight*mainLinePerctg*waveData[preUpperPosition]);
+                context.fillRect(preUpperPosition * widthPerLine, waveHeight*mainLinePerctg*(1-waveData[preUpperPosition]), widthPerLine, waveHeight*mainLinePerctg*waveData[preUpperPosition]);
+            }
+
+            if (-1 != preLowerPosition)
+            {
+                //set previous lower point to the color it should be
+                context.fillStyle = getColor(preLowerPosition,preLowerPosition/waveWidth, 'lower');
+                context.clearRect(preLowerPosition * widthPerLine, waveHeight*mainLinePerctg, widthPerLine, waveHeight*shadowPerctg*waveData[preLowerPosition]);
+                context.fillRect(preLowerPosition * widthPerLine, waveHeight*mainLinePerctg, widthPerLine, waveHeight*shadowPerctg*waveData[preLowerPosition]);
+            }
         }
 
         canvas.addEventListener('click', onClick);
@@ -166,11 +193,29 @@
             }
             else
             {
+                var layerX = evt.layerX;
+                var index = Math.floor(layerX);
+                var layerY = evt.layerY;
+
+               if(layerY > waveHeight*mainLinePerctg*(1-waveData[index]) && layerY <= waveHeight*mainLinePerctg)
+               {
                 var from = soundDuration * (evt.layerX/waveWidth);
                 $('body').trigger('onJump', {
                     id: soundId,
                     from: from
                 });
+               }
+
+               if (layerY > waveHeight*mainLinePerctg && layerY<= waveHeight*(mainLinePerctg + shadowPerctg*waveData[index]))
+               {
+                  var curSec =  (soundDuration * (index/waveWidth));
+                  var curMin =  Math.floor(curSec/(60*1000));
+                  var leftSec =  ((curSec -  curMin * 60 * 1000)/1000).toFixed(2);
+
+                  $('#sound_commentbox_' + soundId).show();
+                  $('#sound_commentbox_input_' + soundId).attr("placeholder", ("Leave your comment @ " + curMin + "m " + leftSec + "s ..."));
+                  $('#sound_comment_point_' + soundId).val((curSec/1000).toFixed(2));
+               }
             }
         }
 

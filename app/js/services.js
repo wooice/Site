@@ -22,10 +22,18 @@ stream: {method:'GET', params:{user:'current', pageNum:0, soundsPerPage: 5}, isA
         like: {method:'PUT', params:{action:'like'}, isArray:false},
         unlike: {method:'DELETE', params:{action:'like'}, isArray:false},
         repost: {method:'PUT', params:{action:'repost'}, isArray:false},
-        unrepost: {method:'DELETE', params:{action:'repost'}, isArray:false}
+        unrepost: {method:'DELETE', params:{action:'repost'}, isArray:false},
+        comment: {method:'PUT', params:{action:'comment'}, isArray:false}
     });
 }
-]);
+])
+.factory('SoundSocialList', ['$resource', 'config', function($resource,config){
+     return $resource(config.service.url + '/soundActivity/:sound/:action', {}, {
+          comment: {method:'GET', params:{action:'comment', soundsPerPage:8}, isArray:false}
+     });
+}
+])
+;
 
 angular.module('wooice.service.user', []).
 factory('User', ['$resource', function($resource){

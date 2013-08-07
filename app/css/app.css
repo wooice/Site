@@ -1,5 +1,7 @@
 /* app css stylesheet */
-
+.hide {
+    display:none;
+}
 .menu {
   list-style: none;
   border-bottom: 0.1em solid black;
@@ -139,9 +141,10 @@
 .navbar .nav .active > a, .navbar .nav .active > a:hover {color:white;}
 
 .sound_item {
-    height: 150px;
+    height: 160px;
     margin-bottom: 25px;
     padding-top: 10px;
+    padding-bottom:  20px;
 }
 
 .action-button {

@@ -113,7 +113,7 @@ angular.module('wooice.controllers', []).
 
 	}])
 
-  .controller('soundDetailCtrl', ['$scope', '$routeParams', 'Sound', 'SoundSocial', function($scope, $routeParams, Sound, SoundSocial) {
+  .controller('soundDetailCtrl', ['$scope', '$routeParams', 'Sound', 'SoundSocial',  'SoundSocialList',function($scope, $routeParams, Sound, SoundSocial, SoundSocialList) {
         $scope.togglePause = function(id){
             $('body').soundPlayer().toggle({
                 id: id
@@ -210,14 +210,14 @@ angular.module('wooice.controllers', []).
                             });
                         }
                     });
+
+                    $scope.commentPageNum = 1;
+                    var comments = SoundSocialList.comment({sound:$scope.sound.title.alias, pageNum: $scope.commentPageNum}, function(){
+                        $scope.comments = comments;
+                    });
                 });
         });
 	}])
-
-    .controller('soundCommentsCtrl', ['$scope', '$routeParams', 'SoundSocialList', function($scope, $routeParams, SoundSocialList) {
-        $scope.commentPageNum = 1;
-//        SoundSocialList.comment({sound:$scope.sound.title.alias, pageNum: $scope.commentPageNum});
-    }])
 
 	.controller('userBasicController', ['$scope', '$routeParams', function($scope, $routeParams, $http) {
 

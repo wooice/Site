@@ -29,7 +29,7 @@ stream: {method:'GET', params:{user:'current', pageNum:0, soundsPerPage: 5}, isA
 ])
 .factory('SoundSocialList', ['$resource', 'config', function($resource,config){
      return $resource(config.service.url + '/soundActivity/:sound/:action', {}, {
-          comment: {method:'GET', params:{action:'comment', soundsPerPage:8}, isArray:false}
+          comment: {method:'GET', params:{action:'comments', commentsPerPage:8}, isArray:true}
      });
 }
 ])

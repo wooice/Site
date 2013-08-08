@@ -51,7 +51,41 @@
                     </div>
                 </div>
 
-                <div ng-controller="soundCommentsCtrl">
+                <div class="row-fluid">
+                    <div class="span2">
+                    </div>
+                    <div class="span8">
+                        <div class="sound_tags">
+                        </div>
+                        <div class="sound_description">
+                        </div>
+                        <div class="sound_comments" style="padding-top: 20px">
+                            <i class="icon-comment"></i> {{comments.length}} comments
+                            <ul class="ul-nostyle"  ng-repeat="comment in comments">
+                                <li class="border-light-top">
+                                    <a style="float:left">
+                                         <img src="{{comment.owner.profile.avatorUrl}}" width="40px" height="40px">
+                                    </a>
+                                    <div class="comment_body">
+                                    <div>
+                                        <a>
+                                        {{comment.owner.profile.alias}}
+                                        </a>
+                                        <span style="color:#ccc; font-size: 12px"> @ {{comment.pointAt}}</span>
+                                    </div>
+                                    <span style="color:#333;"> {{comment.comment}} </span>
+                                    </div>
+                                    <div class="pull-right" style="color:#999">
+                                        <time datatime="{{comment.createdTime}}" >
+                                            {{comment.createdTime}}
+                                        </time>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="span3">
+                    </div>
                 </div>
             </div>
             <!-- Script for wave -->

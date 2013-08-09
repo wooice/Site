@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('wooice.controllers', []).
-  controller('streamCtrl', ['$scope','Stream', 'SoundSocial', 'config', function($scope, Stream, SoundSocial, config) {
+  controller('streamCtrl', ['$scope','Stream', 'SoundSocial', function($scope, Stream, SoundSocial) {
 
         $scope.togglePause = function(id){
             $('body').soundPlayer().toggle({
@@ -73,8 +73,8 @@ angular.module('wooice.controllers', []).
                         waveData: soundRecord.sound.soundData.wave[0],
                         url: soundRecord.sound.soundData.url,
                         poster: soundRecord.sound.profile.poster.url,
-                        title: {alias: soundRecord.sound.profile.name, route:'#'},
-                        owner: {alias: soundRecord.owner.profile.alias, route:'#'},
+                        title: {alias: soundRecord.sound.profile.name, route:'index.html#/sound/' + soundRecord.sound.profile.name},
+                        owner: {alias: soundRecord.owner.profile.alias, route: 'index.html#/stream/' + soundRecord.owner.profile.alias},
                         duration: soundRecord.sound.soundData.duration*1000,
                         soundSocial: soundRecord.sound.soundSocial,
                         soundUserPrefer: soundRecord.sound.userPrefer,
@@ -179,8 +179,8 @@ angular.module('wooice.controllers', []).
                         waveData: sound.soundData.wave[0],
                         url: sound.soundData.url,
                         poster: sound.profile.poster.url,
-                        title: {alias: sound.profile.name, route:'#'},
-                        owner: {alias: sound.profile.owner.profile.alias, route:'#'},
+                        title: {alias: sound.profile.name, route: 'index.html#/sound/' + sound.profile.name},
+                        owner: {alias: sound.profile.owner.profile.alias, route: 'index.html#/stream/' + sound.profile.owner.profile.alias},
                         duration: sound.soundData.duration*1000,
                         soundSocial: sound.soundSocial,
                         soundUserPrefer: sound.userPrefer,
@@ -214,13 +214,28 @@ angular.module('wooice.controllers', []).
                     $scope.commentPageNum = 1;
                     var comments = SoundSocialList.comment({sound:$scope.sound.title.alias, pageNum: $scope.commentPageNum}, function(){
                         $scope.comments = comments;
+
+                        $.each($scope.comments, function(index, comment){
+                             if (!comment.owner.profile.avatorUrl)
+                             {
+                                 comment.owner.profile.avatorUrl = "img/default_avatar.png";
+                                 comment.owner.route = "index.html#/stream/" + comment.owner.profile.alias;
+                             }
+                        });
                     });
                 });
         });
 	}])
 
-	.controller('userBasicController', ['$scope', '$routeParams', function($scope, $routeParams, $http) {
+	.controller('userBasicController', ['$scope', '$routeParams','User', function($scope, $routeParams, User) {
+               var user = User.get({userAlias:'robot'}, function(){
+                   $scope.user = user;
 
+                   if(!$scope.user.profile.avatorUrl)
+                   {
+                       $scope.user.profile.avatorUrl = 'img/default_avatar_large.png';
+                   }
+               });
 	}])
 
     .controller('userSocialController', ['$scope', '$routeParams', function($scope, $routeParams, $http) {

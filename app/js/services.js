@@ -36,8 +36,8 @@ stream: {method:'GET', params:{user:'current', pageNum:0, soundsPerPage: 5}, isA
 ;
 
 angular.module('wooice.service.user', []).
-factory('User', ['$resource', function($resource){
-return $resource('users/:userId.json', {}, {
-query: {method:'GET', params:{userId:'current'}, isArray:false}
+factory('User', ['$resource',  'config', function($resource, config){
+return $resource(config.service.url + '/user/:userAlias', {}, {
+        get: {method:'GET', params:{userAlias:'current'}, isArray:false}
 });
 }]);

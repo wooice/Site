@@ -2,6 +2,10 @@
 
     <div class="row-fluid">
         <div class="span2" ng-controller="userBasicController">
+            <div style="padding-top: 20px;padding-left: 25px">
+            <img src="{{user.profile.avatorUrl}}" width="200px" height="200px">
+            <div class="userInfo__title">{{user.profile.alias}}</div>
+            </div>
         </div>
 
         <div class="span8">
@@ -11,7 +15,7 @@
                     <div id="sound_art_{{sound.id}}" class='sound_art'>
                         <div id="sound_cover_{{sound.id}}">
                             <div id="sound_cover_ul_{{sound.id}}"  class= 'poster_img'>
-                                <a href='#' ><img  ng-src="{{sound.poster}}"></a>
+                                <img  ng-src="{{sound.poster}}">
                             </div>
                         </div>
                     </div>
@@ -23,7 +27,7 @@
                             </div>
                             <div id="sound_summary_{{sound.id}}">
                                 <div id="sound_owner_{{sound.id}}">
-                                    <a class='sound_owner'>{{sound.owner.alias}}</a>
+                                    <a class='sound_owner' href="{{sound.owner.route}}">{{sound.owner.alias}}</a>
                                 </div>
                                 <div id="sound_title_{{sound.id}}">
                                     <a class='sound_title' href="{{sound.title.route}}">{{sound.title.alias}}</a>
@@ -41,7 +45,7 @@
                             </div>
                             <a href="#" class="button button-small button-flat action-button" onclick="return false;" ng-click="toggleLike(sound.id)"><i class="icon-heart"></i></i> {{sound.soundUserPrefer.likeWording}}</a>
                             <a href="#" class="button button-small button-flat action-button" onclick="return false;" ng-click="toggleRepost(sound.id)"><i class="icon-retweet"></i></i> {{sound.soundUserPrefer.repostWording}}</a>
-                            <div class="pull-right">
+                            <div class="pull-right"  style="margin-top: 8px">
                                 <i class="icon-play-sign stat_icon"></i>{{sound.soundSocial.playedCount}}
                                 |
                                 <i class="icon-heart stat_icon"></i>{{sound.soundSocial.likesCount}}

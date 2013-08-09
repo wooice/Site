@@ -20,7 +20,7 @@
                             </div>
                             <div id="sound_summary_{{sound.id}}">
                                 <div id="sound_owner_{{sound.id}}">
-                                    <a class='sound_owner'>{{sound.owner.alias}}</a>
+                                    <a class='sound_owner 'href="{{sound.owner.route}}">{{sound.owner.alias}}</a>
                                 </div>
                                 <div id="sound_title_{{sound.id}}">
                                     <a class='sound_title' href="{{sound.title.route}}">{{sound.title.alias}}</a>
@@ -31,7 +31,7 @@
                             <div id="sound_wave_{{sound.id}}" class='sound_player_wave'>
                             </div>
                         </div>
-                        <div id="sound_player_footer_{{sound.id}}" class='sound_player_footer'>
+                        <div id="sound_player_footer_{{sound.id}}" class='sound_player_footer border-light-bottom'>
                             <div id="sound_commentbox_{{sound.id}}">
                                 <input type="text" id="sound_commentbox_input_{{sound.id}}" class="input-block-level"  placeholder="Leave your comment...">
                                 <input type="hidden" id="sound_comment_point_{{sound.id}}">
@@ -60,23 +60,25 @@
                         <div class="sound_description">
                         </div>
                         <div class="sound_comments" style="padding-top: 20px">
+                            <div style="padding-bottom: 5px">
                             <i class="icon-comment"></i> {{comments.length}} comments
+                             </div>
                             <ul class="ul-nostyle"  ng-repeat="comment in comments">
                                 <li class="border-light-top">
-                                    <a style="float:left">
+                                    <a href="{{comment.owner.route}}" style="float:left;padding-top:10px">
                                          <img src="{{comment.owner.profile.avatorUrl}}" width="40px" height="40px">
                                     </a>
                                     <div class="comment_body">
                                     <div>
-                                        <a>
-                                        {{comment.owner.profile.alias}}
+                                        <a href="{{comment.owner.route}}">
+                                            {{comment.owner.profile.alias}}
                                         </a>
-                                        <span style="color:#ccc; font-size: 12px"> @ {{comment.pointAt}}</span>
+                                        <span style="color:#999; font-size: 12px"> @ {{comment.pointAt}}</span>
                                     </div>
                                     <span style="color:#333;"> {{comment.comment}} </span>
                                     </div>
-                                    <div class="pull-right" style="color:#999">
-                                        <time datatime="{{comment.createdTime}}" >
+                                    <div class="pull-right" style="color:#ccc; padding-top: 5px">
+                                        <time datatime="{{comment.createdTime}}" style="font-style:italic;">
                                             {{comment.createdTime}}
                                         </time>
                                     </div>

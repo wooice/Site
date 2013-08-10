@@ -10,53 +10,77 @@ angular.module('wooice.controllers', []).
                 id: id
             });
 
-            var sound = $scope.sounds[id-1];
-            if (!sound.played)
+            var sound = null;
+            $.each($scope.sounds, function(index, oneSound){
+                   if (oneSound.id == id)
+                   {
+                       sound = oneSound;
+                       return;
+                   }
+            });
+
+            if (sound && !sound.played)
             {
-                SoundSocial.play({user:'robot', sound:sound.title.alias}, null,function(count){
+               var playsCount = SoundSocial.play({user:'robot', sound:sound.title.alias}, null,function(count){
                     sound.played = true;
-                    sound.soundSocial.playedCount = parseInt(count[0]);
+                    sound.soundSocial.playedCount = parseInt(playsCount.played);
                 });
             }
         };
 
         $scope.toggleLike = function(id){
-             var sound = $scope.sounds[id-1];
-             if (sound.soundUserPrefer.like)
+            var sound = null;
+            $.each($scope.sounds, function(index, oneSound){
+                if (oneSound.id == id)
+                {
+                    sound = oneSound;
+                    return;
+                }
+            });
+
+             if (sound && sound.soundUserPrefer.like)
              {
-                 SoundSocial.unlike({user:'robot', sound:sound.title.alias}, null,function(count){
+                 var likesCount = SoundSocial.unlike({user:'robot', sound:sound.title.alias}, null,function(count){
                      sound.soundUserPrefer.like = 0;
                      sound.soundUserPrefer.likeWording = "Like";
-                     sound.soundSocial.likesCount = parseInt(count[0]);
+                     sound.soundSocial.likesCount = parseInt(likesCount.liked);
                  });
              }
              else
              {
-                 SoundSocial.like({user:'robot', sound:sound.title.alias}, null,function(count){
+                 var likesCount = SoundSocial.like({user:'robot', sound:sound.title.alias}, null,function(count){
                      sound.soundUserPrefer.like = 1;
                      sound.soundUserPrefer.likeWording = "";
-                     sound.soundSocial.likesCount = parseInt(count[0]);
+                     sound.soundSocial.likesCount = parseInt(likesCount.liked);
                  });
              }
             return false;
         }
 
         $scope.toggleRepost = function(id){
-            var sound = $scope.sounds[id-1];
-            if (sound.soundUserPrefer.repost)
+            var sound = null;
+            $.each($scope.sounds, function(index, oneSound){
+                if (oneSound.id == id)
+                {
+                    sound = oneSound;
+                    return;
+                }
+            });
+
+            if (sound && sound.soundUserPrefer.repost)
             {
-                SoundSocial.unrepost({user:'robot', sound:sound.title.alias}, null, function(count){
+               var repostsCount = SoundSocial.unrepost({user:'robot', sound:sound.title.alias}, null, function(count){
                     sound.soundUserPrefer.repost = 0;
                     sound.soundUserPrefer.repostWording = "Repost";
-                    sound.soundSocial.reportsCount = parseInt(count[0]);
+                    sound.soundSocial.reportsCount = parseInt(repostsCount.reposted);
                 });
             }
             else
             {
-                SoundSocial.repost({user:'robot', sound:sound.title.alias}, null, function(count){
+                var repostsCount =  SoundSocial.repost({user:'robot', sound:sound.title.alias}, null, function(count){
                     sound.soundUserPrefer.repost = 1;
                     sound.soundUserPrefer.repostWording = "";
-                    sound.soundSocial.reportsCount = parseInt(count[0]);
+                    sound.soundSocial.reportsCount = parseInt(repostsCount.reposted);
                 });
             }
             return false;
@@ -69,7 +93,7 @@ angular.module('wooice.controllers', []).
                 $scope.sounds = [];
                 $.each(soundsData, function(index, soundRecord) {
                     var sound = {
-                        id: index+1,
+                        id: soundRecord.sound.profile.name,
                         waveData: soundRecord.sound.soundData.wave[0],
                         url: soundRecord.sound.soundData.url,
                         poster: soundRecord.sound.profile.poster.url,
@@ -122,11 +146,10 @@ angular.module('wooice.controllers', []).
             var sound = $scope.sound;
             if (!sound.played)
             {
-               var test= SoundSocial.play({user:'robot', sound:sound.title.alias}, null,function(count){
+                var playsCount =  SoundSocial.play({user:'robot', sound:sound.title.alias}, null,function(count){
                     sound.played = true;
-                    sound.soundSocial.playedCount = parseInt(count[0]);
+                    sound.soundSocial.playedCount = parseInt(playsCount.played);
                 });
-                console.log(test);
             }
         };
 
@@ -134,18 +157,18 @@ angular.module('wooice.controllers', []).
             var sound = $scope.sound;
             if (sound.soundUserPrefer.like)
             {
-                SoundSocial.unlike({user:'robot', sound:sound.title.alias}, null,function(count){
+                var likesCount =  SoundSocial.unlike({user:'robot', sound:sound.title.alias}, null,function(count){
                     sound.soundUserPrefer.like = 0;
                     sound.soundUserPrefer.likeWording = "Like";
-                    sound.soundSocial.likesCount = parseInt(count[0]);
+                    sound.soundSocial.likesCount = parseInt(likesCount.liked);
                 });
             }
             else
             {
-                SoundSocial.like({user:'robot', sound:sound.title.alias}, null,function(count){
+                var likesCount = SoundSocial.like({user:'robot', sound:sound.title.alias}, null,function(count){
                     sound.soundUserPrefer.like = 1;
                     sound.soundUserPrefer.likeWording = "";
-                    sound.soundSocial.likesCount = parseInt(count[0]);
+                    sound.soundSocial.likesCount = parseInt(likesCount.liked);
                 });
             }
             return false;
@@ -155,18 +178,18 @@ angular.module('wooice.controllers', []).
             var sound = $scope.sound;
             if (sound.soundUserPrefer.repost)
             {
-                SoundSocial.unrepost({user:'robot', sound:sound.title.alias}, null, function(count){
+                var repostsCount = SoundSocial.unrepost({user:'robot', sound:sound.title.alias}, null, function(count){
                     sound.soundUserPrefer.repost = 0;
                     sound.soundUserPrefer.repostWording = "Repost";
-                    sound.soundSocial.reportsCount = parseInt(count[0]);
+                    sound.soundSocial.reportsCount = parseInt(repostsCount.reposted);
                 });
             }
             else
             {
-                SoundSocial.repost({user:'robot', sound:sound.title.alias}, null, function(count){
+                var repostsCount =  SoundSocial.repost({user:'robot', sound:sound.title.alias}, null, function(count){
                     sound.soundUserPrefer.repost = 1;
                     sound.soundUserPrefer.repostWording = "";
-                    sound.soundSocial.reportsCount = parseInt(count[0]);
+                    sound.soundSocial.reportsCount = parseInt(repostsCount.reposted);
                 });
             }
             return false;
@@ -175,7 +198,7 @@ angular.module('wooice.controllers', []).
         $scope.$on('$viewContentLoaded', function(){
                 var sound = Sound.load({userAlias:'robot', sound:$routeParams.soundId}, function(){
                     $scope.sound = {
-                        id: 1,
+                        id: sound.profile.name,
                         waveData: sound.soundData.wave[0],
                         url: sound.soundData.url,
                         poster: sound.profile.poster.url,
@@ -227,13 +250,40 @@ angular.module('wooice.controllers', []).
         });
 	}])
 
-	.controller('userBasicController', ['$scope', '$routeParams','User', function($scope, $routeParams, User) {
+	.controller('userBasicController', ['$scope', '$routeParams','User','UserSocial', function($scope, $routeParams, User, UserSocial) {
                var user = User.get({userAlias:'robot'}, function(){
                    $scope.user = user;
 
                    if(!$scope.user.profile.avatorUrl)
                    {
                        $scope.user.profile.avatorUrl = 'img/default_avatar_large.png';
+                   }
+                   if ($scope.user.userPrefer.following)
+                   {
+                       $scope.user.userPrefer.followingString = "Following";
+                   }
+                   else
+                   {
+                       $scope.user.userPrefer.followingString = "Follow";
+                   }
+
+                   $scope.follow = function(userAlias){
+                       if ($scope.user.userPrefer.following)
+                       {
+                           var result = UserSocial.unfollow({fromUserAlias:'robot', toUserAlias:'robot'}, null,function(count){
+                                    $scope.user.userPrefer.following = false;
+                                    $scope.user.social.followed = result.followed;
+                                    $scope.user.userPrefer.followingString = "Follow";
+                           });
+                       }
+                       else
+                       {
+                           var result = UserSocial.follow({fromUserAlias:'robot', toUserAlias:'robot'}, null,function(count){
+                                   $scope.user.userPrefer.following = true;
+                                   $scope.user.social.followed = result.followed;
+                                   $scope.user.userPrefer.followingString = "Following";
+                           });
+                       }
                    }
                });
 	}])

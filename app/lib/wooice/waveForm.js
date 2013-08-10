@@ -187,7 +187,7 @@
         {
             if (playStatus == 0)
             {
-                $('body').trigger('onToggle', {
+                $(window).trigger('onToggle', {
                     id: soundId
                 });
             }
@@ -200,7 +200,7 @@
                if(layerY > waveHeight*mainLinePerctg*(1-waveData[index]) && layerY <= waveHeight*mainLinePerctg)
                {
                 var from = soundDuration * (evt.layerX/waveWidth);
-                $('body').trigger('onJump', {
+                   $(window).trigger('onJump', {
                     id: soundId,
                     from: from
                 });

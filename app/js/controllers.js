@@ -4,12 +4,7 @@
 
 angular.module('wooice.controllers', []).
   controller('streamCtrl', ['$scope','Stream', 'SoundSocial', function($scope, Stream, SoundSocial) {
-
         $scope.togglePause = function(id){
-            $('body').soundPlayer().toggle({
-                id: id
-            });
-
             var sound = null;
             $.each($scope.sounds, function(index, oneSound){
                    if (oneSound.id == id)
@@ -19,13 +14,9 @@ angular.module('wooice.controllers', []).
                    }
             });
 
-            if (sound && !sound.played)
-            {
-               var playsCount = SoundSocial.play({user:'robot', sound:sound.title.alias}, null,function(count){
-                    sound.played = true;
-                    sound.soundSocial.playedCount = parseInt(playsCount.played);
-                });
-            }
+           $(window).trigger('onToggle', {
+               id: sound.id
+           });
         };
 
         $scope.toggleLike = function(id){
@@ -88,6 +79,7 @@ angular.module('wooice.controllers', []).
 
 		$scope.$on('$viewContentLoaded', function(){
             $scope.pageNum = 1;
+            $(window).soundPlayer().setSocialClient(SoundSocial);
             var soundsData = Stream.stream({user:'',userAlias:'robot', pageNum:$scope.pageNum},function()
             {
                 $scope.sounds = [];
@@ -113,9 +105,17 @@ angular.module('wooice.controllers', []).
                 $scope.$apply();
 
                 $.each($scope.sounds, function(index, sound) {
+                    //render wave
                     var player = new $.player(sound);
                     player.renderSound();
                     sound.waveData = null;
+
+                    //record sound info
+                    $(window).soundPlayer().addSound({
+                        id: sound.id,
+                        duration: sound.duration
+                    });
+
 
                     $('#sound_commentbox_input_' + sound.id).bind('keyup',function(event) {
                         if (event.keyCode==13)
@@ -139,18 +139,11 @@ angular.module('wooice.controllers', []).
 
   .controller('soundDetailCtrl', ['$scope', '$routeParams', 'Sound', 'SoundSocial',  'SoundSocialList',function($scope, $routeParams, Sound, SoundSocial, SoundSocialList) {
         $scope.togglePause = function(id){
-            $('body').soundPlayer().toggle({
-                id: id
-            });
-
             var sound = $scope.sound;
-            if (!sound.played)
-            {
-                var playsCount =  SoundSocial.play({user:'robot', sound:sound.title.alias}, null,function(count){
-                    sound.played = true;
-                    sound.soundSocial.playedCount = parseInt(playsCount.played);
-                });
-            }
+
+            $(window).trigger('onToggle', {
+                id: sound.id
+            });
         };
 
         $scope.toggleLike = function(id){
@@ -169,6 +162,10 @@ angular.module('wooice.controllers', []).
                     sound.soundUserPrefer.like = 1;
                     sound.soundUserPrefer.likeWording = "";
                     sound.soundSocial.likesCount = parseInt(likesCount.liked);
+
+                    $(window).soundPlayer().toggle({
+                        id: id
+                    });
                 });
             }
             return false;
@@ -196,6 +193,7 @@ angular.module('wooice.controllers', []).
         }
 
         $scope.$on('$viewContentLoaded', function(){
+                $(window).soundPlayer().setSocialClient(SoundSocial);
                 var sound = Sound.load({userAlias:'robot', sound:$routeParams.soundId}, function(){
                     $scope.sound = {
                         id: sound.profile.name,
@@ -218,8 +216,13 @@ angular.module('wooice.controllers', []).
 
                     var player = new $.player($scope.sound);
                     player.renderSound();
-
                     $scope.sound.waveData = null;
+
+                    //record sound info
+                    $(window).soundPlayer().addSound({
+                        id: sound.id,
+                        duration: sound.duration
+                    });
 
                     $('#sound_commentbox_input_' + $scope.sound.id).bind('keyup',function(event) {
                         if (event.keyCode==13)

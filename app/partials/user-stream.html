@@ -21,8 +21,8 @@
 
                 <!-- social action-->
                 <div>
-                    <a href="#" class="button button-rounded button-flat-primary button-small">Follow</a>
-                    <a href="#" class="button button-rounded button-flat-highlight button-small">Share</a>
+                    <a href="#" class="button button-rounded button-flat-primary button-small" onclick="return false;" ng-click="follow(user.profile.alias)">{{user.userPrefer.followingString}}</a>
+                    <a href="#" class="button button-rounded button-flat-highlight button-small" onclick="return false;">Share</a>
                 </div>
             </div>
         </div>

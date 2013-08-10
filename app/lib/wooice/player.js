@@ -1,8 +1,8 @@
 (function ($) {
     $.fn.soundPlayer = function(options)
     {
-        if ($('body').data('soundPlayer')) {
-            return $('body').data('soundPlayer');
+        if (window.soundPlayer) {
+            return window.soundPlayer;
         }
 
         function init()
@@ -65,15 +65,16 @@
                         onplay: function() {
                             if (soundData.currentSound != this.id)
                             {
-                                soundManager.pause(soundData.currentSound);
+                                var pre =  soundData.currentSound;
+                                soundData.currentSound = this.id;
+                                soundManager.pause(pre);
                                 $('#sound_player_button_' + soundData.currentSound).removeClass('icon-pause');
                                 $('#sound_player_button_' + soundData.currentSound).addClass('icon-play');
                             }
 
-                            soundData.currentSound = this.id;
                             soundManager._writeDebug('Starting sound: '+this.id);
 
-                            $('body').trigger('onPlay', {
+                            $(window).trigger('onPlay', {
                                 id: this.id
                             });
                             $('#sound_player_button_' + this.id).removeClass('icon-play');
@@ -81,21 +82,21 @@
                         },
                         whileloading: function() {
                             soundManager._writeDebug(this.id + ': loading ' + this.bytesLoaded + ' / ' + this.bytesTotal);
-                            $('body').trigger('onLoading', {
+                            $(window).trigger('onLoading', {
                                 id: this.id,
                                 soundBytesloaded: this.bytesLoaded,
                                 soundBytesTotal: this.bytesTotal
                             });
                         },
                         whileplaying: function() {
-                            $('body').trigger('onPlaying', {
+                            $(window).trigger('onPlaying', {
                                 id: this.id,
                                 soundPosition: this.position
                             });
                         },
                         onpause: function() {
                             soundManager._writeDebug('Sound paused: '+ this.id);
-                            $('body').trigger('onPause', {
+                            $(window).trigger('onPause', {
                                 id: this.id
                             });
                             $('#sound_player_button_' + this.id).removeClass('icon-pause');
@@ -104,14 +105,15 @@
                         onresume: function() {
                             if (soundData.currentSound != this.id)
                             {
-                                soundManager.pause(soundData.currentSound);
+                                var pre =  soundData.currentSound;
+                                soundData.currentSound = this.id;
+                                soundManager.pause(pre);
                                 $('#sound_player_button_' + soundData.currentSound).removeClass('icon-pause');
                                 $('#sound_player_button_' + soundData.currentSound).addClass('icon-play');
                             }
 
-                            soundData.currentSound = this.id;
                             soundManager._writeDebug('Resuming sound: '+this.id);
-                            $('body').trigger('onResume', {
+                            $(window).trigger('onResume', {
                                 id: this.id
                             });
 
@@ -119,14 +121,13 @@
                             $('#sound_player_button_' + this.id).addClass('icon-pause');
                         },
                         onfinish: function() {
-                            $('body').trigger('onFinish', {
+                            $(window).trigger('onFinish', {
                                 id: this.id
                             });
                         }
                     });
 
                     soundData.soundList.push(playOption.id);
-                    soundData.currentSound = playOption.id;
 
                     if (playOption.autoPlay)
                     {
@@ -202,18 +203,19 @@
 
         function setupListeners()
         {
-            $('body').bind('onJump', $.proxy(function(event, sound)
+            $(window).bind('onJump', $.proxy(function(event, sound)
             {
                 this.jump(sound);
             }, this));
-            $('body').bind('onToggle', $.proxy(function(event, sound)
+            $(window).bind('onToggle', $.proxy(function(event, sound)
             {
                 this.toggle(sound);
             }, this));
         }
         var soundData = init();
         $.proxy(setupListeners,this)();
-        $('body').data('soundPlayer', this);
+
+        window.soundPlayer = this;
         return this;
     }
 })(jQuery);

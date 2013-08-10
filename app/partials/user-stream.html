@@ -3,8 +3,27 @@
     <div class="row-fluid">
         <div class="span2" ng-controller="userBasicController">
             <div style="padding-top: 20px;padding-left: 25px">
-            <img src="{{user.profile.avatorUrl}}" width="200px" height="200px">
-            <div class="userInfo__title">{{user.profile.alias}}</div>
+                <img src="{{user.profile.avatorUrl}}" width="200px" height="200px">
+                <div style="padding-top: 10px;"><span class="userInfo__title">{{user.profile.alias}}</span>  <span style="color:#999;">@{{user.profile.location}}</span></div>
+                <div style="color:#999;margin-bottom:20px;margin-top:20px;font-size:16px;">{{user.profile.description}}</div>
+
+                <!-- basic social info-->
+                <div style="padding-bottom: 25px">
+                    <div style="padding-bottom: 10px">
+                        <i class="icon-music icon-large" title="{{user.social.sounds}} sounds" style="font-size: 18px"><span style="padding-left:10px; padding-right: 10px" title="{{user.social.sounds}} sounds" >{{user.social.sounds}}</span></i>|
+                        <i class="icon-retweet icon-large" title="{{user.social.reposts}} reposts" style="padding-left:10px;font-size: 18px;"><span style="padding-left:10px; padding-right: 10px" title="{{user.social.reposts}} reposts" >{{user.social.reposts}}</span></i>
+                    </div>
+                    <div>
+                        <i class="icon-user icon-large" title="following {{user.social.followed}}" style="font-size: 18px"><span style="padding-left:10px; padding-right: 10px" title="following {{user.social.followed}}">{{user.social.following}}</span></i>|
+                        <i class="icon-group icon-large" title="{{user.social.followed}} followers" style="padding-left:10px;font-size: 18px;"><span style="padding-left:10px; padding-right: 10px" title="{{user.social.followed}} followers">{{user.social.followed}}</span></i>
+                    </div>
+                </div>
+
+                <!-- social action-->
+                <div>
+                    <a href="#" class="button button-rounded button-flat-primary button-small">Follow</a>
+                    <a href="#" class="button button-rounded button-flat-highlight button-small">Share</a>
+                </div>
             </div>
         </div>
 

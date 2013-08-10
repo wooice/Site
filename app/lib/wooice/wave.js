@@ -1,8 +1,8 @@
 (function ($) {
     $.fn.soundWave = function(options)
     {
-        if ($('body').data('soundWave')) {
-            return $('body').data('soundWave');
+        if ($(window).data('soundWave')) {
+            return $(window).data('soundWave');
         }
 
         function init()
@@ -97,7 +97,7 @@
                 waveForm.setSoundPosition(sound.soundPosition);
                 waveForm.redraw();
 
-                $('body').trigger('onJump',
+                $(window).trigger('onJump',
                     {
                         id : sound.id,
                         from : 1000 * (soundToJump*soundToJump.duration/soundToJump.waveData.length)
@@ -108,32 +108,32 @@
 
         function setupListeners()
         {
-            $('body').bind('onPlaying', $.proxy(function(event, sound)
+            $(window).bind('onPlaying', $.proxy(function(event, sound)
             {
                 this.move(sound);
             },this));
 
-            $('body').bind('onLoading', $.proxy(function(event, sound)
+            $(window).bind('onLoading', $.proxy(function(event, sound)
             {
                 this.load(sound);
             },this));
 
-            $('body').bind('onPlay', $.proxy(function(event, sound)
+            $(window).bind('onPlay', $.proxy(function(event, sound)
             {
                 this.play(sound);
             },this));
 
-            $('body').bind('onPause', $.proxy(function(event, sound)
+            $(window).bind('onPause', $.proxy(function(event, sound)
             {
                 this.stop(sound);
             },this));
 
-            $('body').bind('onResume', $.proxy(function(event, sound)
+            $(window).bind('onResume', $.proxy(function(event, sound)
             {
                 this.play(sound);
             },this));
 
-            $('body').bind('onFinish', $.proxy(function(event, sound)
+            $(window).bind('onFinish', $.proxy(function(event, sound)
             {
                 this.stop(sound);
             },this));
@@ -141,7 +141,7 @@
 
         $.proxy(setupListeners,this)();
         var soundData = init();
-        $('body').data('soundWave', this);
+        window.soundWave = this;
         return this;
     }
 })(jQuery);

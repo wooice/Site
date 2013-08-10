@@ -40,4 +40,10 @@ factory('User', ['$resource',  'config', function($resource, config){
 return $resource(config.service.url + '/user/:userAlias', {}, {
         get: {method:'GET', params:{userAlias:'current'}, isArray:false}
 });
+}]).
+factory('UserSocial', ['$resource',  'config', function($resource, config){
+    return $resource(config.service.url + '/userActivity/:fromUserAlias/:action/:toUserAlias', {}, {
+        follow: {method:'PUT', params:{fromUserAlias:'current',action: 'follow', toUserAlias:'current'}, isArray:false},
+        unfollow: {method:'DELETE', params:{fromUserAlias:'current',action: 'follow', toUserAlias:'current'}, isArray:false}
+    });
 }]);

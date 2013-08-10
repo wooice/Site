@@ -5,6 +5,8 @@
             return window.soundPlayer;
         }
 
+        var socialClient = null;
+
         function init()
         {
             var settings;
@@ -26,6 +28,26 @@
 
             return soundData;
         }
+
+        $.extend(this, {
+            addSound : function(sound)
+            {
+                if (soundData.soundList[sound.id])
+                {
+                    return;
+                }
+
+                sound.inited = false;
+                soundData.soundList[sound.id] = sound;
+            }
+        });
+
+        $.extend(this, {
+            setSocialClient : function(client)
+            {
+                socialClient = client;
+            }
+        });
 
         $.extend(this, {
         setup : function(sound)
@@ -127,11 +149,9 @@
                         }
                     });
 
-                    soundData.soundList.push(playOption.id);
-
                     if (playOption.autoPlay)
                     {
-                        this.play(playOption);
+                        soundStream.play(playOption);
                     }
                 },
 
@@ -181,9 +201,24 @@
         });
 
         $.extend(this, {
-         toggle : function(sound)
+         toggle : function(input)
         {
-            soundManager.togglePause(sound.id);
+            var sound = soundData.soundList[input.id];
+            if (sound && !sound.inited)
+            {
+                var playsCount = socialClient.play({user:'robot', sound:sound.id}, null,function(count){
+                    sound.url = playsCount.url;
+                    sound.autoPlay = true;
+                    $(window).soundPlayer().setup(sound);
+
+                    sound.inited = true;
+                    $('#play_count_'+sound.id).text(playsCount.played);
+                });
+            }
+            else
+            {
+                soundManager.togglePause(sound.id);
+            }
         }
         });
 
@@ -209,8 +244,9 @@
             }, this));
             $(window).bind('onToggle', $.proxy(function(event, sound)
             {
-                this.toggle(sound);
+               this.toggle(sound);
             }, this));
+
         }
         var soundData = init();
         $.proxy(setupListeners,this)();

@@ -49,11 +49,6 @@
 
         function renderPlayer()
         {
-            $('#sound_player_button_' + id).soundPlayer().setup({
-               id: id,
-               url: url,
-               duration: duration
-            });
         }
 
         function renderSoundSummary()
@@ -72,7 +67,7 @@
 
         function renderWave()
         {
-            var wave = $('#sound_wave_' + sound.id).soundWave({});
+            var wave = $(window).soundWave({});
              wave.render(
                 {
                     id: id,
@@ -80,6 +75,8 @@
                     duration: duration
                 }
             );
+            waveData = null;
+            sound = null;
         }
 
         function renderCommentBox()

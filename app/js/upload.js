@@ -15,63 +15,52 @@
 (function () {
     'use strict';
 
-
-
     angular.module('wooice.module.upload', [
-        'blueimp.fileupload', 'wooice.config'
+        'wooice.config'
     ])
-
-        .controller('FileUploadController', [
+        .controller('soundUploadCtrl', [
             '$scope', '$http', 'config',
             function ($scope, $http, config) {
-	            var url = config.service.url + '/upload';
-                $scope.loadingFiles = true;
-                $scope.options = {
-                    url: url
-                };
-                $http.get(url)
-                    .then(
-                        function (response) {
-                            $scope.loadingFiles = false;
-                            $scope.queue = response.data.files || [];
+                $scope.updateUrl = config.service.url_noescp + '/storage/upload';
+
+                    $('#fileupload').fileupload({
+                        url:  $scope.updateUrl,
+                        dataType: 'json',
+
+                        add: function(e, data) {
+                            console.log('add');
+                            $('#uploadpart').hide();
+                            $('#progress').show();
+                            data.submit();
                         },
-                        function () {
-                            $scope.loadingFiles = false;
+                        progress: function (e, data) {
+                            var progress = parseInt(data.loaded / data.total * 100, 10);
+                            $('#progress .bar').css(
+                                'width',
+                                progress + '%'
+                            );
+                            $scope.$apply(function () {
+                                $scope.percentage = '已上传' + progress + '%';
+                            });
+                        },
+                        send: function(e, data){
+                            console.log('send');
+                            $scope.$apply(function () {
+                                $scope.percentage = '已上传0%';
+                            });
+                        },
+                        done: function (e, data) {
+                            console.log('done');
+                            $scope.$apply(function () {
+                                $scope.percentage = '上传完成';
+                            });
+                        },
+                        fail: function (e, data){
+                            console.log('fail');
                         }
-                    );
+                    }).prop('disabled', !$.support.fileInput)
+                        .parent().addClass($.support.fileInput ? undefined : 'disabled');
             }
         ])
-
-        .controller('FileDestroyController', [
-            '$scope', '$http',
-            function ($scope, $http) {
-                var file = $scope.file,
-                    state;
-                if (file.url) {
-                    file.$state = function () {
-                        return state;
-                    };
-                    file.$destroy = function () {
-                        state = 'pending';
-                        return $http({
-                            url: file.deleteUrl,
-                            method: file.deleteType
-                        }).then(
-                            function () {
-                                state = 'resolved';
-                                $scope.clear(file);
-                            },
-                            function () {
-                                state = 'rejected';
-                            }
-                        );
-                    };
-                } else if (!file.$cancel && !file._index) {
-                    file.$cancel = function () {
-                        $scope.clear(file);
-                    };
-                }
-            }
-        ]);
 
 }());

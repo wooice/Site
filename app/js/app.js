@@ -8,7 +8,7 @@ angular.module('wooice', ['wooice.filters', 'wooice.controllers', 'wooice.config
       when('/stream/:userId', {templateUrl: 'partials/user-stream.html', controller: 'streamCtrl'}).
       when('/sound/:soundId', {templateUrl: 'partials/sound-detail.html', controller: 'soundDetailCtrl'}).
       when('/profile', {templateUrl: 'partials/user-profile.html', controller: 'UserCtrl'}).
-      when('/upload', {templateUrl: 'partials/upload.html'}).
+      when('/upload', {templateUrl: 'partials/upload.html', controller: 'soundUploadCtrl'}).
       otherwise({redirectTo: '/stream'});
 }])
 	.run(function($rootScope, config){

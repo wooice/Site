@@ -98,13 +98,12 @@ angular.module('wooice.controllers', []).
                     };
                     sound.soundUserPrefer.likeWording = (sound.soundUserPrefer.like)? "": "Like";
                     sound.soundUserPrefer.repostWording = (sound.soundUserPrefer.repost)? "": "Repost";
+
                     $scope.sounds.push(sound);
-                });
 
-                //TODO
-                $scope.$apply();
+                    //TODO
+                    $scope.$apply();
 
-                $.each($scope.sounds, function(index, sound) {
                     //render wave
                     var player = new $.player(sound);
                     player.renderSound();

@@ -1,16 +1,108 @@
 <div class="row-fluid">
     <div class="span3">
     </div>
-    <div class="span6">
-        <span id="uploadpart" class="btn btn-success fileinput-button">
+    <div class="span6" style="padding-top: 40px">
+        <div id="upload_error" class="{{defaultSound.uploadMsgClass}}">
+            {{ defaultSound.uploadMsg}}
+        </div>
+
+        <div id="uploadpart" class="upload_container">
+            <div class="upload_div">
+                <div style="padding-bottom: 10px">
+                <h2>分享声音，从这里开始</h2>
+               </div>
+               <h4> 您可以点击
+        <span href="#" class="button button button-rounded button-flat-primary action-button fileinput-button">
                 <i class="icon-plus icon-white"></i>
                 <span>上传声音</span>
-                <input id="fileupload" type="file" name="file">
-        </span>
+                <input id="sound_upload" type="file" name="file" class="upload_button">
+        </span> 或将音频文件拖放到此页面 </h4>
+           </div>
+        </div>
 
-        {{percentage}}
-        <div id="progress" class="progress hide">
-            <div class="bar bar-success"></div>
+        <div id="progresspart" class="hide">
+
+            <div id="progress" class="progress {{defaultSound.uploadStatus}}">
+                <div class="bar"></div>
+            </div>
+
+         <div class=" pull-right">
+          <span href="#" class="button button-small button-rounded button-flat-primary action-button fileinput-button">
+                <i class="icon-plus icon-white"></i>
+                <span>上传声音</span>
+                <input id="sound_change_upload" type="file" name="file" class="upload_button">
+         </span>
+          <span id="cancel_button" class="button button-small button-rounded button-flat-highlight disabled"
+                ng-click="cancelUpload()">
+                <i class="icon-ban-circle icon-white"></i>
+                <span>取消上传</span>
+        </span>
+             </div>
+        </div>
+        <br><br>
+
+        <div id="sound_info" class="row-fluid hide">
+            <div class="span4">
+                <img src="img/default_avatar_large.png">
+                  <span style="margin-top: -60px;margin-left: 50px"
+                        class="button button-small button-rounded button-flat action-button fileinput-button">
+                    <span>上传封面</span>
+                    <input id="poster_upload" type="file" name="file">
+                  </span>
+            </div>
+
+            <div class="span5">
+                <div style="padding-left: 10px">
+                    <div id="profile_info" class="{{defaultSound.profileMsgClass}}">
+                        {{ defaultSound.profileMsg}}
+                    </div>
+
+                    <div style="width: 100%;padding: 5px">
+                        <label style="color:rgb(51, 51, 51)">声音名称</label>
+                        <input type="text" id="name" name="name" placeholder="请输入这段声音的名称" ng-model="defaultSound.name"
+                               class="input-xlarge">
+                    </div>
+
+                    <div style="width: 100%;padding: 5px" class="container">
+                        <label style="color:rgb(51, 51, 51)">声音标签</label>
+
+                        <div style="width: 120%" class="container">
+                            <div id="tags_div" ng-repeat="tag in defaultSound.tags" style="float: left">
+                                <div class="btn-group" style="padding: 5px" id="tag_{{tag}">
+                                    <button class="btn btn-inverse"><i class="icon-tag"></i> {{tag}}</button>
+                                    <button class="btn btn-inverse" ng-click="removeTag(tag)"><i
+                                            class="icon-remove"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <input type="text" id="tags" name="tags" class="input-small" placeholder="请打一个标签">
+                    </div>
+
+                    <div style="width: 100%;padding: 5px">
+                        <label style="color:rgb(51, 51, 51)">声音描述</label>
+                        <textarea id="description" name="description" placeholder="请介绍这段声音"
+                                  ng-model="defaultSound.description" class="input-xlarge"></textarea>
+
+                        <label class="radio inline">
+                            <input type="radio" name="status" value="private" ng-model="defaultSound.status" checked>私有
+                        </label>
+                        <label class="radio inline">
+                            <input type="radio" name="status" value="public" ng-model="defaultSound.status">公开
+                        </label>
+                    </div>
+
+                    <div class="pull-right">
+                        <a id="save_button" href="#"
+                           class="button button-small button-rounded button-flat-action action-button disabled"
+                           onclick="return false;" ng-click="save()">保存</a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="span3">
+            </div>
         </div>
 
     </div>

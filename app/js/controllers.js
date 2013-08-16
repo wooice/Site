@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('wooice.controllers', []).
-  controller('streamCtrl', ['$scope','Stream', 'SoundSocial', function($scope, Stream, SoundSocial) {
+  controller('streamCtrl', ['$scope','Stream', 'SoundSocial', '$routeParams', function($scope, Stream, SoundSocial, $routeParams) {
         $scope.togglePause = function(id){
             var sound = null;
             $.each($scope.sounds, function(index, oneSound){
@@ -31,7 +31,7 @@ angular.module('wooice.controllers', []).
 
              if (sound && sound.soundUserPrefer.like)
              {
-                 var likesCount = SoundSocial.unlike({user:'robot', sound:sound.title.alias}, null,function(count){
+                 var likesCount = SoundSocial.unlike({user:'robot', sound:sound.id}, null,function(count){
                      sound.soundUserPrefer.like = 0;
                      sound.soundUserPrefer.likeWording = "Like";
                      sound.soundSocial.likesCount = parseInt(likesCount.liked);
@@ -39,7 +39,7 @@ angular.module('wooice.controllers', []).
              }
              else
              {
-                 var likesCount = SoundSocial.like({user:'robot', sound:sound.title.alias}, null,function(count){
+                 var likesCount = SoundSocial.like({user:'robot', sound:sound.id}, null,function(count){
                      sound.soundUserPrefer.like = 1;
                      sound.soundUserPrefer.likeWording = "";
                      sound.soundSocial.likesCount = parseInt(likesCount.liked);
@@ -60,7 +60,7 @@ angular.module('wooice.controllers', []).
 
             if (sound && sound.soundUserPrefer.repost)
             {
-               var repostsCount = SoundSocial.unrepost({user:'robot', sound:sound.title.alias}, null, function(count){
+               var repostsCount = SoundSocial.unrepost({user:'robot', sound:sound.id}, null, function(count){
                     sound.soundUserPrefer.repost = 0;
                     sound.soundUserPrefer.repostWording = "Repost";
                     sound.soundSocial.reportsCount = parseInt(repostsCount.reposted);
@@ -68,7 +68,7 @@ angular.module('wooice.controllers', []).
             }
             else
             {
-                var repostsCount =  SoundSocial.repost({user:'robot', sound:sound.title.alias}, null, function(count){
+                var repostsCount =  SoundSocial.repost({user:'robot', sound:sound.id}, null, function(count){
                     sound.soundUserPrefer.repost = 1;
                     sound.soundUserPrefer.repostWording = "";
                     sound.soundSocial.reportsCount = parseInt(repostsCount.reposted);
@@ -80,16 +80,25 @@ angular.module('wooice.controllers', []).
 		$scope.$on('$viewContentLoaded', function(){
             $scope.pageNum = 1;
             $(window).soundPlayer().setSocialClient(SoundSocial);
-            var soundsData = Stream.stream({user:'',userAlias:'robot', pageNum:$scope.pageNum},function()
+            var soundsData = Stream.stream({user:$routeParams.userId,userAlias:'robot', pageNum:$scope.pageNum},function()
             {
                 $scope.sounds = [];
                 $.each(soundsData, function(index, soundRecord) {
+                    var posterUrl = '';
+                    if (soundRecord.sound.profile.poster && soundRecord.sound.profile.poster.url)
+                    {
+                        posterUrl = soundRecord.sound.profile.poster.url;
+                    }
+                    else
+                    {
+                        posterUrl = "img/default_avatar.png";
+                    }
                     var sound = {
-                        id: soundRecord.sound.profile.name,
+                        id: soundRecord.sound.profile.alias,
                         waveData: soundRecord.sound.soundData.wave[0],
                         url: soundRecord.sound.soundData.url,
-                        poster: soundRecord.sound.profile.poster.url,
-                        title: {alias: soundRecord.sound.profile.name, route:'index.html#/sound/' + soundRecord.sound.profile.name},
+                        poster: posterUrl,
+                        title: {alias: soundRecord.sound.profile.name, route:'index.html#/sound/' + soundRecord.sound.profile.alias},
                         owner: {alias: soundRecord.owner.profile.alias, route: 'index.html#/stream/' + soundRecord.owner.profile.alias},
                         duration: soundRecord.sound.soundData.duration*1000,
                         soundSocial: soundRecord.sound.soundSocial,
@@ -119,10 +128,10 @@ angular.module('wooice.controllers', []).
                     $('#sound_commentbox_input_' + sound.id).bind('keyup',function(event) {
                         if (event.keyCode==13)
                         {
-                            var comment = $('#sound_commentbox_input_' +  + sound.id).val();
+                            var comment = $(this).val();
                             var sec = $("#sound_comment_point_" + sound.id).val();
-                            SoundSocial.comment({user:'robot', sound:sound.title.alias, comment:comment, pointAt:sec}, null, function(count){
-                                sound.soundSocial.commentsCount = parseInt(count[0]);
+                            var commentResult = SoundSocial.comment({user:'robot', sound:sound.id, comment:comment, pointAt:sec}, null, function(count){
+                                sound.soundSocial.commentsCount = commentResult.commentsCount;
                                 $('#sound_commentbox_input_' + sound.id).val('');
                                 $('#sound_commentbox_input_' + sound.id).attr("placeholder", "Thank you for your comment!");
                             });
@@ -149,7 +158,7 @@ angular.module('wooice.controllers', []).
             var sound = $scope.sound;
             if (sound.soundUserPrefer.like)
             {
-                var likesCount =  SoundSocial.unlike({user:'robot', sound:sound.title.alias}, null,function(count){
+                var likesCount =  SoundSocial.unlike({user:'robot', sound:sound.id}, null,function(count){
                     sound.soundUserPrefer.like = 0;
                     sound.soundUserPrefer.likeWording = "Like";
                     sound.soundSocial.likesCount = parseInt(likesCount.liked);
@@ -157,7 +166,7 @@ angular.module('wooice.controllers', []).
             }
             else
             {
-                var likesCount = SoundSocial.like({user:'robot', sound:sound.title.alias}, null,function(count){
+                var likesCount = SoundSocial.like({user:'robot', sound:sound.id}, null,function(count){
                     sound.soundUserPrefer.like = 1;
                     sound.soundUserPrefer.likeWording = "";
                     sound.soundSocial.likesCount = parseInt(likesCount.liked);
@@ -174,7 +183,7 @@ angular.module('wooice.controllers', []).
             var sound = $scope.sound;
             if (sound.soundUserPrefer.repost)
             {
-                var repostsCount = SoundSocial.unrepost({user:'robot', sound:sound.title.alias}, null, function(count){
+                var repostsCount = SoundSocial.unrepost({user:'robot', sound:sound.id}, null, function(count){
                     sound.soundUserPrefer.repost = 0;
                     sound.soundUserPrefer.repostWording = "Repost";
                     sound.soundSocial.reportsCount = parseInt(repostsCount.reposted);
@@ -182,7 +191,7 @@ angular.module('wooice.controllers', []).
             }
             else
             {
-                var repostsCount =  SoundSocial.repost({user:'robot', sound:sound.title.alias}, null, function(count){
+                var repostsCount =  SoundSocial.repost({user:'robot', sound:sound.id}, null, function(count){
                     sound.soundUserPrefer.repost = 1;
                     sound.soundUserPrefer.repostWording = "";
                     sound.soundSocial.reportsCount = parseInt(repostsCount.reposted);
@@ -194,12 +203,21 @@ angular.module('wooice.controllers', []).
         $scope.$on('$viewContentLoaded', function(){
                 $(window).soundPlayer().setSocialClient(SoundSocial);
                 var sound = Sound.load({userAlias:'robot', sound:$routeParams.soundId}, function(){
+                    var posterUrl = '';
+                    if (sound.profile.poster && sound.profile.poster.url)
+                    {
+                        posterUrl = sound.profile.poster.url;
+                    }
+                    else
+                    {
+                        posterUrl = "img/default_avatar.png";
+                    }
                     $scope.sound = {
-                        id: sound.profile.name,
+                        id: sound.profile.alias,
                         waveData: sound.soundData.wave[0],
                         url: sound.soundData.url,
-                        poster: sound.profile.poster.url,
-                        title: {alias: sound.profile.name, route: 'index.html#/sound/' + sound.profile.name},
+                        poster: posterUrl,
+                        title: {alias: sound.profile.name, route: 'index.html#/sound/' + sound.profile.alias},
                         owner: {alias: sound.profile.owner.profile.alias, route: 'index.html#/stream/' + sound.profile.owner.profile.alias},
                         duration: sound.soundData.duration*1000,
                         soundSocial: sound.soundSocial,
@@ -226,10 +244,10 @@ angular.module('wooice.controllers', []).
                     $('#sound_commentbox_input_' + $scope.sound.id).bind('keyup',function(event) {
                         if (event.keyCode==13)
                         {
-                            var comment = $('#sound_commentbox_input_' +  + $scope.sound.id).val();
+                            var comment = $(this).val();
                             var sec = $("#sound_comment_point_" + $scope.sound.id).val();
-                            SoundSocial.comment({user:'robot', sound:$scope.sound.title.alias, comment:comment, pointAt:sec}, null, function(count){
-                                $scope.sound.soundSocial.commentsCount = parseInt(count[0]);
+                           var result= SoundSocial.comment({user:'robot', sound:$scope.sound.id, comment:comment, pointAt:sec}, null, function(count){
+                                $scope.sound.soundSocial.commentsCount =  result.commentsCount;
                                 $('#sound_commentbox_input_' + sound.id).val('');
                                 $('#sound_commentbox_input_' + sound.id).attr("placeholder", "Thank you for your comment!");
                             });
@@ -237,7 +255,7 @@ angular.module('wooice.controllers', []).
                     });
 
                     $scope.commentPageNum = 1;
-                    var comments = SoundSocialList.comment({sound:$scope.sound.title.alias, pageNum: $scope.commentPageNum}, function(){
+                    var comments = SoundSocialList.comment({sound:$scope.sound.id, pageNum: $scope.commentPageNum}, function(){
                         $scope.comments = comments;
 
                         $.each($scope.comments, function(index, comment){

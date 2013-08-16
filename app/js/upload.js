@@ -12,6 +12,7 @@
 /*jslint nomen: true, regexp: true */
 /*global window, angular */
 
+
 (function () {
     'use strict';
 

@@ -181,3 +181,22 @@
     text-overflow: ellipsis;
     overflow: hidden;
 }
+
+.upload_container{
+    border-radius: 5px;
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 2px 12px -5px rgba(0,0,0,.1);
+    text-align: center;
+    margin: 20px 0;
+    position: relative;
+}
+
+.upload_div{
+    margin: 70px 0 70px;
+    -webkit-transition: margin .3s cubic-bezier(.175,.885,.32,1.275);
+    -moz-transition: margin .3s cubic-bezier(.175,.885,.32,1.275);
+    -o-transition: margin .3s cubic-bezier(.175,.885,.32,1.275);
+    transition: margin .3s cubic-bezier(.175,.885,.32,1.275);
+}

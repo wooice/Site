@@ -20,15 +20,15 @@
             'wooice.config'
         ])
         .controller('soundUploadCtrl', [
-            '$scope', 'Sound', 'Tag', 'config',
-            function ($scope, Sound, Tag, config) {
-                $scope.updateUrl = config.service.url_noescp + '/storage/upload';
-                $scope.saveProfile = config.service.url_noescp + '/storage/upload';
+            '$scope', 'Sound', 'Tag','User', 'config',
+            function ($scope, Sound, Tag,User, config) {
+                $scope.uploadUrl = config.service.url_noescp + '/storage/upload';
+                $scope.uploadPosterUrl = config.service.url_noescp + '/storage/upload/poster';
                 $scope.defaultSound = {};
                 reset();
 
                 $scope.jqXHR = $('.upload_button').fileupload({
-                    url: $scope.updateUrl,
+                    url: $scope.uploadUrl,
                     dataType: 'json',
                     acceptFileTypes: /(\.|\/)(mp3|wav)$/i,
 
@@ -37,15 +37,15 @@
 
                         if (!(/\.(mp3|wav|flac|ogg)$/i).test(data.files[0].name)) {
                             $scope.$apply(function () {
-                            $scope.defaultSound.uploadMsgClass = "alert alert-error";
-                            $scope.defaultSound.uploadMsg ='对不起,您上传的文件格式不被本站接受，请上传以下音频文件中的一种：mp3,wav,flac,ogg';
+                                $scope.defaultSound.uploadMsgClass = "alert alert-error";
+                                $scope.defaultSound.uploadMsg = '对不起,您上传的文件格式不被本站接受，请上传以下音频文件中的一种：mp3,wav,flac,ogg';
                             });
                             return;
                         }
                         if (data.files[0].size > 20000000) {
                             $scope.$apply(function () {
-                            $scope.defaultSound.uploadMsgClass = "alert alert-error";
-                            $scope.defaultSound.uploadMsg = '对不起,您上传的文件过大，请上传小于20MB的音频文件';
+                                $scope.defaultSound.uploadMsgClass = "alert alert-error";
+                                $scope.defaultSound.uploadMsg = '对不起,您上传的文件过大，请上传小于20MB的音频文件';
                             });
                             return;
                         }
@@ -58,18 +58,15 @@
                     submit: function (e, data) {
                         var soundName = data.files[0].name;
                         var names = soundName.split(".");
-                        if (!$scope.defaultSound.name)
-                        {
+                        if (!$scope.defaultSound.name) {
                             $scope.defaultSound.name = names[0];
                         }
 
-                        if (!$scope.defaultSound.fileName)
-                        {
-                            var fileName = new Date().getTime() + "_robot." + names[1];
-                            $scope.defaultSound.fileName = fileName;
+                        if (!$scope.defaultSound.fileName) {
+                            $scope.defaultSound.fileName = new Date().getTime() + "_robot." + names[1];
                         }
 
-                        data.formData = {fileName: fileName};
+                        data.formData = {fileName: $scope.defaultSound.fileName};
                     },
                     progress: function (e, data) {
                         var progress = parseInt(data.loaded / data.total * 100, 10);
@@ -104,10 +101,9 @@
                         $('#progress .bar').addClass('bar-success');
                         $scope.defaultSound.dataSaved = true;
 
-                        if ($scope.defaultSound.profileSaved)
-                        {
+                        if ($scope.defaultSound.profileSaved) {
                             $scope.defaultSound.uploadMsgClass = "alert alert-success";
-                            $scope.defaultSound.uploadMsg =  "您的声音" + $scope.defaultSound.name + "上传成功。我们将尽快处理您上传的声音，这可能需要几分钟，请耐心等待。";
+                            $scope.defaultSound.uploadMsg = "您的声音" + $scope.defaultSound.name + "上传成功。我们将尽快处理您上传的声音，这可能需要几分钟，请耐心等待。";
                             $('#uploadpart').show();
                             $('#progresspart').hide();
                             $('#sound_info').hide();
@@ -123,32 +119,37 @@
                 });
 
                 $('#poster_upload').fileupload({
-                    url: $scope.updateUrl,
+                    url: $scope.uploadPosterUrl,
                     dataType: 'json',
                     acceptFileTypes: /\.(gif|jpg|jpeg|tiff|png)$/i,
 
                     add: function (e, data) {
                         console.log('add');
                         if (!(/\.(gif|jpg|jpeg|tiff|png)$/i).test(data.files[0].name)) {
-                            $scope.defaultSound.uploadMsgClass = "alert alert-error";
-                            $scope.defaultSound.uploadMsg = '您上传的海报图片可能不正确，请上传以下格式中的一种:gif, jpg, jpeg, tiff, png。';
+                            $scope.$apply(function () {
+                                $scope.defaultSound.uploadMsgClass = "alert alert-error";
+                                $scope.defaultSound.uploadMsg = '您上传的海报图片可能不正确，请上传以下格式中的一种:gif, jpg, jpeg, tiff, png。';
+                            });
                             return;
                         }
                         if (data.files[0].size > 10000000) {
-                            $scope.defaultSound.profileMsgClass = "alert alert-error";
-                            $scope.defaultSound.profileMsg = '您上传的文件过大，请上传小于10MB的海报图片。';
+                            $scope.$apply(function () {
+                                $scope.defaultSound.profileMsgClass = "alert alert-error";
+                                $scope.defaultSound.profileMsg = '您上传的文件过大，请上传小于10MB的海报图片。';
+                            });
                             return;
                         }
-                        $('#profile_error').addClass("hide");
                         data.submit();
                     },
                     submit: function (e, data) {
-                        var soundName = data.files[0].name;
-                        var names = soundName.split(".");
-                        $("name").val(names[0]);
-                        $scope.defaultSound.name = names[0];
-                        var fileName = new Date().getTime() + "_robot." + names[1];
-                        data.formData = {fileName: fileName};
+                        var posterName = data.files[0].name;
+                        var posterNames = posterName.split(".");
+
+                        var fileNames =  $scope.defaultSound.fileName.split(".");
+                        $scope.defaultSound.posterFileName = fileNames[0] + '.' + posterNames[1];
+                        data.formData = {fileName:  $scope.defaultSound.posterFileName, length: data.files[0].size};
+                        $scope.defaultSound.uplodingPoster = true;
+                        $("#save_button").addClass("disabled");
                     },
                     progress: function (e, data) {
                     },
@@ -156,12 +157,21 @@
                     },
                     done: function (e, data) {
                         console.log('done');
-                        //todo: show the image.
+                        $scope.$apply(function () {
+                            $scope.defaultSound.profileMsgClass = "alert alert-success";
+                            $scope.defaultSound.profileMsg = '声音海报上传成功';
+                        });
+
+                        $scope.defaultSound.uplodingPoster = false;
+                        if ($scope.defaultSound.name && $scope.defaultSound.tags)
+                        {
+                            $("#save_button").removeClass("disabled");
+                        }
                     },
                     fail: function (e, data) {
                         $scope.$apply(function () {
                             $scope.defaultSound.profileMsgClass = "alert alert-error";
-                            $scope.defaultSound.profileMsg = '海报图片上传失败，请稍后再试';
+                            $scope.defaultSound.profileMsg = '海报图片上传失败，请稍后再试。';
                         });
                     }
                 });
@@ -186,6 +196,14 @@
                     }
                 }
 
+                $scope.setPrivate = function() {
+                    $scope.defaultSound.status = "private";
+                }
+
+                $scope.setPublic = function() {
+                    $scope.defaultSound.status = "public";
+                }
+
                 $scope.save = function () {
                     if ($("#save_button").hasClass("disabled")) {
                         return;
@@ -193,17 +211,25 @@
                     if ($scope.defaultSound.name && $scope.defaultSound.tags.length > 0) {
                         $scope.defaultSound.profileError = '';
 
-                        if ($scope.defaultSound.alias)
-                        {
-                            var sound = Sound.update({sound: $scope.defaultSound.alias}, {name: $scope.defaultSound.name, description: $scope.defaultSound.description, status: $scope.defaultSound.status}, function (count) {
+                        if ($scope.defaultSound.alias) {
+                            var soundProfile = {};
+                            soundProfile.name = $scope.defaultSound.name;
+                            soundProfile.description = $scope.defaultSound.description;
+                            soundProfile.status = $scope.defaultSound.status;
+                            if($scope.defaultSound.posterFileName)
+                            {
+                                soundProfile.poster = {};
+                                soundProfile.poster.posterId = $scope.defaultSound.posterFileName.split(".")[0];
+                                soundProfile.poster.extension = $scope.defaultSound.posterFileName.split(".")[1];
+                            }
+                            var sound = Sound.update({sound: $scope.defaultSound.alias}, soundProfile, function (count) {
 
                                 $scope.defaultSound.profileMsgClass = "alert alert-success";
                                 $scope.defaultSound.profileMsg = "声音信息保存成功";
                                 $scope.defaultSound.alias = sound.alias;
                                 Tag.attach({soundAlias: sound.alias}, {tags: $scope.defaultSound.tags}, function (count) {
                                     $scope.defaultSound.profileSaved = true;
-                                    if ($scope.defaultSound.dataSaved)
-                                    {
+                                    if ($scope.defaultSound.dataSaved) {
                                         $scope.defaultSound.uploadMsgClass = "alert alert-success";
                                         $scope.defaultSound.uploadMsg = "您的声音" + $scope.defaultSound.name + "上传成功。我们将尽快处理您上传的声音，这可能需要几分钟，请耐心等待。";
 
@@ -211,6 +237,10 @@
                                         $('#progresspart').hide();
                                         $('#sound_info').hide();
                                         reset();
+                                        var user = User.get({userAlias:'robot'}, function(){
+                                            var minutesLeft = 120 - (user.userSocial.soundDuration)/(60);
+                                            $scope.defaultSound.minutesToUpload =  minutesLeft;
+                                        });
                                     }
                                 });
 
@@ -219,31 +249,46 @@
                                 $scope.defaultSound.profileMsg = "声音信息保存失败";
                             });
                         }
-                        else
-                        {
-                        var sound = Sound.save({sound: $scope.defaultSound.name}, {objectId: $scope.defaultSound.fileName, description: $scope.defaultSound.description, ownerAlias: 'robot',
-                            status: $scope.defaultSound.status}, function (count) {
+                        else {
+                            var soundProfile = {};
+                            soundProfile.name = $scope.defaultSound.name;
+                            soundProfile.description = $scope.defaultSound.description;
+                            soundProfile.status = $scope.defaultSound.status;
+                            var fileNames = $scope.defaultSound.fileName.split(".");
+                            soundProfile.remoteId = fileNames[0];
+                            soundProfile.extension = fileNames[1];
+                            if($scope.defaultSound.posterFileName)
+                            {
+                                soundProfile.poster = {};
+                                soundProfile.poster.posterId = $scope.defaultSound.posterFileName.split(".")[0];
+                                soundProfile.poster.extension = $scope.defaultSound.posterFileName.split(".")[1];
+                            }
 
-                            $scope.defaultSound.profileMsgClass = "alert alert-success";
-                            $scope.defaultSound.profileMsg = "声音信息保存成功";
-                            $scope.defaultSound.alias = sound.alias;
-                            Tag.attach({soundAlias: sound.alias}, {tags: $scope.defaultSound.tags}, function (count) {
-                                $scope.defaultSound.profileSaved = true;
-                                if ($scope.defaultSound.dataSaved)
-                                {
-                                    $scope.defaultSound.uploadMsgClass = "alert alert-success";
-                                    $scope.defaultSound.uploadMsg = "您的声音" + $scope.defaultSound.name + "上传成功。我们将尽快处理您上传的声音，这可能需要几分钟，请耐心等待。";
-                                    $('#uploadpart').show();
-                                    $('#progresspart').hide();
-                                    $('#sound_info').hide();
-                                    reset();
-                                }
+                            var sound = Sound.save({sound: $scope.defaultSound.name}, soundProfile, function (count) {
+
+                                $scope.defaultSound.profileMsgClass = "alert alert-success";
+                                $scope.defaultSound.profileMsg = "声音信息保存成功";
+                                $scope.defaultSound.alias = sound.alias;
+                                Tag.attach({soundAlias: sound.alias}, {tags: $scope.defaultSound.tags}, function (count) {
+                                    $scope.defaultSound.profileSaved = true;
+                                    if ($scope.defaultSound.dataSaved) {
+                                        $scope.defaultSound.uploadMsgClass = "alert alert-success";
+                                        $scope.defaultSound.uploadMsg = "您的声音" + $scope.defaultSound.name + "上传成功。我们将尽快处理您上传的声音，这可能需要几分钟，请耐心等待。";
+                                        $('#uploadpart').show();
+                                        $('#progresspart').hide();
+                                        $('#sound_info').hide();
+                                        reset();
+                                        var user = User.get({userAlias:'robot'}, function(){
+                                            var minutesLeft = 120 - (user.userSocial.soundDuration)/(60);
+                                            $scope.defaultSound.minutesToUpload =  minutesLeft;
+                                        });
+                                    }
+                                });
+
+                            }, function () {
+                                $scope.defaultSound.profileMsgClass = "alert alert-error";
+                                $scope.defaultSound.profileMsg = "声音信息保存失败";
                             });
-
-                        }, function () {
-                            $scope.defaultSound.profileMsgClass = "alert alert-error";
-                            $scope.defaultSound.profileMsg = "声音信息保存失败";
-                        });
                         }
                     }
                     else {
@@ -253,17 +298,24 @@
                 }
 
                 $scope.$on('$viewContentLoaded', function () {
+                   var user = User.get({userAlias:'robot'}, function(){
+                       var minutesLeft = 120 - (user.userSocial.soundDuration)/(60);
+                       $scope.defaultSound.minutesToUpload =  minutesLeft;
+                    });
                     var soundToUpload = Sound.getSoundToUpload(
-                        {sound:'toupload'}, function(){
-                            if (soundToUpload.profile)
-                            {
+                        {sound: 'toupload'}, function () {
+                            if (soundToUpload.profile) {
                                 $scope.defaultSound.name = soundToUpload.profile.name;
-                                $scope.defaultSound.fileName = soundToUpload.soundData.objectId;
+                                $scope.defaultSound.fileName = soundToUpload.profile.remoteId + '.' + soundToUpload.profile.extension;
                                 $scope.defaultSound.alias = soundToUpload.profile.alias;
                                 $scope.defaultSound.description = soundToUpload.profile.description;
                                 $scope.defaultSound.status = soundToUpload.profile.status;
+
+                                if (soundToUpload.profile.poster && soundToUpload.profile.poster.url) {
+                                    $scope.defaultSound.posterUrl = soundToUpload.profile.poster.url;
+                                }
                                 var tagList = [];
-                                $.each(soundToUpload.tags, function(index, oneTag){
+                                $.each(soundToUpload.tags, function (index, oneTag) {
                                     tagList.push(oneTag.label);
                                 });
                                 $scope.defaultSound.uploadStatus = "hide";
@@ -275,25 +327,22 @@
                                 $('#progresspart').show();
                                 $('#sound_info').show();
                             }
-                            else
-                            {
-                                 if (soundToUpload.soundData)
-                                 {
-                                     $scope.defaultSound.uploadStatus = "hide";
-                                     var names = soundToUpload.soundData.originName.split(".");
-                                     $scope.defaultSound.name =  names[0];
-                                     $scope.defaultSound.fileName =  soundToUpload.soundData.objectId;
-                                     $scope.defaultSound.dataSaved = true;
-                                     $scope.defaultSound.uploadMsgClass = "alert alert-warning";
-                                     $scope.defaultSound.uploadMsg = "您有未完成的声音分享，请完成" + $scope.defaultSound.name + "的声音信息。";
-                                     $('#uploadpart').hide();
-                                     $('#progresspart').show();
-                                     $('#sound_info').show();
-                                 }
-                                else
-                                 {
-                                     $('#uploadpart').show();
-                                 }
+                            else {
+                                if (soundToUpload.soundData) {
+                                    $scope.defaultSound.uploadStatus = "hide";
+                                    var names = soundToUpload.soundData.originName.split(".");
+                                    $scope.defaultSound.name = names[0];
+                                    $scope.defaultSound.fileName = soundToUpload.soundData.objectId;
+                                    $scope.defaultSound.dataSaved = true;
+                                    $scope.defaultSound.uploadMsgClass = "alert alert-warning";
+                                    $scope.defaultSound.uploadMsg = "您有未完成的声音分享，请完成" + $scope.defaultSound.name + "的声音信息。";
+                                    $('#uploadpart').hide();
+                                    $('#progresspart').show();
+                                    $('#sound_info').show();
+                                }
+                                else {
+                                    $('#uploadpart').show();
+                                }
                             }
                         }
                     );
@@ -324,7 +373,7 @@
                                 $("#tags").val("");
                                 $("#tags").attr("placeholder", "请再多打几个");
 
-                                if ($scope.defaultSound.name) {
+                                if ($scope.defaultSound.name && !$scope.defaultSound.uplodingPoster) {
                                     $("#save_button").removeClass("disabled");
                                 } else {
                                     $("#save_button").addClass("disabled");
@@ -334,7 +383,7 @@
                     });
 
                     $('#name').bind('keyup', function (event) {
-                        if ($scope.defaultSound.name && $scope.defaultSound.tags.length > 0) {
+                        if ($scope.defaultSound.name && $scope.defaultSound.tags.length > 0  && !$scope.defaultSound.uplodingPoster) {
                             $("#save_button").removeClass("disabled");
                         } else {
                             $("#save_button").addClass("disabled");
@@ -342,19 +391,20 @@
                     });
                 });
 
-                function reset()
-                {
+                function reset() {
                     $scope.defaultSound.name = null;
                     $scope.defaultSound.fileName = null;
                     $scope.defaultSound.alias = null;
                     $scope.defaultSound.description = null;
-                    $scope.defaultSound.status = null;
+                    $scope.defaultSound.status = "public";
                     $scope.defaultSound.tags = [];
                     $scope.defaultSound.profileSaved = false;
                     $scope.defaultSound.dataSaved = false;
+                    $scope.defaultSound.posterFileName = null;
+                    $scope.defaultSound.posterUrl = "img/default_avatar_large.png";
+                    $scope.defaultSound.minutesToUpload = 120;
                 }
             }
         ])
-
 
 }());

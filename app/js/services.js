@@ -13,9 +13,9 @@ angular.module('wooice.service.sound', ['ngResource'])
         return $resource(config.service.url + '/sound/:sound', {}, {
             load: {method: 'GET', params: {sound: 'current'}, isArray: false},
             delete: {method: 'DELETE', params: {sound: 'current'}, isArray: false},
-            save: {method: 'PUT', params: {}, isArray:false},
-            update: {method:'POST',params: {}, isArray:false },
-            getSoundToUpload: {method:'GET',params: {}, isArray:false }
+            save: {method: 'PUT', params: {}, isArray: false},
+            update: {method: 'POST', params: {}, isArray: false },
+            getSoundToUpload: {method: 'GET', params: {}, isArray: false }
         });
     }
     ])

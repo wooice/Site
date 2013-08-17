@@ -1,7 +1,7 @@
 // 1. Init the player button on the page, binding player button events.
 // 2.Render wave data, binding wave events:2.1 Bind click event on each line of wave data(jump) 2.2 Bind click event to all wave(play/pause). 2.3 bind havor event on each line of wave data to highlight one line.
 (function ($) {
-	"use strict";
+    "use strict";
     $.player = function (sound) {
         var id = sound.id;
         var waveData = sound.waveData;
@@ -11,8 +11,7 @@
         var poster = sound.poster;
         var duration = sound.duration;
 
-        this.renderSound = function()
-        {
+        this.renderSound = function () {
             renderFrame();
             renderCover();
             renderHeader();
@@ -20,55 +19,45 @@
             renderFooter();
         };
 
-        function renderFrame()
-        {
+        function renderFrame() {
         }
 
-        function renderCover()
-        {
+        function renderCover() {
         }
 
-        function renderHeader()
-        {
+        function renderHeader() {
             renderPlayer();
             renderSoundSummary();
             renderSoundActionsInHead();
         }
 
-        function renderBody()
-        {
+        function renderBody() {
             renderWave();
             renderCommentBox();
         }
 
-        function renderFooter()
-        {
-             renderSoundActionsInFoot();
-             renderSoundSocialData();
+        function renderFooter() {
+            renderSoundActionsInFoot();
+            renderSoundSocialData();
         }
 
-        function renderPlayer()
-        {
+        function renderPlayer() {
         }
 
-        function renderSoundSummary()
-        {
+        function renderSoundSummary() {
         }
 
-        function renderSoundActionsInHead()
-        {
-             // No actions in default player..
+        function renderSoundActionsInHead() {
+            // No actions in default player..
         }
 
-        function renderSoundActionsInFoot()
-        {
+        function renderSoundActionsInFoot() {
 
         }
 
-        function renderWave()
-        {
+        function renderWave() {
             var wave = $(window).soundWave({});
-             wave.render(
+            wave.render(
                 {
                     id: id,
                     waveData: waveData,
@@ -79,13 +68,11 @@
             sound = null;
         }
 
-        function renderCommentBox()
-        {
+        function renderCommentBox() {
 
         }
 
-        function renderSoundSocialData()
-        {
+        function renderSoundSocialData() {
 
         }
     };

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+<form class="form-horizontal pull-right" style="padding-right: 60px">
+    <div class="control-group">
+        <label class="control-label" for="inputEmail">用户名</label>
+        <div class="controls">
+            <input type="text" id="inputEmail" class="input-small" placeholder="邮箱/用户名" ng-model="userId" >
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="inputPassword">密码</label>
+        <div class="controls">
+            <input type="password" id="inputPassword" class="input-small" placeholder="密码" ng-model="password">
+        </div>
+    </div>
+    <div class="control-group">
+        <div class="controls">
+            <label class="checkbox">
+                <input type="checkbox">记住我
+            </label>
+            <button type="submit" class="btn" data-ng-click="login()">登陆</button>
+        </div>
+    </div>
+</form>
+</body>
+</html>

@@ -16,27 +16,13 @@
 </head>
 <body>
 
-<div class="navbar">
-    <div class="navbar-inner">
-        <a class="brand" href="#"><img width="60" height="60" src="img/logo.jpg"/></a>
-        <ul class="nav">
-            <li class="active"><a href="#/stream">stream</a></li>
-        </ul>
-        <form class="navbar-search pull-left" action="">
-            <input type="text" class="search-query span2" placeholder="Find a sound">
-        </form>
-        <ul class="nav pull-right">
-            <li class="pull-right"><a href="#/profile">profile</a></li>
-            <li class="pull-right"><a href="#/upload">upload</a></li>
-        </ul>
-    </div>
-</div>
 
   <div ng-view></div>
 
-  <div id="sound_streams">
-  </div>
   <script src="lib/jquery/jquery-2.0.2.min.js"></script>
+  <script src="lib/underscore.js/underscore-min.js"></script>
+  <script src="lib/underscore.js/underscore.string.min.js"></script>
+
   <script src="lib/angular/angular.js"></script>
   <script src="lib/angular/angular-resource.min.js"></script>
   <script src="js/app.js"></script>

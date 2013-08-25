@@ -287,5 +287,31 @@ angular.module('wooice.controllers', []).
     .controller('userSocialController', ['$scope', '$routeParams', function ($scope, $routeParams, $http) {
 
     }])
+
+    .controller('loginCtrl', ['$scope', '$location','Guest','UserService', function ($scope, $location, Guest, UserService) {
+            $scope.userId ="";
+            $scope.password ="";
+
+            $scope.login = function(){
+                var user = {userId:$scope.userId, password:$scope.password};
+                var curUser = Guest.login({}, user, function(){
+                    UserService.setupUser({
+                       userAlias: curUser.profile.userAlias,
+                       role: curUser.userRoles[0].role
+                    });
+                    if(UserService.validateRoleUser() || UserService.validateRoleAdmin())
+                    {
+                        $location.path('/stream');
+                    }
+                });
+            }
+    }])
+
+    .controller('heaederCtrl', ['$scope', 'User', function ($scope, User) {
+        $scope.logout = function(){
+            User.logout({}, function(){
+        })
+        };
+    }])
 ;
 

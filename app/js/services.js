@@ -52,6 +52,12 @@ angular.module('wooice.service.user', []).
             unfollow: {method: 'DELETE', params: {fromUserAlias: 'current', action: 'follow', toUserAlias: 'current'}, isArray: false}
         });
     }]).
+    factory('UserProfile', ['$resource', 'config', function ($resource, config) {
+        return $resource(config.service.url + '/userActivity/:fromUserAlias/:action/:toUserAlias', {}, {
+            follow: {method: 'PUT', params: {fromUserAlias: 'current', action: 'follow', toUserAlias: 'current'}, isArray: false},
+            unfollow: {method: 'DELETE', params: {fromUserAlias: 'current', action: 'follow', toUserAlias: 'current'}, isArray: false}
+        });
+    }]).
     factory('UserService', ['User', function (User) {
         var currentUser = {userAlias: '', role: 'guest'};
         var adminRoles = ["admin"];

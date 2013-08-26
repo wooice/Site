@@ -1,0 +1,54 @@
+<div class="row-fluid" ng-controller="basicProfileCtrl">
+    <legend>基本信息</legend>
+
+    <div class="span4">
+        <img src="{{user.profile.avatorUrl}}" id="poster_img" height="200" width="200">
+                  <span style="margin-top: -60px;margin-left: 50px"
+                        class="button button-small button-rounded button-flat action-button fileinput-button">
+                    <span>上传头像</span>
+                    <input id="avatar_upload" type="file" name="file" onchange="previewImage();">
+                  </span>
+    </div>
+
+    <div class="span7">
+        <div style="padding-bottom: 10px">
+            <span class="{{messageClass}}">{{message}}</span>
+        </div>
+        <div>
+            <div class="row-fluid">
+                <div class="span6">
+                    <label>姓</label>
+                    <input type="text" placeholder="姓" ng-model="user.profile.lastName">
+                    <label>国家</label>
+                    <input type="text" placeholder="国家" ng-model="user.profile.country">
+                </div>
+                <div class="span6">
+                    <label>名</label>
+                    <input type="text" placeholder="名" ng-model="user.profile.firstName">
+                    <label>城市</label>
+                    <input type="text" placeholder="城市" ng-model="user.profile.city">
+                </div>
+            </div>
+            <div>
+                <label>个人描述</label>
+                <textarea class="input-block-level" ng-model="user.profile.description"></textarea>
+            </div>
+            <div class="pull-right" style="padding-top: 15px">
+                <a id="save_button" href="#" class="button button-small button-rounded button-flat-action action-button"
+                   onclick="return false;" ng-click="saveProfile()">
+                    <span>保存信息</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function previewImage() {
+        var oFReader = new FileReader();
+        oFReader.onload = function (oFREvent) {
+            $("#avatar_upload").attr('src', oFREvent.target.result);
+        };
+        oFReader.readAsDataURL(document.getElementById("avatar_upload").files[0]);
+    }
+    ;
+</script>

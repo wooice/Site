@@ -310,11 +310,21 @@ angular.module('wooice.controllers', []).
             }
     }])
 
-    .controller('heaederCtrl', ['$scope', 'User', function ($scope, User) {
+    .controller('heaederCtrl', ['$scope', 'User', 'UserService', function ($scope, User, UserService) {
+        $scope.userAlias = UserService.getCurUserAlias();
         $scope.logout = function(){
             User.logout({}, function(){
         })
         };
     }])
+
+    .controller('userProfileCtrl', ['$scope', '$routeParams', function ($scope, $routeParams, $http) {
+        $scope.innerPage = 'partials/user/basicProfile.html';
+
+        $scope.jumpTo = function(page){
+            $scope.innerPage = 'partials/user/' + page + '.html';
+        }
+    }])
+
 ;
 

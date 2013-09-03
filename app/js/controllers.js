@@ -73,7 +73,19 @@ angular.module('wooice.controllers', []).
         $scope.$on('$viewContentLoaded', function () {
             $scope.pageNum = 1;
             $(window).soundPlayer().setSocialClient(SoundSocial);
-            var soundsData = Stream.stream({user: $routeParams.userId, userAlias: UserService.getCurUserAlias(), pageNum: $scope.pageNum}, function () {
+            var subPath = "";
+            if ($routeParams.userId)
+            {
+                subPath = $routeParams.userId;
+            }
+            else
+            {
+                if ($routeParams.action)
+                {
+                    subPath = $routeParams.action;
+                }
+            }
+            var soundsData = Stream.stream({subPath: subPath, userAlias: UserService.getCurUserAlias(), q: $routeParams.q,  pageNum: $scope.pageNum}, function () {
                 $scope.sounds = [];
                 $.each(soundsData, function (index, soundRecord) {
                     var posterUrl = '';
@@ -310,11 +322,15 @@ angular.module('wooice.controllers', []).
             }
     }])
 
-    .controller('heaederCtrl', ['$scope', 'User', 'UserService', function ($scope, User, UserService) {
+    .controller('heaederCtrl', ['$scope','$location', 'User', 'UserService', function ($scope, $location, User, UserService) {
         $scope.userAlias = UserService.getCurUserAlias();
         $scope.logout = function(){
             User.logout({}, function(){
         })
+        };
+
+        $scope.search = function(){
+            $location.path('/stream/do/search?q' + $scope.q);
         };
     }])
 

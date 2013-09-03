@@ -4,8 +4,8 @@
 
 angular.module('wooice.service.sound', ['ngResource'])
     .factory('Stream', ['$resource', 'config', function ($resource, config) {
-        return $resource(config.service.url + '/sound/streams/:user', {}, {
-            stream: {method: 'GET', params: {user: 'current', pageNum: 0, soundsPerPage: 5}, isArray: true}
+        return $resource(config.service.url + '/sound/streams/:subPath', {}, {
+            stream: {method: 'GET', params: {subPath: 'current', pageNum: 0, soundsPerPage: 5}, isArray: true}
         });
     }
     ])

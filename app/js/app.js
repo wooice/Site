@@ -61,6 +61,7 @@ angular.module('wooice', ['wooice.filters', 'wooice.controllers', 'wooice.config
 
         $rootScope.$on('$routeChangeStart', function (event, next, current) {
             var curUser = User.isAlive({},function () {
+                console.log('ping');
                 UserService.setupUser({
                     userAlias: curUser.profile.alias,
                     role: curUser.userRoles[0].role

@@ -28,14 +28,14 @@ angular.module('wooice.controllers', []).
             });
 
             if (sound && sound.soundUserPrefer.like) {
-                var likesCount = SoundSocial.unlike({user: UserService.getCurUserAlias(), sound: sound.id}, null, function (count) {
+                var likesCount = SoundSocial.unlike({ sound: sound.id}, null, function (count) {
                     sound.soundUserPrefer.like = 0;
                     sound.soundUserPrefer.likeWording = "Like";
                     sound.soundSocial.likesCount = parseInt(likesCount.liked);
                 });
             }
             else {
-                var likesCount = SoundSocial.like({user: UserService.getCurUserAlias(), sound: sound.id}, null, function (count) {
+                var likesCount = SoundSocial.like({sound: sound.id}, null, function (count) {
                     sound.soundUserPrefer.like = 1;
                     sound.soundUserPrefer.likeWording = "";
                     sound.soundSocial.likesCount = parseInt(likesCount.liked);
@@ -54,14 +54,14 @@ angular.module('wooice.controllers', []).
             });
 
             if (sound && sound.soundUserPrefer.repost) {
-                var repostsCount = SoundSocial.unrepost({user: UserService.getCurUserAlias(), sound: sound.id}, null, function (count) {
+                var repostsCount = SoundSocial.unrepost({sound: sound.id}, null, function (count) {
                     sound.soundUserPrefer.repost = 0;
                     sound.soundUserPrefer.repostWording = "Repost";
                     sound.soundSocial.reportsCount = parseInt(repostsCount.reposted);
                 });
             }
             else {
-                var repostsCount = SoundSocial.repost({user: UserService.getCurUserAlias(), sound: sound.id}, null, function (count) {
+                var repostsCount = SoundSocial.repost({sound: sound.id}, null, function (count) {
                     sound.soundUserPrefer.repost = 1;
                     sound.soundUserPrefer.repostWording = "";
                     sound.soundSocial.reportsCount = parseInt(repostsCount.reposted);
@@ -85,7 +85,17 @@ angular.module('wooice.controllers', []).
                     subPath = $routeParams.action;
                 }
             }
-            var soundsData = Stream.stream({subPath: subPath, userAlias: UserService.getCurUserAlias(), q: $routeParams.q,  pageNum: $scope.pageNum}, function () {
+            var params = {subPath: subPath, pageNum: $scope.pageNum};
+
+            if ($routeParams.q)
+            {
+                params.q =  $routeParams.q;
+            }
+            if ($routeParams.userAlias)
+            {
+                params.userAlias = UserService.getCurUserAlias();
+            }
+            var soundsData = Stream.stream(params, function () {
                 $scope.sounds = [];
                 $.each(soundsData, function (index, soundRecord) {
                     var posterUrl = '';
@@ -131,7 +141,7 @@ angular.module('wooice.controllers', []).
                         if (event.keyCode == 13) {
                             var comment = $(this).val();
                             var sec = $("#sound_comment_point_" + sound.id).val();
-                            var commentResult = SoundSocial.comment({user: UserService.getCurUserAlias(), sound: sound.id, comment: comment, pointAt: sec}, null, function (count) {
+                            var commentResult = SoundSocial.comment({sound: sound.id, comment: comment, pointAt: sec}, null, function (count) {
                                 sound.soundSocial.commentsCount = commentResult.commentsCount;
                                 $('#sound_commentbox_input_' + sound.id).val('');
                                 $('#sound_commentbox_input_' + sound.id).attr("placeholder", "Thank you for your comment!");
@@ -158,14 +168,14 @@ angular.module('wooice.controllers', []).
         $scope.toggleLike = function (id) {
             var sound = $scope.sound;
             if (sound.soundUserPrefer.like) {
-                var likesCount = SoundSocial.unlike({user: UserService.getCurUserAlias(), sound: sound.id}, null, function (count) {
+                var likesCount = SoundSocial.unlike({sound: sound.id}, null, function (count) {
                     sound.soundUserPrefer.like = 0;
                     sound.soundUserPrefer.likeWording = "Like";
                     sound.soundSocial.likesCount = parseInt(likesCount.liked);
                 });
             }
             else {
-                var likesCount = SoundSocial.like({user: UserService.getCurUserAlias(), sound: sound.id}, null, function (count) {
+                var likesCount = SoundSocial.like({sound: sound.id}, null, function (count) {
                     sound.soundUserPrefer.like = 1;
                     sound.soundUserPrefer.likeWording = "";
                     sound.soundSocial.likesCount = parseInt(likesCount.liked);
@@ -181,14 +191,14 @@ angular.module('wooice.controllers', []).
         $scope.toggleRepost = function (id) {
             var sound = $scope.sound;
             if (sound.soundUserPrefer.repost) {
-                var repostsCount = SoundSocial.unrepost({user: UserService.getCurUserAlias(), sound: sound.id}, null, function (count) {
+                var repostsCount = SoundSocial.unrepost({sound: sound.id}, null, function (count) {
                     sound.soundUserPrefer.repost = 0;
                     sound.soundUserPrefer.repostWording = "Repost";
                     sound.soundSocial.reportsCount = parseInt(repostsCount.reposted);
                 });
             }
             else {
-                var repostsCount = SoundSocial.repost({user: UserService.getCurUserAlias(), sound: sound.id}, null, function (count) {
+                var repostsCount = SoundSocial.repost({sound: sound.id}, null, function (count) {
                     sound.soundUserPrefer.repost = 1;
                     sound.soundUserPrefer.repostWording = "";
                     sound.soundSocial.reportsCount = parseInt(repostsCount.reposted);
@@ -199,7 +209,7 @@ angular.module('wooice.controllers', []).
 
         $scope.$on('$viewContentLoaded', function () {
             $(window).soundPlayer().setSocialClient(SoundSocial);
-            var sound = Sound.load({userAlias: UserService.getCurUserAlias(), sound: $routeParams.soundId}, function () {
+            var sound = Sound.load({sound: $routeParams.soundId}, function () {
                 var posterUrl = '';
                 if (sound.profile.poster && sound.profile.poster.url) {
                     posterUrl = sound.profile.poster.url;
@@ -243,7 +253,7 @@ angular.module('wooice.controllers', []).
                     if (event.keyCode == 13) {
                         var comment = $(this).val();
                         var sec = $("#sound_comment_point_" + $scope.sound.id).val();
-                        var result = SoundSocial.comment({user: UserService.getCurUserAlias(), sound: $scope.sound.id, comment: comment, pointAt: sec}, null, function (count) {
+                        var result = SoundSocial.comment({sound: $scope.sound.id, comment: comment, pointAt: sec}, null, function (count) {
                             $scope.sound.soundSocial.commentsCount = result.commentsCount;
                             $('#sound_commentbox_input_' + sound.id).val('');
                             $('#sound_commentbox_input_' + sound.id).attr("placeholder", "Thank you for your comment!");
@@ -266,7 +276,7 @@ angular.module('wooice.controllers', []).
         });
     }])
 
-    .controller('userBasicController', ['$scope', '$routeParams', 'User', 'UserSocial','UserService', function ($scope, $routeParams, User, UserSocial,UserService) {
+    .controller('userBasicController', ['$scope', '$routeParams', 'User', 'UserSocial','UserService', function ($scope, $routeParams, User, UserSocial, UserService) {
         var user = User.get({userAlias: UserService.getCurUserAlias()}, function () {
             $scope.user = user;
 
@@ -282,14 +292,14 @@ angular.module('wooice.controllers', []).
 
             $scope.follow = function (userAlias) {
                 if ($scope.user.userPrefer.following) {
-                    var result = UserSocial.unfollow({fromUserAlias: UserService.getCurUserAlias(), toUserAlias: 'robot'}, null, function (count) {
+                    var result = UserSocial.unfollow({toUserAlias: 'robot'}, null, function (count) {
                         $scope.user.userPrefer.following = false;
                         $scope.user.social.followed = result.followed;
                         $scope.user.userPrefer.followingString = "Follow";
                     });
                 }
                 else {
-                    var result = UserSocial.follow({fromUserAlias: UserService.getCurUserAlias(), toUserAlias: 'robot'}, null, function (count) {
+                    var result = UserSocial.follow({ toUserAlias: 'robot'}, null, function (count) {
                         $scope.user.userPrefer.following = true;
                         $scope.user.social.followed = result.followed;
                         $scope.user.userPrefer.followingString = "Following";
@@ -329,9 +339,14 @@ angular.module('wooice.controllers', []).
         })
         };
 
-        $scope.search = function(){
-            $location.path('/stream/do/search?q' + $scope.q);
-        };
+        $('#search_box').bind('keyup', function (event) {
+            if (event.keyCode == 13) {
+                $scope.$apply(function() {
+                    $location.path('/stream/do/search?q=' + $scope.q);
+                });
+            }
+        });
+
     }])
 
     .controller('userProfileCtrl', ['$scope', '$routeParams', function ($scope, $routeParams, $http) {

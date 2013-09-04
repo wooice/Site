@@ -20,7 +20,7 @@ angular.module('wooice.service.sound', ['ngResource'])
     }
     ])
     .factory('SoundSocial', ['$resource', 'config', function ($resource, config) {
-        return $resource(config.service.url + '/soundActivity/:user/:action/:sound', {}, {
+        return $resource(config.service.url + '/soundActivity/:action/:sound', {}, {
             play: {method: 'PUT', params: {action: 'play'}, isArray: false},
             like: {method: 'PUT', params: {action: 'like'}, isArray: false},
             unlike: {method: 'DELETE', params: {action: 'like'}, isArray: false},
@@ -47,15 +47,15 @@ angular.module('wooice.service.user', []).
         });
     }]).
     factory('UserSocial', ['$resource', 'config', function ($resource, config) {
-        return $resource(config.service.url + '/userActivity/:fromUserAlias/:action/:toUserAlias', {}, {
-            follow: {method: 'PUT', params: {fromUserAlias: 'current', action: 'follow', toUserAlias: 'current'}, isArray: false},
-            unfollow: {method: 'DELETE', params: {fromUserAlias: 'current', action: 'follow', toUserAlias: 'current'}, isArray: false}
+        return $resource(config.service.url + '/userActivity/:action/:toUserAlias', {}, {
+            follow: {method: 'PUT', params: {action: 'follow', toUserAlias: 'current'}, isArray: false},
+            unfollow: {method: 'DELETE', params: { action: 'follow', toUserAlias: 'current'}, isArray: false}
         });
     }]).
     factory('UserProfile', ['$resource', 'config', function ($resource, config) {
-        return $resource(config.service.url + '/userActivity/:fromUserAlias/:action/:toUserAlias', {}, {
-            follow: {method: 'PUT', params: {fromUserAlias: 'current', action: 'follow', toUserAlias: 'current'}, isArray: false},
-            unfollow: {method: 'DELETE', params: {fromUserAlias: 'current', action: 'follow', toUserAlias: 'current'}, isArray: false}
+        return $resource(config.service.url + '/userActivity/:action/:toUserAlias', {}, {
+            follow: {method: 'PUT', params: { action: 'follow', toUserAlias: 'current'}, isArray: false},
+            unfollow: {method: 'DELETE', params: { action: 'follow', toUserAlias: 'current'}, isArray: false}
         });
     }]).
     factory('UserService', ['User', function (User) {

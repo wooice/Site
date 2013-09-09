@@ -4,7 +4,6 @@ angular.module('wooice.controller.profile', [])
     .controller('basicProfileCtrl', ['$scope', '$routeParams','config', 'User','UserService','UserProfile', function ($scope, $routeParams, config, User, UserService, UserProfile) {
         $scope.message = "";
         $scope.uploadAvatarUrl = config.service.url_noescp + '/storage/upload/avatar';
-
         var user = User.get({userAlias: UserService.getCurUserAlias()},function(){
            if(!user.profile.avatorUrl)
            {

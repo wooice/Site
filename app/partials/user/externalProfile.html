@@ -4,38 +4,14 @@
         <span class="{{messageClass}}">{{message}}</span>
     </div>
     <table style="width: 100%">
-        <tr>
-            <td style="width: 20%"><label>您的个人网站</label>
-            <td><input class="input-block-level" type="text" placeholder="个人网站" ng-model="user.external.website"></td>
-        </tr>
-        <tr>
-            <td style="width: 20%"><label>新浪微博</label>
-            <td><input class="input-block-level" type="text" placeholder="新浪微博" ng-model="user.external.sina"></td>
-        </tr>
-        <tr>
-            <td style="width: 20%"><label>腾讯微博</label>
-            <td><input class="input-block-level" type="text" placeholder="腾讯微博" ng-model="user.external.tencent"></td>
-        </tr>
-        <tr>
-            <td style="width: 20%"><label>QQ空间</label>
-            <td><input class="input-block-level" type="text" placeholder="QQ空间" ng-model="user.external.qq"></td>
+        <tr ng-repeat="site in user.external.sites">
+            <td  style="width: 70px">{{site.displayName}}</td>
+            <td style="width: 10%"><img src="img/logo/{{site.name}}.png" class="external_logo"/></td>
+            <td><input class="input-block-level" type="text" placeholder="{{site.displayName}}" ng-model="site.url"></td>
         </tr>
 
         <tr>
-            <td style="width: 20%"><label>人人网</label>
-            <td><input class="input-block-level" type="text" placeholder="人人网" ng-model="user.external.renren"></td>
-        </tr>
-
-        <tr>
-            <td style="width: 20%"><label>豆瓣</label>
-            <td><input class="input-block-level" type="text" placeholder="豆瓣" ng-model="user.external.douban"></td>
-        </tr>
-
-        <tr>
-            <td style="width: 20%"><label>虾米</label>
-            <td><input class="input-block-level" type="text" placeholder="虾米" ng-model="user.external.xiami"></td>
-        </tr>
-        <tr>
+            <td></td>
             <td></td>
             <td>
                 <a href="#" class="button button-small button-rounded button-flat-action action-button pull-right"

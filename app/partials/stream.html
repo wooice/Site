@@ -3,9 +3,9 @@
 <div role="main" class="container-fluid">
 
 	<div class="row-fluid">
-		<div class="span9">
+		<div id="sound_streams" class="span9">
 			<!--Body content-->
-			<div id="sound_streams" ng-repeat="sound in sounds" ng-controller="streamCtrl">
+			<div  ng-repeat="sound in sounds" ng-controller="streamCtrl">
                 <div id="sound_{{sound.id}}" class='sound_item'>
                     <div id="sound_art_{{sound.id}}" class='sound_art'>
                         <div id="sound_cover_{{sound.id}}">
@@ -53,7 +53,20 @@
                     </div>
                 </div>
 			 </div>
+
+
+            <div class="{{loadClass}}" style="text-align: center">
+                loading...
+            </div>
+
+            <div class="{{noSoundMsg}}" style="position:absolute; top:40%; left:35%;">
+                您还没有推送的声音流，发现自己的<a href="">兴趣</a>，将有更多声音推送。
+            </div>
+            <div class="{{noSearchMsg}}" style="position:absolute; top:40%; left:35%;">
+               没有找到结果，请尝试其他关键词
+            </div>
 	</div>
+
 
 		<div class="span3">
 			<!--Right Side content-->

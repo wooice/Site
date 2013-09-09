@@ -5,7 +5,7 @@
 angular.module('wooice.service.sound', ['ngResource'])
     .factory('Stream', ['$resource', 'config', function ($resource, config) {
         return $resource(config.service.url + '/sound/streams/:subPath', {}, {
-            stream: {method: 'GET', params: {subPath: 'current', pageNum: 0, soundsPerPage: 5}, isArray: true}
+            stream: {method: 'GET', params: {subPath: 'current', pageNum: 0, soundsPerPage: 4}, isArray: true}
         });
     }
     ])
@@ -38,7 +38,7 @@ angular.module('wooice.service.sound', ['ngResource'])
     ])
 ;
 
-angular.module('wooice.service.user', []).
+angular.module('wooice.service.user', ['ngCookies']).
     factory('User', ['$resource', 'config', function ($resource, config) {
         return $resource(config.service.url + '/user/:userAlias', {}, {
             get: {method: 'GET', params: {userAlias: 'current'}, isArray: false},
@@ -58,7 +58,7 @@ angular.module('wooice.service.user', []).
             unfollow: {method: 'DELETE', params: { action: 'follow', toUserAlias: 'current'}, isArray: false}
         });
     }]).
-    factory('UserService', ['User', function (User) {
+    factory('UserService', ['User', '$cookies', function (User, $cookies) {
         var currentUser = {userAlias: '', role: 'guest'};
         var adminRoles = ["admin"];
         var userRoles = ["user"];
@@ -66,8 +66,18 @@ angular.module('wooice.service.user', []).
 
         return {
             setupUser: function (user) {
-                currentUser.userAlias = user.userAlias;
-                currentUser.role = user.role;
+                if (user)
+                {
+                    currentUser.userAlias = user.userAlias;
+                    $cookies.userAlias =  user.userAlias;
+                    currentUser.role = user.role;
+                }
+                else
+                {
+                    currentUser.userAlias =  '';
+                    $cookies.userAlias =   '';
+                    currentUser.role = 'guest';
+                }
             },
             validateRoleAdmin: function () {
                 return _.contains(adminRoles, currentUser.role);
@@ -79,7 +89,14 @@ angular.module('wooice.service.user', []).
                 return _.contains(guestRoles, currentUser.role);
             },
             getCurUserAlias: function () {
-                return currentUser.userAlias;
+                if ($cookies.userAlias != '')
+                {
+                    return $cookies.userAlias;
+                }
+                else
+                {
+                    return currentUser.userAlias;
+                }
             }
         };
     }])

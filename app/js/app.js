@@ -10,6 +10,7 @@ angular.module('wooice', ['wooice.filters', 'wooice.controllers', 'wooice.config
             when('/sound/:soundId', {templateUrl: 'partials/sound-detail.html', controller: 'soundDetailCtrl'}).
             when('/profile', {templateUrl: 'partials/user-profile.html', controller: 'userProfileCtrl'}).
             when('/upload', {templateUrl: 'partials/upload.html', controller: 'soundUploadCtrl'}).
+            when('/interest', {templateUrl: 'partials/interest.html', controller: 'interestCtrl'}).
             when('/guest/login', {templateUrl: 'partials/guest/login.html', controller: 'loginCtrl'}).
             otherwise({redirectTo: '/stream'});
 

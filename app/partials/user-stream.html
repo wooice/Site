@@ -5,13 +5,13 @@
         <div class="span2" ng-controller="userBasicController">
             <div style="padding-top: 20px;padding-left: 25px">
                 <img src="{{user.profile.avatorUrl}}" width="200px" height="200px">
-                <div style="padding-top: 10px;"><span class="userInfo__title">{{user.profile.alias}}</span>  <span style="color:#999;">@{{user.profile.location}}</span></div>
+                <div style="padding-top: 10px;"><span class="userInfo__title">{{user.profile.alias}}</span>  <span style="color:#999;">@{{user.profile.city}}</span></div>
                 <div style="color:#999;margin-bottom:20px;margin-top:20px;font-size:16px;">{{user.profile.description}}</div>
 
                 <!-- basic social info-->
                 <div style="padding-bottom: 25px">
                     <div style="padding-bottom: 10px">
-                        <i class="icon-music icon-large" title="{{user.userSocial.sounds}} sounds" style="font-size: 18px"><span style="padding-left:10px; padding-right: 10px" title="{{user.userSocial.sounds}} sounds" >{{user.userSocial.sounds}}</span></i>|
+                            <i class="icon-music icon-large" title="{{user.userSocial.sounds}} sounds" style="font-size: 18px"><span style="padding-left:10px; padding-right: 10px" title="{{user.userSocial.sounds}} sounds" >{{user.userSocial.sounds}}</span></i>|
                         <i class="icon-retweet icon-large" title="{{user.userSocial.reposts}} reposts" style="padding-left:10px;font-size: 18px;"><span style="padding-left:10px; padding-right: 10px" title="{{user.userSocial.reposts}} reposts" >{{user.userSocial.reposts}}</span></i>
                     </div>
                     <div>
@@ -21,16 +21,23 @@
                 </div>
 
                 <!-- social action-->
-                <div>
+                <div  style="padding-bottom: 25px">
                     <a href="#" class="button button-rounded button-flat-primary button-small" onclick="return false;" ng-click="follow(user.profile.alias)">{{user.userPrefer.followingString}}</a>
                     <a href="#" class="button button-rounded button-flat-highlight button-small" onclick="return false;">Share</a>
+                </div>
+
+                <!-- external  -->
+                <div>
+                    <span ng-repeat="site in user.external.sites | filter:{ url: '.' }">
+                        <i title="{{site.displayName}}"> <a href="{{site.url}}"><img src="img/logo/{{site.name}}.png" class="external_logo"/></a> </i>
+                    </span>
                 </div>
             </div>
         </div>
 
-        <div class="span8">
+        <div id="sound_streams" class="span8">
             <!--Body content-->
-            <div id="sound_streams" ng-repeat="sound in sounds">
+            <div  ng-repeat="sound in sounds">
                 <div id="sound_{{sound.id}}" class='sound_item'>
                     <div id="sound_art_{{sound.id}}" class='sound_art'>
                         <div id="sound_cover_{{sound.id}}">
@@ -77,6 +84,14 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="{{loadClass}}" style="text-align: center">
+                    loading...
+            </div>
+
+            <div class="{{noSoundMsg}}" style="position:absolute; top:40%; left:40%;">
+                您还没有自己的音乐流，<a href="index.html#/upload">上传音乐</a>或<a href="">发现兴趣</a>， 创建属于自己的音乐流。
             </div>
         </div>
 

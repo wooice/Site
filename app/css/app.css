@@ -200,3 +200,8 @@
     -o-transition: margin .3s cubic-bezier(.175,.885,.32,1.275);
     transition: margin .3s cubic-bezier(.175,.885,.32,1.275);
 }
+
+.external_logo{
+    width: 30px;
+    height: 30px
+}

@@ -60,7 +60,7 @@
             </div>
 
             <div class="{{noSoundMsg}}" style="position:absolute; top:40%; left:35%;">
-                您还没有推送的声音流，发现自己的<a href="">兴趣</a>，将有更多声音推送。
+                您还没有推送的声音流，发现自己的<a href="index.html#/interest">兴趣</a>，将有更多声音推送。
             </div>
             <div class="{{noSearchMsg}}" style="position:absolute; top:40%; left:35%;">
                没有找到结果，请尝试其他关键词
@@ -68,20 +68,28 @@
 	</div>
 
 
-		<div class="span3">
-			<!--Right Side content-->
-			<ul class="musics">
-				<li
-					ng-repeat="music in musics_top | filter:query | orderBy:orderProp">
-					<p>
-						<a href="#/musics/{{music.id}}" class="thumb"><img ng-src="{{music.imageUrl}}"></a>
-					</p>
-					<p>
-						<a href="#/musics/{{music.id}}">{{music.name}}</a>
-					</p>
-				</li>
-			</ul>
-
+		<div class="span3" ng-controller="recommandUserCtrl">
+            <div class="affix" style="width: 23%">
+                <legend style="font-size: 18px">为您推荐的用户</legend>
+                <div class="{{msgClass}}" style="padding-bottom: 10px">
+                    {{msg}}
+                </div>
+                <div ng-repeat="recommendUser in recommendUsers"  style="float:left"   ng-click="toogleFollow()">
+                    <div style="text-align:center;">
+                        <div class="user {{recommendUser.class}}"  >
+                            <a href="#" onclick="return false;">
+                                <img style="width: 60px;height: 60px" ng-src="{{recommendUser.profile.avatorUrl}}"  >
+                            </a>
+                        </div>
+                        </a>
+                        <div>
+                            <a href='{{recommendUser.route}}'>{{recommendUser.profile.alias}}</a>
+                        </div>
+                    </div>
+                </div>
+                <i style="cursor:pointer" class='button button-small button-rounded button-flat action-button pull-right'
+                   ng-click="save()">保存</i>
+            </div>
 		</div>
 
 	</div>

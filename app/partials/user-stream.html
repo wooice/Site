@@ -91,11 +91,39 @@
             </div>
 
             <div class="{{noSoundMsg}}" style="position:absolute; top:40%; left:40%;">
-                您还没有自己的音乐流，<a href="index.html#/upload">上传音乐</a>或<a href="">发现兴趣</a>， 创建属于自己的音乐流。
+                您还没有自己的音乐流，<a href="index.html#/upload">上传音乐</a>或<a href="index.html#/interest">发现兴趣</a>， 创建属于自己的音乐流。
             </div>
         </div>
 
         <div class="span2" ng-controller="userSocialController">
+            <div>
+                <legend style="font-size: 18px"><i class="icon-group icon-large" title="3 followers" style="padding-left:10px;font-size: 18px;"></i> 你关注的人({{user.userSocial.following}})</legend>
+                <div ng-repeat="user in followed"  style="float:left">
+                    <div style="text-align:center;">
+                            <a href="#" onclick="return false;">
+                                <img style="width: 60px;height: 60px" ng-src="{{user.profile.avatorUrl}}"  >
+                            </a>
+                        </a>
+                        <div>
+                            <a href='{{user.route}}'>{{user.profile.alias}}</a>
+                        </div>
+                    </div>
+                </div>
+             </div>
+            <div>
+                <legend  style="font-size: 18px"><i class="icon-user icon-large" title="3 followers" style="padding-left:10px;font-size: 18px;"></i>  关注你的人({{user.userSocial.followed}})</legend>
+                <div ng-repeat="user in following"  style="float:left">
+                    <div style="text-align:center;">
+                            <a href="#" onclick="return false;">
+                                <img style="width: 60px;height: 60px" ng-src="{{user.profile.avatorUrl}}"  >
+                            </a>
+                        </a>
+                        <div>
+                            <a href='{{user.route}}'>{{user.profile.alias}}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>

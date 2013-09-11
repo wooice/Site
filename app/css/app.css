@@ -205,3 +205,18 @@
     width: 30px;
     height: 30px
 }
+
+.gray{
+    color: gray;
+}
+
+.green{
+    color: green;
+}
+
+.user:hover
+{
+    border:1px solid dodgerblue;
+}
+
+.user_selected{border:3px solid dodgerblue}

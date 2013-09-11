@@ -21,7 +21,7 @@
         ])
         .controller('soundUploadCtrl', [
             '$scope', 'Sound', 'Tag','User', 'config',
-            function ($scope, Sound, Tag,User, config) {
+            function ($scope, Sound, Tag, User, config) {
                 $scope.uploadUrl = config.service.url_noescp + '/storage/upload';
                 $scope.uploadPosterUrl = config.service.url_noescp + '/storage/upload/poster';
                 $scope.defaultSound = {};
@@ -227,7 +227,7 @@
                                 $scope.defaultSound.profileMsgClass = "alert alert-success";
                                 $scope.defaultSound.profileMsg = "声音信息保存成功";
                                 $scope.defaultSound.alias = sound.alias;
-                                Tag.attach({soundAlias: sound.alias}, {tags: $scope.defaultSound.tags}, function (count) {
+                                Tag.attach({path: sound.alias+"/attach"}, {tags: $scope.defaultSound.tags}, function (count) {
                                     $scope.defaultSound.profileSaved = true;
                                     if ($scope.defaultSound.dataSaved) {
                                         $scope.defaultSound.uploadMsgClass = "alert alert-success";
@@ -269,7 +269,7 @@
                                 $scope.defaultSound.profileMsgClass = "alert alert-success";
                                 $scope.defaultSound.profileMsg = "声音信息保存成功";
                                 $scope.defaultSound.alias = sound.alias;
-                                Tag.attach({soundAlias: sound.alias}, {tags: $scope.defaultSound.tags}, function (count) {
+                                Tag.attach({path: sound.alias}, {tags: $scope.defaultSound.tags}, function (count) {
                                     $scope.defaultSound.profileSaved = true;
                                     if ($scope.defaultSound.dataSaved) {
                                         $scope.defaultSound.uploadMsgClass = "alert alert-success";
@@ -349,7 +349,7 @@
 
                     $("#tags").typeahead({
                         remote: {
-                            url: config.service.url_noescp + '/tag/tags?term=%QUERY',
+                            url: config.service.url_noescp + '/tag/list?term=%QUERY',
                             filter: function (parsedResponse) {
                                 var tags = [];
                                 $.each(parsedResponse, function (index, tag) {

@@ -5,8 +5,7 @@
     </div>
     <table style="width: 100%">
         <tr ng-repeat="site in user.external.sites">
-            <td  style="width: 70px">{{site.displayName}}</td>
-            <td style="width: 10%"><img src="img/logo/{{site.name}}.png" class="external_logo"/></td>
+            <td><img src="img/logo/{{site.name}}.png" class="external_logo"/></td>
             <td><input class="input-block-level" type="text" placeholder="{{site.displayName}}" ng-model="site.url"></td>
         </tr>
 

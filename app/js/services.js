@@ -40,16 +40,21 @@ angular.module('wooice.service.sound', ['ngResource'])
 
 angular.module('wooice.service.user', ['ngCookies']).
     factory('User', ['$resource', 'config', function ($resource, config) {
-        return $resource(config.service.url + '/user/:userAlias', {}, {
+        return $resource(config.service.url + '/user/:action/:userAlias/:emailAddress', {}, {
             get: {method: 'GET', params: {userAlias: 'current'}, isArray: false},
             isAlive: {method: 'GET', params: {userAlias: 'isAlive'}, isArray: false},
-            logout: {method: 'POST', params: {userAlias: 'logout'}, isArray: false}
+            logout: {method: 'POST', params: {userAlias: 'logout'}, isArray: false},
+            confirm: {method: 'PUT', params: {action: "sendEmailConfirm"}, isArray: false}
         });
     }]).
     factory('UserSocial', ['$resource', 'config', function ($resource, config) {
         return $resource(config.service.url + '/userActivity/:action/:toUserAlias', {}, {
             follow: {method: 'PUT', params: {action: 'follow', toUserAlias: 'current'}, isArray: false},
-            unfollow: {method: 'DELETE', params: { action: 'follow', toUserAlias: 'current'}, isArray: false}
+            unfollow: {method: 'DELETE', params: { action: 'follow', toUserAlias: 'current'}, isArray: false},
+            getRecommandByTags: {method: "POST", params:{action: 'recommand', toUserAlias: 'users'}, isArray: true },
+            getRecommand: {method: "POST", params:{action: 'recommand', toUserAlias: 'user'}, isArray: true },
+            getFollowed: {method: "GET", params:{action: 'followed', pageSize: 5}, isArray: true },
+            getFollowing: {method: "GET", params:{action: 'following', pageSize: 5}, isArray: true }
         });
     }]).
     factory('UserProfile', ['$resource', 'config', function ($resource, config) {
@@ -104,16 +109,19 @@ angular.module('wooice.service.user', ['ngCookies']).
 
 angular.module('wooice.service.tag', []).
     factory('Tag', ['$resource', 'config', function ($resource, config) {
-        return $resource(config.service.url + '/tag/:action/:soundAlias', {}, {
-            query: {method: 'GET', params: {action: 'match'}, isArray: false},
-            attach: {method: 'PUT', params: {action: 'attach'}, isArray: false}
+        return $resource(config.service.url + '/tag/:path/:action', {}, {
+            query: {method: 'GET', params: {path: 'list'}, isArray: false},
+            attach: {method: 'PUT', params: {}, isArray: false},
+            curated: {method: 'GET', params: {path:'list', action:'curated'}, isArray: true},
+            categories: {method: 'GET', params: {path:'list', action:'categories'}, isArray: true}
         });
     }])
 ;
 
 angular.module('wooice.service.guest', []).
     factory('Guest', ['$resource', 'config', function ($resource, config) {
-        return $resource(config.service.url + '/guest/:uri', {}, {
+        return $resource(config.service.url + '/guest/:uri/:userAlias/:emailAddress', {}, {
+            create: {method: 'PUT', params: {uri: "create"}, isArray: false},
             login: {method: 'POST', params: {uri: "login"}, isArray: false}
         });
     }])

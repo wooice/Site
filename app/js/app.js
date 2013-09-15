@@ -1,7 +1,7 @@
 'use strict';
 
 /* App Module */
-angular.module('wooice', ['wooice.filters', 'wooice.controllers', 'wooice.config', 'wooice.module.upload', 'wooice.service.sound', 'wooice.service.user', 'wooice.service.tag','wooice.controller.profile','wooice.service.userProfile', 'wooice.service.guest']).
+angular.module('wooice', ['ngRoute','wooice.filters','wooice.directives', 'wooice.controllers', 'wooice.config', 'wooice.module.upload', 'wooice.service.sound', 'wooice.service.user', 'wooice.service.tag','wooice.controller.profile','wooice.service.userProfile', 'wooice.service.guest']).
     config(['$routeProvider', '$httpProvider', function ($routeProvider, $httpProvider) {
         $routeProvider.
             when('/stream', {templateUrl: 'partials/stream.html', controller: 'streamCtrl'}).
@@ -12,6 +12,7 @@ angular.module('wooice', ['wooice.filters', 'wooice.controllers', 'wooice.config
             when('/upload', {templateUrl: 'partials/upload.html', controller: 'soundUploadCtrl'}).
             when('/interest', {templateUrl: 'partials/interest.html', controller: 'interestCtrl'}).
             when('/guest/login', {templateUrl: 'partials/guest/login.html', controller: 'loginCtrl'}).
+            when('/guest/register', {templateUrl: 'partials/guest/register.html', controller: 'registerCtrl'}).
             otherwise({redirectTo: '/stream'});
 
         var logsOutUserOn401 = ['$q', '$location', function ($q, $location) {
@@ -61,8 +62,13 @@ angular.module('wooice', ['wooice.filters', 'wooice.controllers', 'wooice.config
         };
 
         $rootScope.$on('$routeChangeStart', function (event, next, current) {
+            if (routeGuest($location.url()) && UserService.validateRoleGuest() )
+            {
+               return;
+            }
+
             var curUser = User.isAlive({},function () {
-                console.log('ping');
+
                 UserService.setupUser({
                     userAlias: curUser.profile.alias,
                     role: curUser.userRoles[0].role

@@ -186,7 +186,7 @@
                     var leftSec = ((curSec - curMin * 60 * 1000) / 1000).toFixed(2);
 
                     $('#sound_commentbox_' + soundId).show();
-                    $('#sound_commentbox_input_' + soundId).attr("placeholder", ("Leave your comment @ " + curMin + "m " + leftSec + "s ..."));
+                    $('#sound_commentbox_input_' + soundId).attr("placeholder", ("您将留言在 " + ((curMin>0)?("@ " + curMin + "分 "):"") + leftSec + "秒 ..."));
                     $('#sound_comment_point_' + soundId).val((curSec / 1000).toFixed(2));
                 }
             }

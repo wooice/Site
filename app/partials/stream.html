@@ -2,15 +2,15 @@
 
 <div role="main" class="container-fluid">
 
-	<div class="row-fluid">
-		<div id="sound_streams" class="span9">
-			<!--Body content-->
-			<div  ng-repeat="sound in sounds" ng-controller="streamCtrl">
+    <div class="row-fluid">
+        <div id="sound_streams" class="span9">
+            <!--Body content-->
+            <div ng-repeat="sound in sounds" ng-controller="streamCtrl">
                 <div id="sound_{{sound.id}}" class='sound_item'>
                     <div id="sound_art_{{sound.id}}" class='sound_art'>
                         <div id="sound_cover_{{sound.id}}">
-                            <div id="sound_cover_ul_{{sound.id}}"  class= 'poster_img'>
-                                <a href="{{sound.title.route}}" ><img  ng-src="{{sound.poster}}"></a>
+                            <div id="sound_cover_ul_{{sound.id}}" class='poster_img'>
+                                <a href="{{sound.title.route}}"><img ng-src="{{sound.poster}}"></a>
                             </div>
                         </div>
                     </div>
@@ -18,7 +18,8 @@
                     <div id="sound_player_{{sound.id}}" class='sound_player'>
                         <div id="sound_player_header_{{sound.id}}" class='sound_player_header'>
                             <div class='sound_player_control'>
-                                <i style="cursor:pointer" id='sound_player_button_{{sound.id}}' class='icon-play sound_player_button'  ng-click="togglePause(sound.id)"></i>
+                                <i style="cursor:pointer" id='sound_player_button_{{sound.id}}'
+                                   class='icon-play sound_player_button' ng-click="togglePause(sound.id)"></i>
                             </div>
                             <div id="sound_summary_{{sound.id}}">
                                 <div id="sound_owner_{{sound.id}}">
@@ -30,16 +31,27 @@
                             </div>
                         </div>
                         <div id="sound_player_body_{{sound.id}}" class='sound_player_body'>
-                             <div id="sound_wave_{{sound.id}}" class='sound_player_wave'>
-                             </div>
+                            <div id="sound_wave_{{sound.id}}" class='sound_player_wave'>
+                            </div>
                         </div>
                         <div id="sound_player_footer_{{sound.id}}" class='sound_player_footer  border-light-bottom'>
                             <div id="sound_commentbox_{{sound.id}}" class="hide">
-                               <input type="text" id="sound_commentbox_input_{{sound.id}}" class="input-block-level"  placeholder="Leave your comment...">
-                               <input type="hidden" id="sound_comment_point_{{sound.id}}">
+                                <input type="text" id="sound_commentbox_input_{{sound.id}}" class="input-block-level"
+                                       placeholder="请留下您的评论...">
+                                <input type="hidden" id="sound_comment_point_{{sound.id}}">
                             </div>
-                            <a href="#" class="button button-small button-rounded button-flat action-button" onclick="return false;" ng-click="toggleLike(sound.id)"><i class="icon-heart"></i></i> {{sound.soundUserPrefer.likeWording}}</a>
-                            <a href="#" class="button button-small button-rounded button-flat action-button" onclick="return false;" ng-click="toggleRepost(sound.id)"><i class="icon-retweet"></i></i> {{sound.soundUserPrefer.repostWording}}</a>
+                            <a href="#" class="button button-small button-rounded button-flat action-button"
+                               onclick="return false;" ng-click="toggleLike(sound.id)"><i class="icon-heart"></i></i>
+                                {{sound.soundUserPrefer.likeWording}}</a>
+                            <a href="#" class="button button-small button-rounded button-flat action-button"
+                               onclick="return false;" ng-click="toggleRepost(sound.id)"><i
+                                    class="icon-retweet"></i></i> {{sound.soundUserPrefer.repostWording}}</a>
+
+                            <a href="#" class="button button-small button-rounded button-flat action-button"
+                               ng-show="isOwner()"
+                               onclick="return false;" ng-click="delete()"><i
+                                    class="icon-trash"></i></i> 删除</a>
+
                             <div class="pull-right">
                                 <i class="icon-play-sign stat_icon"></i><span id="play_count_{{sound.id}}">{{sound.soundSocial.playedCount}}</span>
                                 |
@@ -52,37 +64,49 @@
                         </div>
                     </div>
                 </div>
-			 </div>
+            </div>
 
 
             <div class="{{loadClass}}" style="text-align: center">
                 loading...
             </div>
 
-            <div class="{{noSoundMsg}}" style="position:absolute; top:40%; left:35%;">
-                您还没有推送的声音流，发现自己的<a href="">兴趣</a>，将有更多声音推送。
+            <div class="{{noSoundMsg}}" style="position:absolute; top:40%; left:25%;">
+                您还没有推送的声音流，发现自己的<a href="index.html#/interest">乐趣</a>，将有更多声音推送。
             </div>
             <div class="{{noSearchMsg}}" style="position:absolute; top:40%; left:35%;">
-               没有找到结果，请尝试其他关键词
+                没有找到结果，请尝试其他关键词
             </div>
-	</div>
+        </div>
 
 
-		<div class="span3">
-			<!--Right Side content-->
-			<ul class="musics">
-				<li
-					ng-repeat="music in musics_top | filter:query | orderBy:orderProp">
-					<p>
-						<a href="#/musics/{{music.id}}" class="thumb"><img ng-src="{{music.imageUrl}}"></a>
-					</p>
-					<p>
-						<a href="#/musics/{{music.id}}">{{music.name}}</a>
-					</p>
-				</li>
-			</ul>
+        <div class="span3" ng-controller="recommandUserCtrl">
+            <div class="affix" style="width: 23%">
+                <legend style="font-size: 18px">为您推荐的用户
+                    <i style="cursor:pointer" ng-show="recommendUsers.length > 0"
+                       class='button button-small button-pill button-flat'
+                       ng-click="save()">关注选定用户</i>
+                </legend>
+                <div class="{{msgClass}}" style="padding-bottom: 10px">
+                    {{msg}}
+                </div>
+                <div>
+                    <div ng-repeat="recommendUser in recommendUsers" style="float:left" ng-click="toogleFollow()">
+                        <div style="text-align:center; padding-right: 8px; height: 90px">
+                            <div class="user {{recommendUser.class}}">
+                                <a href="#" onclick="return false;">
+                                    <img style="width: 60px;height: 60px" ng-src="{{recommendUser.profile.avatorUrl}}">
+                                </a>
+                            </div>
+                            </a>
+                            <div>
+                                <a href='{{recommendUser.route}}'>{{recommendUser.profile.alias}}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-		</div>
-
-	</div>
+    </div>
 </div>

@@ -205,3 +205,31 @@
     width: 30px;
     height: 30px
 }
+
+.gray{
+    color: gray;
+}
+
+.green{
+    color: green;
+}
+
+.user:hover
+{
+    border:1px solid dodgerblue;
+}
+
+.user_selected{border:3px solid dodgerblue}
+
+input.ng-dirty.ng-invalid {
+    border: 1px solid darkred;
+}
+
+input.ng-dirty.ng-valid {
+    border: 1px solid green;
+}
+
+.navbar .nav > li > a {
+    color: #999999;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}

@@ -1,0 +1,66 @@
+<ng-include src="'partials/header.html'"></ng-include>
+
+<div class="container">
+    <div id="tags">
+        <div class="row-fluid">
+            <div class="span6">
+                <div ng-repeat="cate in categories | filter:odd">
+                    <div style="padding-top: 30px;">
+                        <legend>{{cate.name}}</legend>
+                        <div style="padding-top: 15px;">
+                            <div ng-repeat="curatedTag in curatedTags | filter:{category.name: cate.name}"
+                                 style="float:left;padding-right: 25px">
+                                <label ng-click="toogleInterest()"><i class="icon-tag {{curatedTag.class}}">
+                                    {{curatedTag.label}}</i></label>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+            </div>
+
+            <div class="span6">
+                <div ng-repeat="cate in categories | filter:even">
+                    <div style="padding-top: 30px;">
+                        <legend>{{cate.name}}</legend>
+                        <div style="padding-top: 15px;">
+                            <div ng-repeat="curatedTag in curatedTags | filter:{category.name: cate.name}"
+                                 style="float:left;padding-right: 25px">
+                                <label ng-click="toogleInterest()"><i class="icon-tag {{curatedTag.class}}">
+                                    {{curatedTag.label}}</i></label>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div  class="{{msgClass}}" style="padding-bottom: 10px">
+        {{msg}}
+    </div>
+
+    <div id="recommand" style="padding-top: 30px">
+        <div>
+            <legend>推荐的用户</legend>
+            <div ng-repeat="recommendUser in recommendUsers" style="float:left" ng-click="toogleFollow()">
+                <div style="text-align:center;">
+                    <div class="user {{recommendUser.class}}">
+                        <a href="#" onclick="return false;">
+                            <img style="width: 80px;height: 80px" ng-src="{{recommendUser.profile.avatorUrl}}">
+                        </a>
+                    </div>
+                    </a>
+                    <div>
+                        <a href='{{recommendUser.route}}'>{{recommendUser.profile.alias}}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <i style="cursor:pointer" class='button button-small button-rounded button-flat action-button pull-right'
+           ng-click="save()">保存</i>
+    </div>
+
+</div>
+

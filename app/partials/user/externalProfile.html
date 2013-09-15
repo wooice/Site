@@ -3,24 +3,33 @@
     <div style="padding-bottom: 10px">
         <span class="{{messageClass}}">{{message}}</span>
     </div>
+    <form name="external">
+        <div  class="text-warning" style="padding-left: 100px;padding-bottom: 10px">
+            <span class="error"
+                   ng-show="external.$invalid">
+                请输入正确的网址
+            </span>
+        </div>
     <table style="width: 100%">
         <tr ng-repeat="site in user.external.sites">
-            <td  style="width: 70px">{{site.displayName}}</td>
-            <td style="width: 10%"><img src="img/logo/{{site.name}}.png" class="external_logo"/></td>
-            <td><input class="input-block-level" type="text" placeholder="{{site.displayName}}" ng-model="site.url"></td>
+            <td><img src="img/logo/{{site.name}}.png" class="external_logo"/></td>
+            <td>
+                <input class="input-block-level" name="{{site.displayName}}" type="url" placeholder="{{site.displayName}}" ng-model="site.url">
+            </td>
         </tr>
 
         <tr>
             <td></td>
             <td></td>
             <td>
-                <a href="#" class="button button-small button-rounded button-flat-action action-button pull-right"
+                <button class="button button-small button-rounded button-flat-action action-button pull-right"    ng-disabled="external.$invalid"
                    onclick="return false;" ng-click="saveProfile()">
                     <span>保存信息</span>
-                </a>
+                </button>
             </td>
         </tr>
     </table>
+     </form>
     <div>
 
     </div>

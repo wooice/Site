@@ -2,16 +2,18 @@
     <div class="navbar-inner">
         <a class="brand" href="#"><img width="60" height="60" src="img/logo.jpg"/></a>
         <ul class="nav">
-            <li class="active"><a href="#/stream">Stream</a></li>
+            <li><a href="#/stream">乐趣</a></li>
+            <li class="pull-right"><a href="#/stream/user/{{userAlias}}">你的声音</a></li>
+
+            <form class="navbar-search pull-left" action="">
+                <input type="text" class="search-query span2" placeholder="Find a sound" ng-model="q" id="search_box">
+            </form>
         </ul>
-        <form class="navbar-search pull-left" action="">
-            <input type="text" class="search-query span2" placeholder="Find a sound" ng-model="q" id="search_box">
-        </form>
+
         <ul class="nav pull-right">
-            <li class="pull-right"><a href="#/stream/user/{{userAlias}}">Yours</a></li>
-            <li class="pull-right"><a href="#/profile">Profile</a></li>
-            <li class="pull-right"><a href="#/upload">Upload</a></li>
-            <li class="pull-right"><a href="#/logout" ng-click="logout()">Logout</a></li>
+            <li ><a href="#/profile">设置</a></li>
+            <li><a href="#/upload">上传</a></li>
+            <li ><a href="#/logout" ng-click="logout()">注销</a></li>
         </ul>
     </div>
 </div>

@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('wooice.controllers', []).
-    controller('streamCtrl', ['$scope','config', 'Stream', 'SoundSocial', '$routeParams', 'UserService', function ($scope,config, Stream, SoundSocial, $routeParams, UserService) {
+    controller('streamCtrl', ['$scope', 'config', 'Stream', 'Sound', 'SoundSocial', '$routeParams', 'UserService', function ($scope, config, Stream, Sound, SoundSocial, $routeParams, UserService) {
 
         $scope.togglePause = function (id) {
             var sound = null;
@@ -45,6 +45,30 @@ angular.module('wooice.controllers', []).
             return false;
         }
 
+        $scope.isOwner = function () {
+            return  this.sound.owner.alias == UserService.getCurUserAlias();
+        }
+
+        $scope.delete = function () {
+            if (this.sound.owner.alias != UserService.getCurUserAlias()) {
+                return;
+            }
+
+            if (confirm('确定要删除当前音乐吗?')) {
+                Sound.delete({sound: this.sound.id}, function () {
+                    var toDelete = 0;
+                    $.each($scope.sounds, function (index, sound) {
+                        if (this.sound.id == sound.id) {
+                            toDelete = index;
+                            return;
+                        }
+                    });
+                    $scope.sounds.splice(toDelete, 1);
+                    $scope.$apply();
+                });
+            }
+        }
+
         $scope.toggleRepost = function (id) {
             var sound = null;
             $.each($scope.sounds, function (index, oneSound) {
@@ -57,7 +81,7 @@ angular.module('wooice.controllers', []).
             if (sound && sound.soundUserPrefer.repost) {
                 var repostsCount = SoundSocial.unrepost({sound: sound.id}, null, function (count) {
                     sound.soundUserPrefer.repost = 0;
-                    sound.soundUserPrefer.repostWording = "Repost";
+                    sound.soundUserPrefer.repostWording = "转";
                     sound.soundSocial.reportsCount = parseInt(repostsCount.reposted);
                 });
             }
@@ -83,46 +107,39 @@ angular.module('wooice.controllers', []).
 
             loadStream();
 
-            $(window).scroll(function(){
-                if ($(window).height() + $(window).scrollTop() >= ($('#sound_streams').height() + 50) ) {
+            $(window).scroll(function () {
+                if ($(window).height() + $(window).scrollTop() >= ($('#sound_streams').height() + 50)) {
                     loadStream();
                 }
             });
-            });
+        });
 
-        function loadStream()
-        {
-            if ( $scope.isloading)
-            {
-                 return;
+        function loadStream() {
+            if ($scope.isloading) {
+                return;
             }
             $scope.isloading = true;
 
-            $scope.$apply(function(){
+            $scope.$apply(function () {
                 $scope.loadClass = '';
             });
 
             var subPath = "";
-            if ($routeParams.userId)
-            {
+            if ($routeParams.userId) {
                 subPath = $routeParams.userId;
             }
-            else
-            {
-                if ($routeParams.action)
-                {
+            else {
+                if ($routeParams.action) {
                     subPath = $routeParams.action;
                 }
             }
 
             var params = {subPath: subPath, pageNum: $scope.pageNum};
 
-            if ($routeParams.q)
-            {
-                params.q =  $routeParams.q;
+            if ($routeParams.q) {
+                params.q = $routeParams.q;
             }
-            if ($routeParams.userAlias)
-            {
+            if ($routeParams.userAlias) {
                 params.userAlias = UserService.getCurUserAlias();
             }
 
@@ -131,8 +148,7 @@ angular.module('wooice.controllers', []).
                 $scope.isloading = false;
                 $.each(soundsData, function (index, soundRecord) {
                     var posterUrl = '';
-                    if (!$routeParams.q)
-                    {
+                    if (!$routeParams.q) {
                         if (soundRecord.sound.profile.poster && soundRecord.sound.profile.poster.url) {
                             posterUrl = soundRecord.sound.profile.poster.url;
                         }
@@ -152,8 +168,7 @@ angular.module('wooice.controllers', []).
                             played: false
                         };
                     }
-                    else
-                    {
+                    else {
                         if (soundRecord.profile.poster && soundRecord.profile.poster.url) {
                             posterUrl = soundRecord.profile.poster.url;
                         }
@@ -173,24 +188,22 @@ angular.module('wooice.controllers', []).
                             played: false
                         };
                     }
-                    sound.soundUserPrefer.likeWording = (sound.soundUserPrefer.like) ? "" : "Like";
-                    sound.soundUserPrefer.repostWording = (sound.soundUserPrefer.repost) ? "" : "Repost";
+                    sound.soundUserPrefer.likeWording = (sound.soundUserPrefer.like) ? "" : "赞";
+                    sound.soundUserPrefer.repostWording = (sound.soundUserPrefer.repost) ? "" : "转";
 
                     var hasSound = false;
-                    $.each($scope.sounds, function(index, oneSound){
-                          if (oneSound.id == sound.id)
-                          {
-                              hasSound = true;
-                          }
+                    $.each($scope.sounds, function (index, oneSound) {
+                        if (oneSound.id == sound.id) {
+                            hasSound = true;
+                        }
                     });
 
-                    if (hasSound)
-                    {
-                         return;
+                    if (hasSound) {
+                        return;
                     }
 
                     $scope.sounds.push(sound);
-                    $scope.$apply(function(){
+                    $scope.$apply(function () {
                     });
 
                     //render wave
@@ -212,35 +225,28 @@ angular.module('wooice.controllers', []).
                             var commentResult = SoundSocial.comment({sound: sound.id, comment: comment, pointAt: sec}, null, function (count) {
                                 sound.soundSocial.commentsCount = commentResult.commentsCount;
                                 $('#sound_commentbox_input_' + sound.id).val('');
-                                $('#sound_commentbox_input_' + sound.id).attr("placeholder", "Thank you for your comment!");
+                                $('#sound_commentbox_input_' + sound.id).attr("placeholder", "感谢您的留言!");
                             });
                         }
                     });
                 });
 
-                if (soundsData.length > 0)
-                {
+                if (soundsData.length > 0) {
                     $scope.pageNum++;
                 }
-                if ($scope.sounds.length == 0)
-                {
-                    if (!$routeParams.q)
-                    {
+                if ($scope.sounds.length == 0) {
+                    if (!$routeParams.q) {
                         $scope.noSoundMsg = '';
                     }
-                    else
-                    {
+                    else {
                         $scope.noSearchMsg = '';
                     }
                 }
-                else
-                {
-                    if (!$routeParams.q)
-                    {
+                else {
+                    if (!$routeParams.q) {
                         $scope.noSoundMsg = 'hide';
                     }
-                    else
-                    {
+                    else {
                         $scope.noSearchMsg = 'hide';
                     }
                 }
@@ -248,7 +254,7 @@ angular.module('wooice.controllers', []).
         }
     }])
 
-    .controller('soundDetailCtrl', ['$scope', 'config', '$routeParams', 'Sound', 'SoundSocial', 'SoundSocialList','UserService', function ($scope,config, $routeParams, Sound, SoundSocial, SoundSocialList,UserService) {
+    .controller('soundDetailCtrl', ['$scope', 'config', '$routeParams', 'Sound', 'SoundSocial', 'SoundSocialList', 'UserService', function ($scope, config, $routeParams, Sound, SoundSocial, SoundSocialList, UserService) {
         $scope.togglePause = function (id) {
             var sound = $scope.sound;
 
@@ -262,7 +268,7 @@ angular.module('wooice.controllers', []).
             if (sound.soundUserPrefer.like) {
                 var likesCount = SoundSocial.unlike({sound: sound.id}, null, function (count) {
                     sound.soundUserPrefer.like = 0;
-                    sound.soundUserPrefer.likeWording = "Like";
+                    sound.soundUserPrefer.likeWording = "赞";
                     sound.soundSocial.likesCount = parseInt(likesCount.liked);
                 });
             }
@@ -285,7 +291,7 @@ angular.module('wooice.controllers', []).
             if (sound.soundUserPrefer.repost) {
                 var repostsCount = SoundSocial.unrepost({sound: sound.id}, null, function (count) {
                     sound.soundUserPrefer.repost = 0;
-                    sound.soundUserPrefer.repostWording = "Repost";
+                    sound.soundUserPrefer.repostWording = "转";
                     sound.soundSocial.reportsCount = parseInt(repostsCount.reposted);
                 });
             }
@@ -322,8 +328,7 @@ angular.module('wooice.controllers', []).
                     played: false
                 };
 
-                if ($scope.sound.soundUserPrefer)
-                {
+                if ($scope.sound.soundUserPrefer) {
                     $scope.sound.soundUserPrefer.likeWording = ($scope.sound.soundUserPrefer.like) ? "" : "Like";
                     $scope.sound.soundUserPrefer.repostWording = ($scope.sound.soundUserPrefer.repost) ? "" : "Repost";
                 }
@@ -348,7 +353,7 @@ angular.module('wooice.controllers', []).
                         var result = SoundSocial.comment({sound: $scope.sound.id, comment: comment, pointAt: sec}, null, function (count) {
                             $scope.sound.soundSocial.commentsCount = result.commentsCount;
                             $('#sound_commentbox_input_' + sound.id).val('');
-                            $('#sound_commentbox_input_' + sound.id).attr("placeholder", "Thank you for your comment!");
+                            $('#sound_commentbox_input_' + sound.id).attr("placeholder", "感谢您的留言!");
                         });
                     }
                 });
@@ -356,7 +361,6 @@ angular.module('wooice.controllers', []).
                 $scope.commentPageNum = 1;
                 var comments = SoundSocialList.comment({sound: $scope.sound.id, pageNum: $scope.commentPageNum}, function () {
                     $scope.comments = comments;
-
                     $.each($scope.comments, function (index, comment) {
                         if (!comment.owner.profile.avatorUrl) {
                             comment.owner.profile.avatorUrl = "img/default_avatar.png";
@@ -368,9 +372,15 @@ angular.module('wooice.controllers', []).
         });
     }])
 
-    .controller('userBasicController', ['$scope', '$routeParams', 'User', 'UserSocial','UserService', function ($scope, $routeParams, User, UserSocial, UserService) {
+    .controller('userBasicController', ['$scope', '$routeParams', 'User', 'UserSocial', 'UserService', function ($scope, $routeParams, User, UserSocial, UserService) {
+        $scope.curAlias = UserService.getCurUserAlias();
         var user = User.get({userAlias: $routeParams.userId}, function () {
             $scope.user = user;
+
+            if (user.profile.alias == UserService.getCurUserAlias())
+            {
+                $scope.user.isCurrent = true;
+            }
 
             if (!$scope.user.profile.avatorUrl) {
                 $scope.user.profile.avatorUrl = 'img/default_avatar_large.png';
@@ -401,41 +411,87 @@ angular.module('wooice.controllers', []).
         });
     }])
 
-    .controller('userSocialController', ['$scope', '$routeParams', function ($scope, $routeParams, $http) {
+    .controller('userSocialController', ['$scope', 'config', '$routeParams', 'UserSocial', 'User', function ($scope, config, $routeParams, UserSocial, User) {
+        var user = User.get({userAlias: $routeParams.userId}, function () {
+            $scope.user = user;
+        });
+        var followed = UserSocial.getFollowed({pageNum: 1}, function () {
+            $.each(followed, function (index, user) {
+                if (!user.profile.avatorUrl) {
+                    user.profile.avatorUrl = "img/default_avatar.png";
+                }
+                user.route = config.userStreamPath + user.profile.alias;
+            });
+            $scope.followed = followed;
+        });
 
+        var following = UserSocial.getFollowing({pageNum: 1}, function () {
+            $.each(following, function (index, user) {
+                if (!user.profile.avatorUrl) {
+                    user.profile.avatorUrl = "img/default_avatar.png";
+                }
+                user.route = config.userStreamPath + user.profile.alias;
+            });
+            $scope.following = following;
+        });
     }])
 
-    .controller('loginCtrl', ['$scope', '$location','Guest','UserService', function ($scope, $location, Guest, UserService) {
-            $scope.userId ="";
-            $scope.password ="";
+    .controller('loginCtrl', ['$scope', '$location', 'Guest', 'UserService', function ($scope, $location, Guest, UserService) {
+        $scope.userId = "";
+        $scope.password = "";
 
-            $scope.login = function(){
-                var user = {userId:$scope.userId, password:$scope.password};
-                var curUser = Guest.login({}, user, function(){
-                    UserService.setupUser({
-                       userAlias: curUser.profile.alias,
-                       role: curUser.userRoles[0].role
-                    });
-                    if(UserService.validateRoleUser() || UserService.validateRoleAdmin())
-                    {
-                        $location.path('/stream');
-                    }
+        $scope.toLogin = function () {
+            var user = {userId: $scope.userId, password: $scope.password};
+            var curUser = Guest.login({}, user, function () {
+                UserService.setupUser({
+                    userAlias: curUser.profile.alias,
+                    role: curUser.userRoles[0].role
                 });
-            }
+                if (UserService.validateRoleUser() || UserService.validateRoleAdmin()) {
+                    $location.path('/stream');
+                }
+            }, function () {
+                $scope.loginMsgClass = "text-warning";
+                $scope.loginMsg = '失败了，用户名或密码错误';
+            });
+        }
     }])
 
-    .controller('heaederCtrl', ['$scope','$location','$routeParams', 'User', 'UserService', function ($scope, $location,$routeParams, User, UserService) {
+    .controller('registerCtrl', ['$scope', '$location', 'Guest', 'UserService', 'User', function ($scope, $location, Guest, UserService, User) {
+        $scope.userAlias = "";
+        $scope.emailAddress = "";
+        $scope.password1 = null;
+        $scope.password2 = null;
+
+        $scope.toRegister = function () {
+            var user = {userAlias: $scope.userAlias, emailAddress: $scope.emailAddress, password: $scope.password1};
+            var curUser = Guest.create({}, user, function () {
+                var login = {userId: $scope.userAlias, password: $scope.password1};
+                curUser = Guest.login({}, login, function () {
+                    UserService.setupUser({
+                        userAlias: $scope.userAlias,
+                        role: curUser.userRoles[0].role
+                    });
+                    User.confirm({userAlias: $scope.userAlias, emailAddress: $scope.emailAddress}, null, function () {
+                        $location.url('/interest');
+                    });
+                });
+            });
+        }
+    }])
+
+    .controller('heaederCtrl', ['$scope', '$location', '$routeParams', 'User', 'UserService', function ($scope, $location, $routeParams, User, UserService) {
         $scope.q = $routeParams.q;
         $scope.userAlias = UserService.getCurUserAlias();
-        $scope.logout = function(){
-            User.logout({}, function(){
+        $scope.logout = function () {
+            User.logout({}, function () {
                 UserService.setupUser(null);
             })
         };
 
         $('#search_box').bind('keyup', function (event) {
             if (event.keyCode == 13) {
-                $scope.$apply(function() {
+                $scope.$apply(function () {
                     $location.url('/stream/do/search\?q=' + $scope.q);
                 });
             }
@@ -446,9 +502,188 @@ angular.module('wooice.controllers', []).
     .controller('userProfileCtrl', ['$scope', '$routeParams', function ($scope, $routeParams, $http) {
         $scope.innerPage = 'partials/user/basicProfile.html';
 
-        $scope.jumpTo = function(page){
+        $scope.jumpTo = function (page) {
             $scope.innerPage = 'partials/user/' + page + '.html';
         }
+    }])
+
+    .controller('recommandUserCtrl', ['$scope', 'config', '$routeParams', 'UserSocial', function ($scope, config, $routeParams, UserSocial) {
+        $scope.pageNum = 1;
+        $scope.pageSize = 8;
+        var users = UserSocial.getRecommand({}, {pageNum: $scope.pageNum, pageSize: $scope.pageSize}, function () {
+            $.each(users, function (index, user) {
+                users.class = "";
+                if (!user.profile.avatorUrl) {
+                    user.profile.avatorUrl = "img/default_avatar.png";
+                }
+                user.route = config.userStreamPath + user.profile.alias;
+            });
+
+            $scope.recommendUsers = users;
+        });
+
+        $scope.toogleFollow = function () {
+            var recommendUser = this.recommendUser;
+            if (recommendUser.follow) {
+                recommendUser.follow = false;
+                recommendUser.class = "";
+            }
+            else {
+                recommendUser.follow = true;
+                recommendUser.class = "user_selected";
+            }
+        }
+
+        $scope.save = function () {
+            var followedUser = [];
+
+            $.each($scope.recommendUsers, function (index, user) {
+                if (user.follow) {
+                    followedUser.push(user);
+                }
+            });
+
+            $.each(followedUser, function (index, user) {
+                UserSocial.follow({toUserAlias: user.profile.alias}, null, function () {
+                        $scope.msg = "关注成功，你将接收他们的上传与分享的声音";
+                        $scope.msgClass = "text-success";
+                    }, function () {
+                        $scope.msg = "关注失败，请稍后再试";
+                        $scope.msgClass = "text-warning";
+                    }
+                );
+            });
+        }
+
+    }])
+    .controller('interestCtrl', ['$scope', 'config', '$routeParams', 'Tag', 'UserSocial', function ($scope, config, $routeParams, Tag, UserSocial) {
+        $scope.pageNum = 1;
+        $scope.pageSize = 8;
+        $scope.curatedTags = [];
+        $scope.recommendUsers = [];
+
+        var users = UserSocial.getRecommandByTags({}, {tags: [], pageNum: $scope.pageNum, pageSize: $scope.pageSize}, function () {
+            $.each(users, function (index, user) {
+                users.class = "";
+                if (!user.profile.avatorUrl) {
+                    user.profile.avatorUrl = "img/default_avatar.png";
+                }
+                user.route = config.userStreamPath + user.profile.alias;
+            });
+            $.each(users, function (index, user) {
+                var exist = false;
+                $.each($scope.recommendUsers, function (index, recommendUser) {
+                    if (user.profile.alias = recommendUser.profile.alias) {
+                        exist = true;
+                    }
+                });
+                if (!exist) {
+                    $scope.recommendUsers.push(user);
+                }
+            });
+        });
+
+        $scope.odd = function (cate) {
+            return cate.id % 2 == 0;
+        }
+
+        $scope.even = function (cate) {
+            return cate.id % 2 == 1;
+        }
+
+        $scope.filterTags = function (a, b) {
+            console.log('a');
+        }
+
+        var categories = Tag.categories({}, function () {
+            $.each(categories, function (index, cate) {
+                cate.id = index;
+            });
+            $scope.categories = categories;
+        });
+
+        var tags = Tag.curated({}, function () {
+            $.each(tags, function (index, tag) {
+                tag.interested = false;
+                tag.class = 'gray';
+                $scope.curatedTags.push(tag);
+            });
+        });
+
+        $scope.toogleInterest = function () {
+            var curatedTag = this.curatedTag;
+
+            if (curatedTag.interested) {
+                curatedTag.class = "gray";
+                curatedTag.interested = false;
+            }
+            else {
+                curatedTag.class = "green";
+                curatedTag.interested = true;
+            }
+
+            var interestedTags = {tags: [], pageNum: $scope.pageNum, pageSize: $scope.pageSize};
+            $.each($scope.curatedTags, function (index, curatedTag) {
+                if (curatedTag.interested) {
+                    interestedTags.tags.push(curatedTag.label);
+                }
+            });
+
+            var users = UserSocial.getRecommandByTags({}, interestedTags, function () {
+                $.each(users, function (index, user) {
+                    users.class = "";
+                    if (!user.profile.avatorUrl) {
+                        user.profile.avatorUrl = "img/default_avatar.png";
+                    }
+                    user.route = config.userStreamPath + user.profile.alias;
+                });
+                $.each(users, function (index, user) {
+                    var exist = false;
+                    $.each($scope.recommendUsers, function (index, recommendUser) {
+                        if (user.profile.alias = recommendUser.profile.alias) {
+                            exist = true;
+                        }
+                    });
+                    if (!exist) {
+                        $scope.recommendUsers.push(user);
+                    }
+                });
+            });
+        }
+
+        $scope.toogleFollow = function () {
+            var recommendUser = this.recommendUser;
+            if (recommendUser.follow) {
+                recommendUser.follow = false;
+                recommendUser.class = "";
+            }
+            else {
+                recommendUser.follow = true;
+                recommendUser.class = "user_selected";
+            }
+        }
+
+        $scope.save = function () {
+            var followedUser = [];
+
+            $.each($scope.recommendUsers, function (index, user) {
+                if (user.follow) {
+                    followedUser.push(user);
+                }
+            });
+
+            $.each(followedUser, function (index, user) {
+                UserSocial.follow({toUserAlias: user.profile.alias}, null, function () {
+                        $scope.msg = "关注成功，你将接收他们的上传与分享的声音";
+                        $scope.msgClass = "text-success";
+                    }, function () {
+                        $scope.msg = "关注失败，请稍后再试";
+                        $scope.msgClass = "text-warning";
+                    }
+                );
+            });
+        }
+
     }])
 
 ;

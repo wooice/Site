@@ -120,9 +120,11 @@ angular.module('wooice.service.tag', []).
 
 angular.module('wooice.service.guest', []).
     factory('Guest', ['$resource', 'config', function ($resource, config) {
-        return $resource(config.service.url + '/guest/:uri/:userAlias/:emailAddress', {}, {
+        return $resource(config.service.url + '/guest/:uri/:userAlias/:emailAddress/:action', {}, {
             create: {method: 'PUT', params: {uri: "create"}, isArray: false},
-            login: {method: 'POST', params: {uri: "login"}, isArray: false}
+            login: {method: 'POST', params: {uri: "login"}, isArray: false},
+            checkAlias: {method: 'GET', params: {action: "checkAlias"}, isArray: false},
+            checkEmail: {method: 'GET', params: {action: "checkEmail"}, isArray: false}
         });
     }])
 ;

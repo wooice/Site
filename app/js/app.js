@@ -1,7 +1,7 @@
 'use strict';
 
 /* App Module */
-angular.module('wooice', ['wooice.filters', 'wooice.controllers', 'wooice.config', 'wooice.module.upload', 'wooice.service.sound', 'wooice.service.user', 'wooice.service.tag','wooice.controller.profile','wooice.service.userProfile', 'wooice.service.guest']).
+angular.module('wooice', ['ngRoute','wooice.filters','wooice.directives', 'wooice.controllers', 'wooice.config', 'wooice.module.upload', 'wooice.service.sound', 'wooice.service.user', 'wooice.service.tag','wooice.controller.profile','wooice.service.userProfile', 'wooice.service.guest']).
     config(['$routeProvider', '$httpProvider', function ($routeProvider, $httpProvider) {
         $routeProvider.
             when('/stream', {templateUrl: 'partials/stream.html', controller: 'streamCtrl'}).

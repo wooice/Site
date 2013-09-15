@@ -89,30 +89,13 @@ angular.module('wooice.controller.profile', [])
         }
     }])
     .controller('changePassCtrl', ['$scope', '$routeParams','User','UserService', 'UserProfile', function ($scope, $routeParams, User, UserService,UserProfile) {
+        $scope.password1 = null;
+        $scope.password2 = null;
+
         $scope.changePass = function(){
-            if(!$scope.oldPassword || !$scope.newPassword1 || !$scope.newPassword2)
-            {
-                $scope.messageClass = "alert alert-error";
-                $scope.message = "请输入原始密码及新密码";
-                return;
-            }
-
-            if ($scope.newPassword1 !== $scope.newPassword2)
-            {
-                $scope.messageClass = "alert alert-error";
-                $scope.message = "两次密码不一致，请重新输入";
-                return;
-            }
-
-            if ($scope.oldPassword == $scope.newPassword1)
-            {
-                $scope.messageClass = "alert alert-error";
-                $scope.message = "新旧密码一致，请重新输入";
-                return;
-            }
             var passObj = {};
             passObj.oldPassword = $scope.oldPassword;
-            passObj.newPassword = $scope.newPassword1;
+            passObj.newPassword = $scope.password1;
             UserProfile.changePass({}, passObj, function(){
                 $scope.messageClass = "alert alert-success";
                 $scope.message = "密码修改成功";

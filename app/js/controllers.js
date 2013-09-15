@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('wooice.controllers', []).
-    controller('streamCtrl', ['$scope', 'config', 'Stream', 'SoundSocial', '$routeParams', 'UserService', function ($scope, config, Stream, SoundSocial, $routeParams, UserService) {
+    controller('streamCtrl', ['$scope', 'config', 'Stream', 'Sound', 'SoundSocial', '$routeParams', 'UserService', function ($scope, config, Stream, Sound, SoundSocial, $routeParams, UserService) {
 
         $scope.togglePause = function (id) {
             var sound = null;
@@ -45,6 +45,30 @@ angular.module('wooice.controllers', []).
             return false;
         }
 
+        $scope.isOwner = function () {
+            return  this.sound.owner.alias == UserService.getCurUserAlias();
+        }
+
+        $scope.delete = function () {
+            if (this.sound.owner.alias != UserService.getCurUserAlias()) {
+                return;
+            }
+
+            if (confirm('确定要删除当前音乐吗?')) {
+                Sound.delete({sound: this.sound.id}, function () {
+                    var toDelete = 0;
+                    $.each($scope.sounds, function (index, sound) {
+                        if (this.sound.id == sound.id) {
+                            toDelete = index;
+                            return;
+                        }
+                    });
+                    $scope.sounds.splice(toDelete, 1);
+                    $scope.$apply();
+                });
+            }
+        }
+
         $scope.toggleRepost = function (id) {
             var sound = null;
             $.each($scope.sounds, function (index, oneSound) {
@@ -57,7 +81,7 @@ angular.module('wooice.controllers', []).
             if (sound && sound.soundUserPrefer.repost) {
                 var repostsCount = SoundSocial.unrepost({sound: sound.id}, null, function (count) {
                     sound.soundUserPrefer.repost = 0;
-                    sound.soundUserPrefer.repostWording = "Repost";
+                    sound.soundUserPrefer.repostWording = "转";
                     sound.soundSocial.reportsCount = parseInt(repostsCount.reposted);
                 });
             }
@@ -164,8 +188,8 @@ angular.module('wooice.controllers', []).
                             played: false
                         };
                     }
-                    sound.soundUserPrefer.likeWording = (sound.soundUserPrefer.like) ? "" : "Like";
-                    sound.soundUserPrefer.repostWording = (sound.soundUserPrefer.repost) ? "" : "Repost";
+                    sound.soundUserPrefer.likeWording = (sound.soundUserPrefer.like) ? "" : "赞";
+                    sound.soundUserPrefer.repostWording = (sound.soundUserPrefer.repost) ? "" : "转";
 
                     var hasSound = false;
                     $.each($scope.sounds, function (index, oneSound) {
@@ -201,7 +225,7 @@ angular.module('wooice.controllers', []).
                             var commentResult = SoundSocial.comment({sound: sound.id, comment: comment, pointAt: sec}, null, function (count) {
                                 sound.soundSocial.commentsCount = commentResult.commentsCount;
                                 $('#sound_commentbox_input_' + sound.id).val('');
-                                $('#sound_commentbox_input_' + sound.id).attr("placeholder", "Thank you for your comment!");
+                                $('#sound_commentbox_input_' + sound.id).attr("placeholder", "感谢您的留言!");
                             });
                         }
                     });
@@ -244,7 +268,7 @@ angular.module('wooice.controllers', []).
             if (sound.soundUserPrefer.like) {
                 var likesCount = SoundSocial.unlike({sound: sound.id}, null, function (count) {
                     sound.soundUserPrefer.like = 0;
-                    sound.soundUserPrefer.likeWording = "Like";
+                    sound.soundUserPrefer.likeWording = "赞";
                     sound.soundSocial.likesCount = parseInt(likesCount.liked);
                 });
             }
@@ -267,7 +291,7 @@ angular.module('wooice.controllers', []).
             if (sound.soundUserPrefer.repost) {
                 var repostsCount = SoundSocial.unrepost({sound: sound.id}, null, function (count) {
                     sound.soundUserPrefer.repost = 0;
-                    sound.soundUserPrefer.repostWording = "Repost";
+                    sound.soundUserPrefer.repostWording = "转";
                     sound.soundSocial.reportsCount = parseInt(repostsCount.reposted);
                 });
             }
@@ -329,7 +353,7 @@ angular.module('wooice.controllers', []).
                         var result = SoundSocial.comment({sound: $scope.sound.id, comment: comment, pointAt: sec}, null, function (count) {
                             $scope.sound.soundSocial.commentsCount = result.commentsCount;
                             $('#sound_commentbox_input_' + sound.id).val('');
-                            $('#sound_commentbox_input_' + sound.id).attr("placeholder", "Thank you for your comment!");
+                            $('#sound_commentbox_input_' + sound.id).attr("placeholder", "感谢您的留言!");
                         });
                     }
                 });
@@ -337,7 +361,6 @@ angular.module('wooice.controllers', []).
                 $scope.commentPageNum = 1;
                 var comments = SoundSocialList.comment({sound: $scope.sound.id, pageNum: $scope.commentPageNum}, function () {
                     $scope.comments = comments;
-
                     $.each($scope.comments, function (index, comment) {
                         if (!comment.owner.profile.avatorUrl) {
                             comment.owner.profile.avatorUrl = "img/default_avatar.png";
@@ -350,8 +373,14 @@ angular.module('wooice.controllers', []).
     }])
 
     .controller('userBasicController', ['$scope', '$routeParams', 'User', 'UserSocial', 'UserService', function ($scope, $routeParams, User, UserSocial, UserService) {
+        $scope.curAlias = UserService.getCurUserAlias();
         var user = User.get({userAlias: $routeParams.userId}, function () {
             $scope.user = user;
+
+            if (user.profile.alias == UserService.getCurUserAlias())
+            {
+                $scope.user.isCurrent = true;
+            }
 
             if (!$scope.user.profile.avatorUrl) {
                 $scope.user.profile.avatorUrl = 'img/default_avatar_large.png';
@@ -382,28 +411,28 @@ angular.module('wooice.controllers', []).
         });
     }])
 
-    .controller('userSocialController', ['$scope', 'config', '$routeParams', 'UserSocial','User', function ($scope, config, $routeParams, UserSocial, User) {
+    .controller('userSocialController', ['$scope', 'config', '$routeParams', 'UserSocial', 'User', function ($scope, config, $routeParams, UserSocial, User) {
         var user = User.get({userAlias: $routeParams.userId}, function () {
             $scope.user = user;
         });
-       var followed = UserSocial.getFollowed({pageNum:1}, function(){
-           $.each(followed, function (index, user) {
-               if (!user.profile.avatorUrl) {
-                   user.profile.avatorUrl = "img/default_avatar.png";
-               }
-               user.route = config.userStreamPath + user.profile.alias;
-           });
-           $scope.followed = followed;
+        var followed = UserSocial.getFollowed({pageNum: 1}, function () {
+            $.each(followed, function (index, user) {
+                if (!user.profile.avatorUrl) {
+                    user.profile.avatorUrl = "img/default_avatar.png";
+                }
+                user.route = config.userStreamPath + user.profile.alias;
+            });
+            $scope.followed = followed;
         });
 
-       var following = UserSocial.getFollowing({pageNum:1}, function(){
-           $.each(following, function (index, user) {
-               if (!user.profile.avatorUrl) {
-                   user.profile.avatorUrl = "img/default_avatar.png";
-               }
-               user.route = config.userStreamPath + user.profile.alias;
-           });
-           $scope.following = following;
+        var following = UserSocial.getFollowing({pageNum: 1}, function () {
+            $.each(following, function (index, user) {
+                if (!user.profile.avatorUrl) {
+                    user.profile.avatorUrl = "img/default_avatar.png";
+                }
+                user.route = config.userStreamPath + user.profile.alias;
+            });
+            $scope.following = following;
         });
     }])
 
@@ -411,7 +440,7 @@ angular.module('wooice.controllers', []).
         $scope.userId = "";
         $scope.password = "";
 
-        $scope.login = function () {
+        $scope.toLogin = function () {
             var user = {userId: $scope.userId, password: $scope.password};
             var curUser = Guest.login({}, user, function () {
                 UserService.setupUser({
@@ -421,26 +450,29 @@ angular.module('wooice.controllers', []).
                 if (UserService.validateRoleUser() || UserService.validateRoleAdmin()) {
                     $location.path('/stream');
                 }
+            }, function () {
+                $scope.loginMsgClass = "text-warning";
+                $scope.loginMsg = '失败了，用户名或密码错误';
             });
         }
     }])
 
-    .controller('registerCtrl', ['$scope', '$location', 'Guest', 'UserService','User', function ($scope, $location, Guest, UserService, User) {
+    .controller('registerCtrl', ['$scope', '$location', 'Guest', 'UserService', 'User', function ($scope, $location, Guest, UserService, User) {
         $scope.userAlias = "";
-        $scope.password = "";
         $scope.emailAddress = "";
-        $scope.password1 = "";
+        $scope.password1 = null;
+        $scope.password2 = null;
 
-        $scope.register = function () {
+        $scope.toRegister = function () {
             var user = {userAlias: $scope.userAlias, emailAddress: $scope.emailAddress, password: $scope.password1};
             var curUser = Guest.create({}, user, function () {
-                var login = {userId: $scope.userAlias, password:  $scope.password1};
-                curUser = Guest.login({},login, function(){
+                var login = {userId: $scope.userAlias, password: $scope.password1};
+                curUser = Guest.login({}, login, function () {
                     UserService.setupUser({
                         userAlias: $scope.userAlias,
                         role: curUser.userRoles[0].role
                     });
-                    User.confirm({userAlias: $scope.userAlias, emailAddress: $scope.emailAddress},null,function(){
+                    User.confirm({userAlias: $scope.userAlias, emailAddress: $scope.emailAddress}, null, function () {
                         $location.url('/interest');
                     });
                 });
@@ -475,10 +507,10 @@ angular.module('wooice.controllers', []).
         }
     }])
 
-    .controller('recommandUserCtrl', ['$scope', 'config',  '$routeParams', 'UserSocial',function ($scope, config, $routeParams, UserSocial) {
+    .controller('recommandUserCtrl', ['$scope', 'config', '$routeParams', 'UserSocial', function ($scope, config, $routeParams, UserSocial) {
         $scope.pageNum = 1;
         $scope.pageSize = 8;
-        var users = UserSocial.getRecommand({}, {pageNum:$scope.pageNum, pageSize: $scope.pageSize}, function(){
+        var users = UserSocial.getRecommand({}, {pageNum: $scope.pageNum, pageSize: $scope.pageSize}, function () {
             $.each(users, function (index, user) {
                 users.class = "";
                 if (!user.profile.avatorUrl) {
@@ -505,9 +537,8 @@ angular.module('wooice.controllers', []).
         $scope.save = function () {
             var followedUser = [];
 
-            $.each($scope.recommendUsers, function(index, user){
-                if(user.follow)
-                {
+            $.each($scope.recommendUsers, function (index, user) {
+                if (user.follow) {
                     followedUser.push(user);
                 }
             });
@@ -515,10 +546,10 @@ angular.module('wooice.controllers', []).
             $.each(followedUser, function (index, user) {
                 UserSocial.follow({toUserAlias: user.profile.alias}, null, function () {
                         $scope.msg = "关注成功，你将接收他们的上传与分享的声音";
-                        $scope.msgClass = "alert alert-success";
+                        $scope.msgClass = "text-success";
                     }, function () {
                         $scope.msg = "关注失败，请稍后再试";
-                        $scope.msgClass = "alert alert-error";
+                        $scope.msgClass = "text-warning";
                     }
                 );
             });
@@ -531,7 +562,7 @@ angular.module('wooice.controllers', []).
         $scope.curatedTags = [];
         $scope.recommendUsers = [];
 
-        var users = UserSocial.getRecommandByTags({}, {tags:[], pageNum:$scope.pageNum, pageSize: $scope.pageSize}, function () {
+        var users = UserSocial.getRecommandByTags({}, {tags: [], pageNum: $scope.pageNum, pageSize: $scope.pageSize}, function () {
             $.each(users, function (index, user) {
                 users.class = "";
                 if (!user.profile.avatorUrl) {
@@ -539,16 +570,14 @@ angular.module('wooice.controllers', []).
                 }
                 user.route = config.userStreamPath + user.profile.alias;
             });
-            $.each(users, function(index, user){
+            $.each(users, function (index, user) {
                 var exist = false;
-                $.each($scope.recommendUsers, function(index, recommendUser){
-                    if(user.profile.alias = recommendUser.profile.alias)
-                    {
+                $.each($scope.recommendUsers, function (index, recommendUser) {
+                    if (user.profile.alias = recommendUser.profile.alias) {
                         exist = true;
                     }
                 });
-                if(!exist)
-                {
+                if (!exist) {
                     $scope.recommendUsers.push(user);
                 }
             });
@@ -608,16 +637,14 @@ angular.module('wooice.controllers', []).
                     }
                     user.route = config.userStreamPath + user.profile.alias;
                 });
-                $.each(users, function(index, user){
-                     var exist = false;
-                    $.each($scope.recommendUsers, function(index, recommendUser){
-                         if(user.profile.alias = recommendUser.profile.alias)
-                         {
-                             exist = true;
-                         }
+                $.each(users, function (index, user) {
+                    var exist = false;
+                    $.each($scope.recommendUsers, function (index, recommendUser) {
+                        if (user.profile.alias = recommendUser.profile.alias) {
+                            exist = true;
+                        }
                     });
-                    if(!exist)
-                    {
+                    if (!exist) {
                         $scope.recommendUsers.push(user);
                     }
                 });
@@ -639,20 +666,19 @@ angular.module('wooice.controllers', []).
         $scope.save = function () {
             var followedUser = [];
 
-            $.each($scope.recommendUsers, function(index, user){
-                  if(user.follow)
-                  {
-                      followedUser.push(user);
-                  }
+            $.each($scope.recommendUsers, function (index, user) {
+                if (user.follow) {
+                    followedUser.push(user);
+                }
             });
 
             $.each(followedUser, function (index, user) {
                 UserSocial.follow({toUserAlias: user.profile.alias}, null, function () {
                         $scope.msg = "关注成功，你将接收他们的上传与分享的声音";
-                        $scope.msgClass = "alert alert-success";
+                        $scope.msgClass = "text-success";
                     }, function () {
                         $scope.msg = "关注失败，请稍后再试";
-                        $scope.msgClass = "alert alert-error";
+                        $scope.msgClass = "text-warning";
                     }
                 );
             });

@@ -75,7 +75,7 @@
                                         <a href="{{comment.owner.route}}">
                                             {{comment.owner.profile.alias}}
                                         </a>
-                                        <span style="color:#999; font-size: 12px"> @ {{comment.pointAt}}</span>
+                                        <span style="color:#999; font-size: 12px" ng-show="comment.pointAt"> @ {{comment.pointAt}}</span>
                                     </div>
                                     <span style="color:#333;"> {{comment.comment}} </span>
                                     </div>

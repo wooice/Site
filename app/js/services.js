@@ -40,11 +40,15 @@ angular.module('wooice.service.sound', ['ngResource'])
 
 angular.module('wooice.service.user', ['ngCookies']).
     factory('User', ['$resource', 'config', function ($resource, config) {
-        return $resource(config.service.url + '/user/:action/:userAlias/:emailAddress', {}, {
+        return $resource(config.service.url + '/user/:uri/:action/:userAlias/:emailAddress', {}, {
             get: {method: 'GET', params: {userAlias: 'current'}, isArray: false},
             isAlive: {method: 'GET', params: {userAlias: 'isAlive'}, isArray: false},
             logout: {method: 'POST', params: {userAlias: 'logout'}, isArray: false},
-            confirm: {method: 'PUT', params: {action: "sendEmailConfirm"}, isArray: false}
+            confirm: {method: 'PUT', params: {action: "sendEmailConfirm"}, isArray: false},
+            submitPassChange: {method: 'POST', params: {action:'submitPassChange'}, isArray: false},
+            sendMessage: {method: 'PUT', params: {uri:"messages", action:'send'}, isArray: false},
+            markMessage: {method: 'POST', params: {uri:"messages", action:'mark'}, isArray: false},
+            listMessages: {method: 'GET', params: {uri:"messages", pageNum:1,perPage:5, status:'unread'}, isArray: true}
         });
     }]).
     factory('UserSocial', ['$resource', 'config', function ($resource, config) {
@@ -111,7 +115,7 @@ angular.module('wooice.service.tag', []).
     factory('Tag', ['$resource', 'config', function ($resource, config) {
         return $resource(config.service.url + '/tag/:path/:action', {}, {
             query: {method: 'GET', params: {path: 'list'}, isArray: false},
-            attach: {method: 'PUT', params: {}, isArray: false},
+            attach: {method: 'PUT', params: {path: 'attach'}, isArray: false},
             curated: {method: 'GET', params: {path:'list', action:'curated'}, isArray: true},
             categories: {method: 'GET', params: {path:'list', action:'categories'}, isArray: true}
         });
@@ -124,7 +128,19 @@ angular.module('wooice.service.guest', []).
             create: {method: 'PUT', params: {uri: "create"}, isArray: false},
             login: {method: 'POST', params: {uri: "login"}, isArray: false},
             checkAlias: {method: 'GET', params: {action: "checkAlias"}, isArray: false},
-            checkEmail: {method: 'GET', params: {action: "checkEmail"}, isArray: false}
+            checkEmail: {method: 'GET', params: {action: "checkEmail"}, isArray: false},
+            reportForget: {method: 'PUT', params: {uri: "reportForget"}, isArray: false}
+        });
+    }])
+;
+
+
+angular.module('wooice.service.auth', []).
+    factory('Auth', ['$resource', 'config', function ($resource, config) {
+        return $resource(config.service.url + '/auth/:uri/:confirmCode/:action/:code', {}, {
+            doConfirm: {method: 'GET', params: {uri:"confirmEmail", confirmCode:''}, isArray: false},
+            verifyReset: {method: 'GET', params: {uri:"resetRequest", action:'', code:''}, isArray: false},
+            changePass: {method: 'POST', params: {uri: "updatePassword"}, isArray: false}
         });
     }])
 ;

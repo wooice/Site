@@ -23,6 +23,14 @@
             render: function (sound) {
                 if (!soundData.soundList[sound.id]) {
                     soundData.soundList[sound.id] = sound;
+                }else
+                {
+                    return;
+                }
+
+                if (document.getElementById('sound_wave_canvas_' + sound.id))
+                {
+                    return ;
                 }
 
                 var canvas = document.createElement('canvas');

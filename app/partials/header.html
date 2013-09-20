@@ -1,19 +1,19 @@
 <div class="navbar" ng-controller="heaederCtrl">
     <div class="navbar-inner">
         <a class="brand" href="#"><img width="60" height="60" src="img/logo.jpg"/></a>
-        <ul class="nav">
-            <li><a href="#/stream">乐趣</a></li>
-            <li class="pull-right"><a href="#/stream/user/{{userAlias}}">你的声音</a></li>
 
-            <form class="navbar-search pull-left" action="">
+        <ul class="nav">
+            <li><a href="#">乐趣</a></li>
+            <li class="pull-right"><a href="#" onclick="return false;"  ng-click="goto('/stream/user/{{userAlias}}')">你的</a></li>
+            <form class="navbar-search" action="" style="padding-left: 30px">
                 <input type="text" class="search-query span2" placeholder="Find a sound" ng-model="q" id="search_box">
             </form>
         </ul>
 
         <ul class="nav pull-right">
-            <li ><a href="#/profile">设置</a></li>
-            <li><a href="#/upload">上传</a></li>
-            <li ><a href="#/logout" ng-click="logout()">注销</a></li>
+            <li ><a  href="#" onclick="return false;" ng-click="goto('/profile')" >设置</a></li>
+            <li><a  href="#" onclick="return false;"  ng-click="goto('/upload')" >上传</a></li>
+            <li ><a  href="#" onclick="return false;" ng-click="logout()" >注销</a></li>
         </ul>
     </div>
 </div>

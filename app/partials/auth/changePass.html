@@ -1,0 +1,100 @@
+<ng-include src="'partials/header.html'"></ng-include>
+<div style="padding-left: 10%;padding-top: 5%">
+    <div>
+        <legend>修改密码</legend>
+        <div style="padding-bottom: 10px">
+            <span class="{{messageClass}}">{{message}}</span>
+        </div>
+        <form name="the_form">
+        <table style="width: 100%">
+            <tr>
+                <td style="width: 20%"><label>旧密码</label>
+                <td>
+                <div class="error"
+                     ng-show="the_form.oldPassword.$dirty && the_form.oldPassword.$invalid">
+                    <small class="text-warning"
+                           ng-show="the_form.oldPassword.$error.required">
+                        密码不能为空
+                    </small>
+                    <small class="text-warning"
+                           ng-show="the_form.oldPassword.$error.minlength">
+                        密码长度必须大于6个字符
+                    </small>
+                    <small class="text-warning"
+                           ng-show="the_form.oldPassword.$error.maxlength">
+                        密码长度不得超过20个字符
+                    </small>
+                </div>
+                <input type="password" placeholder="请输入旧密码" name="oldPassword" ng-model="oldPassword"   ng-minlength=6 ng-maxlength=20 required>
+            </td>
+            </tr>
+            <tr>
+                <td style="width: 20%"><label>新密码</label>
+                <td>
+                <div class="controls">
+                    <div class="error"
+                         ng-show="the_form.inputPassword1.$dirty && the_form.inputPassword1.$invalid">
+                        <small class="text-warning"
+                               ng-show="the_form.inputPassword1.$error.required">
+                            密码不能为空
+                        </small>
+                        <small class="text-warning"
+                               ng-show="the_form.inputPassword1.$error.minlength">
+                            密码长度必须大于6个字符
+                        </small>
+                        <small class="text-warning"
+                               ng-show="the_form.inputPassword1.$error.maxlength">
+                            密码长度不得超过20个字符
+                        </small>
+                        <small class="text-warning"
+                               ng-show="the_form.inputPassword1.$error.equal">
+                            2次输入密码不相同
+                        </small>
+                    </div>
+                    <input type="password" id="inputPassword1"  name="inputPassword1" placeholder="请输入新密码" ng-model="password1"  ng-minlength=6 ng-maxlength=20 pass-equal="inputPassword1" required>
+                </div>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 20%"><label>再次输入</label>
+                <td>
+                <div class="controls">
+                    <div class="error"
+                         ng-show="the_form.inputPassword2.$dirty && the_form.inputPassword2.$invalid">
+                        <small class="text-warning"
+                               ng-show="the_form.inputPassword2.$error.required">
+                            密码不能为空
+                        </small>
+                        <small class="text-warning"
+                               ng-show="the_form.inputPassword2.$error.minlength">
+                            密码长度必须大于6个字符
+                        </small>
+                        <small class="text-warning"
+                               ng-show="the_form.inputPassword2.$error.maxlength">
+                            密码长度不得超过20个字符
+                        </small>
+                        <small class="text-warning"
+                               ng-show="the_form.inputPassword2.$error.equal">
+                            2次输入密码不相同
+                        </small>
+                    </div>
+                    <input type="password" id="inputPassword2"  name="inputPassword2" placeholder="请再次输入新密码" ng-model="password2"  ng-minlength=6 ng-maxlength=20 pass-equal="inputPassword2" required>
+                </div>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <button class="button button-small button-rounded button-flat-action action-button"      ng-disabled="the_form.$invalid"
+                         ng-click="changePass()">
+                        <span>修改密码</span>
+                    </button>
+                </td>
+            </tr>
+        </table>
+         </form>
+        <div>
+
+        </div>
+    </div>
+</div>

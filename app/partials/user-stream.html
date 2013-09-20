@@ -6,7 +6,7 @@
             <div style="padding-top: 20px;padding-left: 25px">
                 <img src="{{user.profile.avatorUrl}}" width="200px" height="200px">
 
-                <div style="padding-top: 10px;"><span class="userInfo__title">{{user.profile.alias}}</span> <span
+                <div style="padding-top: 10px;"><span class="userInfo__title">{{user.profile.alias}}</span> <span  ng-show="user.profile.city"
                         style="color:#999;">@{{user.profile.city}}</span></div>
                 <div style="color:#999;margin-bottom:20px;margin-top:20px;font-size:16px;">
                     {{user.profile.description}}
@@ -120,6 +120,9 @@
 
             <div class="{{noSoundMsg}}" style="position:absolute; top:40%; left:40%;">
                 您还没有自己的音乐流，<a href="index.html#/upload">上传音乐</a>或<a href="index.html#/interest">发现兴趣</a>， 创建属于自己的音乐流。
+            </div>
+            <div class="{{noSearchMsgOther}}" style="position:absolute; top:40%; left:40%;">
+                {{curUser}}还未上传或转发声音
             </div>
         </div>
 

@@ -45,7 +45,7 @@
         <div>
             <legend>推荐的用户</legend>
             <div ng-repeat="recommendUser in recommendUsers" style="float:left" ng-click="toogleFollow()">
-                <div style="text-align:center;">
+                <div style="text-align:center;padding-right: 20px">
                     <div class="user {{recommendUser.class}}">
                         <a href="#" onclick="return false;">
                             <img style="width: 80px;height: 80px" ng-src="{{recommendUser.profile.avatorUrl}}">

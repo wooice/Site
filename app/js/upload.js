@@ -227,11 +227,16 @@
                                 $scope.defaultSound.profileMsgClass = "text-success";
                                 $scope.defaultSound.profileMsg = "声音信息保存成功";
                                 $scope.defaultSound.alias = sound.alias;
-                                Tag.attach({path: sound.alias+"/attach"}, {tags: $scope.defaultSound.tags}, function (count) {
+                                Tag.attach({action: sound.alias}, {tags: $scope.defaultSound.tags}, function (count) {
                                     $scope.defaultSound.profileSaved = true;
                                     if ($scope.defaultSound.dataSaved) {
-                                        $scope.defaultSound.uploadMsgClass = "text-success";
-                                        $scope.defaultSound.uploadMsg = "您的声音" + $scope.defaultSound.name + "上传成功。我们将尽快处理您上传的声音，这可能需要几分钟，请耐心等待。";
+                                        $.globalMessenger().post({
+                                            message: "您的声音" + $scope.defaultSound.name + "上传成功。我们将尽快处理您上传的声音，这可能需要几分钟，请耐心等待。",
+                                            hideAfter: 15,
+                                            showCloseButton: true
+                                        });
+//                                        $scope.defaultSound.uploadMsgClass = "text-success";
+//                                        $scope.defaultSound.uploadMsg = "您的声音" + $scope.defaultSound.name + "上传成功。我们将尽快处理您上传的声音，这可能需要几分钟，请耐心等待。";
 
                                         $('#uploadpart').show();
                                         $('#progresspart').hide();
@@ -269,11 +274,16 @@
                                 $scope.defaultSound.profileMsgClass = "text-success";
                                 $scope.defaultSound.profileMsg = "声音信息保存成功";
                                 $scope.defaultSound.alias = sound.alias;
-                                Tag.attach({path: sound.alias}, {tags: $scope.defaultSound.tags}, function (count) {
+                                Tag.attach({action: sound.alias}, {tags: $scope.defaultSound.tags}, function (count) {
                                     $scope.defaultSound.profileSaved = true;
                                     if ($scope.defaultSound.dataSaved) {
-                                        $scope.defaultSound.uploadMsgClass = "text-success";
-                                        $scope.defaultSound.uploadMsg = "您的声音" + $scope.defaultSound.name + "上传成功。我们将尽快处理您上传的声音，这可能需要几分钟，请耐心等待。";
+                                        $.globalMessenger().post({
+                                            message: "您的声音" + $scope.defaultSound.name + "上传成功。我们将尽快处理您上传的声音，这可能需要几分钟，请耐心等待。",
+                                            hideAfter: 15,
+                                            showCloseButton: true
+                                        });
+//                                        $scope.defaultSound.uploadMsgClass = "text-success";
+//                                        $scope.defaultSound.uploadMsg = "您的声音" + $scope.defaultSound.name + "上传成功。我们将尽快处理您上传的声音，这可能需要几分钟，请耐心等待。";
                                         $('#uploadpart').show();
                                         $('#progresspart').hide();
                                         $('#sound_info').hide();

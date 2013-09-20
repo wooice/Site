@@ -88,21 +88,5 @@ angular.module('wooice.controller.profile', [])
             });
         }
     }])
-    .controller('changePassCtrl', ['$scope', '$routeParams','User','UserService', 'UserProfile', function ($scope, $routeParams, User, UserService,UserProfile) {
-        $scope.password1 = null;
-        $scope.password2 = null;
 
-        $scope.changePass = function(){
-            var passObj = {};
-            passObj.oldPassword = $scope.oldPassword;
-            passObj.newPassword = $scope.password1;
-            UserProfile.changePass({}, passObj, function(){
-                $scope.messageClass = "alert alert-success";
-                $scope.message = "密码修改成功";
-            },function(){
-                $scope.messageClass = "alert alert-error";
-                $scope.message = "密码修改失败，请稍后再试";
-            });
-        }
-    }])
 ;

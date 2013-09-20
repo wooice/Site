@@ -1,7 +1,7 @@
 'use strict';
 
 /* App Module */
-angular.module('wooice', ['ngRoute','wooice.filters','wooice.directives', 'wooice.controllers', 'wooice.config', 'wooice.module.upload', 'wooice.service.sound', 'wooice.service.user', 'wooice.service.tag','wooice.controller.profile','wooice.service.userProfile', 'wooice.service.guest']).
+angular.module('wooice', ['ngRoute','wooice.filters','wooice.directives', 'wooice.controllers', 'wooice.config', 'wooice.module.upload', 'wooice.service.sound', 'wooice.service.user', 'wooice.service.tag','wooice.controller.profile','wooice.service.userProfile', 'wooice.service.guest', 'wooice.service.auth']).
     config(['$routeProvider', '$httpProvider', function ($routeProvider, $httpProvider) {
         $routeProvider.
             when('/stream', {templateUrl: 'partials/stream.html', controller: 'streamCtrl'}).
@@ -13,6 +13,9 @@ angular.module('wooice', ['ngRoute','wooice.filters','wooice.directives', 'wooic
             when('/interest', {templateUrl: 'partials/interest.html', controller: 'interestCtrl'}).
             when('/guest/login', {templateUrl: 'partials/guest/login.html', controller: 'loginCtrl'}).
             when('/guest/register', {templateUrl: 'partials/guest/register.html', controller: 'registerCtrl'}).
+            when('/guest/forgetPass', {templateUrl: 'partials/guest/forgetPass.html', controller: 'forgetPassCtrl'}).
+            when('/auth/confirm', {templateUrl: 'partials/auth/confirm.html', controller: 'confirmControl'}).
+            when('/auth/changePass', {templateUrl: 'partials/auth/changePass.html', controller: 'changePassCtrl'}).
             otherwise({redirectTo: '/stream'});
 
         var logsOutUserOn401 = ['$q', '$location', function ($q, $location) {
@@ -42,7 +45,7 @@ angular.module('wooice', ['ngRoute','wooice.filters','wooice.directives', 'wooic
     .run(function ($rootScope, config, $location, User, UserService) {
         $rootScope.config = config;
 
-        var routesThatDontRequireAuth = ['/guest'];
+        var routesThatDontRequireAuth = ['/guest', '/auth'];
         var routesThatForAdmins = ['/admin'];
 
         // check if current location matches route

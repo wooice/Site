@@ -72,10 +72,9 @@
 
                         <div style="width: 120%" class="container">
                             <div id="tags_div" ng-repeat="tag in defaultSound.tags" style="float: left">
-                                <div class="btn-group" style="padding: 5px" id="tag_{{tag}">
-                                    <button class="btn btn-inverse"><i class="icon-tag"></i> {{tag}}</button>
-                                    <button class="btn btn-inverse" ng-click="removeTag(tag)"><i
-                                            class="icon-remove"></i></button>
+                                <div class="btn-group" style="padding: 5px;padding-right: 15px;color:lightskyblue" id="tag_{{tag}">
+                                    <label><i class="icon-tag"> <b>{{tag}}</b> </i><i class="icon-remove" ng-click="removeTag(tag)"></i>
+                                    </label>
                                 </div>
                             </div>
                         </div>

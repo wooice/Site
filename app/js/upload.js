@@ -124,7 +124,6 @@
                     acceptFileTypes: /\.(gif|jpg|jpeg|tiff|png)$/i,
 
                     add: function (e, data) {
-                        console.log('add');
                         if (!(/\.(gif|jpg|jpeg|tiff|png)$/i).test(data.files[0].name)) {
                             $scope.$apply(function () {
                                 $scope.defaultSound.uploadMsgClass = "text-error";
@@ -156,7 +155,6 @@
                     send: function (e, data) {
                     },
                     done: function (e, data) {
-                        console.log('done');
                         $scope.$apply(function () {
                             $scope.defaultSound.profileMsgClass = "text-success";
                             $scope.defaultSound.profileMsg = '声音海报上传成功';
@@ -305,6 +303,15 @@
                         $scope.defaultSound.profileMsgClass = "text-error";
                         $scope.defaultSound.profileMsg = "请填写声音名称并打至少一个tag"
                     }
+                }
+
+                $scope.previewImage = function()
+                {
+                    var oFReader = new FileReader();
+                    oFReader.onload = function (oFREvent) {
+                        $("#poster_img").attr('src', oFREvent.target.result);
+                    };
+                    oFReader.readAsDataURL(document.getElementById("poster_upload").files[0]);
                 }
 
                 $scope.$on('$viewContentLoaded', function () {

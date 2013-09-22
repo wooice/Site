@@ -51,7 +51,7 @@
                   <span style="margin-top: -60px;margin-left: 50px"
                         class="button button-small button-rounded button-flat action-button fileinput-button">
                     <span>上传海报</span>
-                    <input id="poster_upload" type="file" name="file" onchange="previewImage();">
+                    <input id="poster_upload" type="file" name="file" ng-change="previewImage()">
                   </span>
             </div>
 
@@ -113,12 +113,3 @@
     </div>
 
 </div>
-<script>
-    function previewImage() {
-        var oFReader = new FileReader();
-        oFReader.onload = function (oFREvent) {
-            $("#poster_img").attr('src', oFREvent.target.result);
-        };
-        oFReader.readAsDataURL(document.getElementById("poster_upload").files[0]);
-    };
-</script>

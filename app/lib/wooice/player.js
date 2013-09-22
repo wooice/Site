@@ -207,6 +207,22 @@
         });
 
         $.extend(this, {
+            updateId: function (oldId, newId) {
+                var sound = soundData.soundList[oldId];
+                sound.id = newId;
+                soundData.soundList[newId] = sound;
+                delete soundData.soundList[oldId];
+
+                var soundObj = soundManager.getSoundById(oldId);
+                if (soundData.currentSound && soundData.currentSound == oldId)
+                {
+                    soundData.currentSound = newId;
+                }
+                soundObj.id = newId;
+            }
+        });
+
+        $.extend(this, {
             setVolume: function (sound) {
                 soundManager.setVolume(sound.id, sound.volume);
             }

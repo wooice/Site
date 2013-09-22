@@ -146,6 +146,14 @@
     padding-bottom:  20px;
 }
 
+.sound_single_item {
+    height: 230px;
+    margin-bottom: 25px;
+    padding-top: 10px;
+    padding-bottom:  20px;
+}
+
+
 .action-button {
     margin-left:6px
 }
@@ -232,4 +240,8 @@ input.ng-dirty.ng-valid {
 .navbar .nav > li > a {
     color: #999999;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+
+.navbar .brand {
+    padding: 0px 0px 0px;
 }

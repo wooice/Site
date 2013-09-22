@@ -26,7 +26,8 @@ angular.module('wooice.service.sound', ['ngResource'])
             unlike: {method: 'DELETE', params: {action: 'like'}, isArray: false},
             repost: {method: 'PUT', params: {action: 'repost'}, isArray: false},
             unrepost: {method: 'DELETE', params: {action: 'repost'}, isArray: false},
-            comment: {method: 'PUT', params: {action: 'comment'}, isArray: false}
+            comment: {method: 'PUT', params: {action: 'comment'}, isArray: false},
+            uncomment: {method: 'DELETE', params: {action: 'comment'}, isArray: false}
         });
     }
     ])

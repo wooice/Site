@@ -27,7 +27,7 @@
                                 </div>
                                 <div id="sound_title_{{sound.id}}">
                                     <a class='sound_title' href="{{sound.title.route}}">{{sound.title.alias}}</a>
-                                </div>
+                            </div>
                             </div>
                         </div>
                         <div id="sound_player_body_{{sound.id}}" class='sound_player_body'>
@@ -45,12 +45,12 @@
                                 {{sound.soundUserPrefer.likeWording}}</a>
                             <a href="#" class="button button-small button-rounded button-flat action-button"
                                onclick="return false;" ng-click="toggleRepost(sound.id)"><i
-                                    class="icon-retweet"></i></i> {{sound.soundUserPrefer.repostWording}}</a>
+                                    class="icon-retweet"></i> {{sound.soundUserPrefer.repostWording}}</a>
 
                             <a href="#" class="button button-small button-rounded button-flat action-button"
                                ng-show="isOwner()"
                                onclick="return false;" ng-click="delete()"><i
-                                    class="icon-trash"></i></i> 删除</a>
+                                    class="icon-trash"></i> 删除</a>
 
                             <div class="pull-right">
                                 <i class="icon-play-sign stat_icon"></i><span id="play_count_{{sound.id}}">{{sound.soundSocial.playedCount}}</span>
@@ -68,7 +68,7 @@
 
 
             <div class="{{loadClass}}" style="text-align: center">
-                loading...
+                <i class="icon-spinner icon-spin icon-large"></i> 努力加载中...
             </div>
 
             <div class="{{noSoundMsg}}" style="position:absolute; top:40%; left:25%;">

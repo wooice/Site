@@ -115,7 +115,7 @@ angular.module('wooice.controllers', []).
 
             $(window).scroll(function () {
                 if ($(window).height() + $(window).scrollTop() >= ($('#sound_streams').height())) {
-                  loadStream();
+                    loadStream();
                 }
             });
         });
@@ -125,10 +125,7 @@ angular.module('wooice.controllers', []).
                 return;
             }
             $scope.isloading = true;
-
-            $scope.$apply(function () {
-                $scope.loadClass = '';
-            });
+            $scope.loadClass = '';
 
             var subPath = "";
             if ($routeParams.userId) {
@@ -150,10 +147,8 @@ angular.module('wooice.controllers', []).
             }
 
             var soundsData = Stream.stream(params, function () {
-                $scope.loadClass = 'hide';
                 $.each(soundsData, function (index, soundRecord) {
-                    if (!soundRecord)
-                    {
+                    if (!soundRecord) {
                         return;
                     }
 
@@ -227,13 +222,11 @@ angular.module('wooice.controllers', []).
 
                     $('#sound_commentbox_input_' + sound.id).bind('keyup', function (event) {
                         if (event.keyCode == 13) {
-                            var comment = $(this).val();
-                            var sec = $("#sound_comment_point_" + sound.id).val();
-                            if (!sec)
-                            {
-                                sec = -1;
-                            }
-                            var commentResult = SoundSocial.comment({sound: sound.id, comment: comment, pointAt: sec}, null, function (count) {
+                            var postData = {};
+                            postData.comment = $(this).val();
+                            postData.pointAt = $("#sound_comment_point_" + sound.id).val();
+                            postData.toUserAlias = null;
+                            var commentResult = SoundSocial.comment({sound: sound.id}, postData, function (count) {
                                 sound.soundSocial.commentsCount = commentResult.commentsCount;
                                 $('#sound_commentbox_input_' + sound.id).val('');
                                 $('#sound_commentbox_input_' + sound.id).attr("placeholder", "感谢您的留言!");
@@ -246,20 +239,17 @@ angular.module('wooice.controllers', []).
                     $scope.pageNum++;
                 }
                 if ($scope.sounds.length == 0) {
-                    if(!$routeParams.q)
-                    {
+                    if (!$routeParams.q) {
                         if ($routeParams.userId != UserService.getCurUserAlias()) {
                             $scope.noSoundMsg = 'hide';
                             $scope.noSearchMsgOther = '';
                             $scope.curUser = $routeParams.userId;
                         }
-                        else
-                        {
+                        else {
                             $scope.noSoundMsg = '';
                         }
                     }
-                    else
-                    {
+                    else {
                         $scope.noSearchMsg = ''
                     }
                 }
@@ -269,12 +259,17 @@ angular.module('wooice.controllers', []).
                     $scope.noSearchMsgOther = 'hide';
                 }
 
+                $scope.loadClass = 'hide';
                 $scope.isloading = false;
             });
         }
     }])
 
-    .controller('soundDetailCtrl', ['$scope', 'config', '$routeParams', 'Sound', 'SoundSocial', 'SoundSocialList', 'UserService', function ($scope, config, $routeParams, Sound, SoundSocial, SoundSocialList, UserService) {
+    .controller('soundDetailCtrl', ['$scope', 'config', '$routeParams', 'Sound', 'SoundSocial', 'SoundSocialList', 'UserService', '$location', function ($scope, config, $routeParams, Sound, SoundSocial, SoundSocialList, UserService, $location) {
+        $scope.comments = [];
+        $scope.loadClass = 'hide';
+        $scope.commentPageNum = 1;
+
         $scope.togglePause = function (id) {
             var sound = $scope.sound;
 
@@ -306,6 +301,28 @@ angular.module('wooice.controllers', []).
             return false;
         }
 
+        $scope.isOwner = function () {
+            return  $scope.sound.owner.alias == UserService.getCurUserAlias();
+        }
+
+        $scope.isCommentOwner = function () {
+            return  this.comment.owner.profile.alias == UserService.getCurUserAlias();
+        }
+
+        $scope.deleteComment = function () {
+            if (confirm('确定要删除这条评论吗?')) {
+                var result = SoundSocial.uncomment({sound: this.comment.id}, {}, function () {
+                    $.globalMessenger().post({
+                        message: '评论删除成功',
+                        hideAfter: 15,
+                        showCloseButton: true
+                    });
+                    $scope.reloadComments();
+                    $scope.sound.soundSocial.commentsCount = result.commentsCount;
+                });
+            }
+        }
+
         $scope.toggleRepost = function (id) {
             var sound = $scope.sound;
             if (sound.soundUserPrefer.repost) {
@@ -325,6 +342,113 @@ angular.module('wooice.controllers', []).
             return false;
         }
 
+        $scope.reply = function () {
+            this.comment.showReply = !this.comment.showReply;
+        }
+
+        $scope.reloadComments = function () {
+            $scope.commentPageNum = 1;
+            $scope.comments = [];
+            loadComments();
+        }
+
+        $scope.myFunc = function () {
+            var postData = {};
+            postData.comment = this.comment.reply;
+            postData.pointAt = this.comment.pointAt;
+            postData.toUserAlias = this.comment.owner.profile.alias;
+            var result = SoundSocial.comment({sound: $scope.sound.id}, postData, $.proxy(function (count) {
+                $scope.sound.soundSocial.commentsCount = result.commentsCount;
+                $('#sound_comment_reply_input_' + this.$index).val('');
+                $('#sound_comment_reply_input_' + this.$index).attr("placeholder", "感谢您的回复!");
+            }, this));
+        }
+
+        $scope.editSoundAlias = function () {
+            if (!$scope.sound.title.readonly && $scope.sound.id) {
+                var postData = {};
+                postData.name = $scope.sound.title.alias;
+                var profile = Sound.update({sound: $scope.sound.id}, postData, function () {
+                    $(window).soundPlayer().updateId($scope.sound.id, profile.alias);
+                    $location.url('/sound/' + profile.alias);
+                });
+            }
+            $scope.sound.title.readonly = !$scope.sound.title.readonly;
+        }
+
+        $scope.editSoundDescription = function () {
+            if (!$scope.sound.description.readonly && $scope.sound.id) {
+                var postData = {};
+                postData.description = $scope.sound.description.context;
+                var profile = Sound.update({sound: $scope.sound.id}, postData, function () {
+                });
+            }
+            $scope.sound.description.readonly = !$scope.sound.description.readonly;
+        }
+
+        $scope.uploadPosterUrl = config.service.url_noescp + '/storage/upload/poster';
+
+        $('#poster_upload').fileupload({
+            url: $scope.uploadPosterUrl,
+            dataType: 'json',
+            acceptFileTypes: /\.(gif|jpg|jpeg|tiff|png)$/i,
+
+            add: function (e, data) {
+                if (!(/\.(gif|jpg|jpeg|tiff|png)$/i).test(data.files[0].name)) {
+                    $.globalMessenger().post({
+                        message: '您上传的海报图片可能不正确，请上传以下格式中的一种:gif, jpg, jpeg, tiff, png。',
+                        hideAfter: 15,
+                        showCloseButton: true
+                    });
+                    return;
+                }
+                if (data.files[0].size > 10000000) {
+                    $.globalMessenger().post({
+                        message: '您上传的文件过大，请上传小于10MB的海报图片。',
+                        hideAfter: 15,
+                        showCloseButton: true
+                    });
+                    return;
+                }
+                data.submit();
+            },
+            submit: function (e, data) {
+                var posterName = data.files[0].name;
+                var posterNames = posterName.split(".");
+
+                $scope.sound.posterExtension = posterNames[1];
+                if (!$scope.sound.posterPosterId) {
+                    $scope.sound.posterPosterId = new Date().getTime();
+                }
+                var posterFileName = $scope.sound.posterPosterId + '.' + posterNames[1];
+                data.formData = {fileName: posterFileName, length: data.files[0].size};
+            },
+            progress: function (e, data) {
+            },
+            send: function (e, data) {
+            },
+            done: function (e, data) {
+                var soundProfile = {};
+                soundProfile.poster = {};
+                soundProfile.poster.posterId = $scope.sound.posterPosterId;
+                soundProfile.poster.extension = $scope.sound.posterExtension;
+                Sound.update({sound: $scope.sound.id}, soundProfile, function (count) {
+                });
+                $.globalMessenger().post({
+                    message: "声音海报更新成功！",
+                    hideAfter: 10,
+                    showCloseButton: true
+                });
+            },
+            fail: function (e, data) {
+                $.globalMessenger().post({
+                    message: "海报图片上传失败，请稍后再试。",
+                    hideAfter: 10,
+                    showCloseButton: true
+                });
+            }
+        });
+
         $scope.$on('$viewContentLoaded', function () {
             $(window).soundPlayer().setSocialClient(SoundSocial);
             var sound = Sound.load({sound: $routeParams.soundId}, function () {
@@ -340,8 +464,10 @@ angular.module('wooice.controllers', []).
                     waveData: sound.soundData.wave[0],
                     url: sound.soundData.url,
                     poster: posterUrl,
-                    title: {alias: sound.profile.name, route: 'index.html#/sound/' + sound.profile.alias},
+                    posterPosterId: sound.profile.posterId,
+                    title: {alias: sound.profile.name, route: 'index.html#/sound/' + sound.profile.alias, readonly: true},
                     owner: {alias: sound.profile.owner.profile.alias, route: config.userStreamPath + sound.profile.owner.profile.alias},
+                    description: {context: sound.profile.description, readonly: true},
                     duration: sound.soundData.duration * 1000,
                     soundSocial: sound.soundSocial,
                     soundUserPrefer: sound.userPrefer,
@@ -349,8 +475,8 @@ angular.module('wooice.controllers', []).
                 };
 
                 if ($scope.sound.soundUserPrefer) {
-                    $scope.sound.soundUserPrefer.likeWording = ($scope.sound.soundUserPrefer.like) ? "" : "Like";
-                    $scope.sound.soundUserPrefer.repostWording = ($scope.sound.soundUserPrefer.repost) ? "" : "Repost";
+                    $scope.sound.soundUserPrefer.likeWording = ($scope.sound.soundUserPrefer.like) ? "" : "赞";
+                    $scope.sound.soundUserPrefer.repostWording = ($scope.sound.soundUserPrefer.repost) ? "" : "转";
                 }
 
                 //TODO
@@ -362,38 +488,57 @@ angular.module('wooice.controllers', []).
 
                 //record sound info
                 $(window).soundPlayer().addSound({
-                    id: sound.id,
-                    duration: sound.duration
+                    id: $scope.sound.id,
+                    duration: $scope.sound.duration
                 });
 
                 $('#sound_commentbox_input_' + $scope.sound.id).bind('keyup', function (event) {
                     if (event.keyCode == 13) {
-                        var comment = $(this).val();
-                        var sec = $("#sound_comment_point_" + $scope.sound.id).val();
-                        if (!sec)
-                        {
-                            sec = -1;
-                        }
-                        var result = SoundSocial.comment({sound: $scope.sound.id, comment: comment, pointAt: sec}, null, function (count) {
+                        var postData = {};
+                        postData.comment = $(this).val();
+                        postData.pointAt = $("#sound_comment_point_" + $scope.sound.id).val();
+                        postData.toUserAlias = null;
+                        var result = SoundSocial.comment({sound: $scope.sound.id}, postData, function (count) {
                             $scope.sound.soundSocial.commentsCount = result.commentsCount;
-                            $('#sound_commentbox_input_' +  $scope.sound.id).val('');
-                            $('#sound_commentbox_input_' +  $scope.sound.id).attr("placeholder", "感谢您的留言!");
+                            $('#sound_commentbox_input_' + $scope.sound.id).val('');
+                            $('#sound_commentbox_input_' + $scope.sound.id).attr("placeholder", "感谢您的留言!");
                         });
                     }
                 });
 
-                $scope.commentPageNum = 1;
-                var comments = SoundSocialList.comment({sound: $scope.sound.id, pageNum: $scope.commentPageNum}, function () {
-                    $scope.comments = comments;
-                    $.each($scope.comments, function (index, comment) {
-                        if (!comment.owner.profile.avatorUrl) {
-                            comment.owner.profile.avatorUrl = "img/default_avatar.png";
-                            comment.owner.route = config.userStreamPath + comment.owner.profile.alias;
-                        }
-                    });
-                });
+                loadComments();
             });
+
+            $(window).scroll(function () {
+                if ($(window).height() + $(window).scrollTop() >= ($('#sound_streams').height())) {
+                    loadComments();
+                }
+            });
+
         });
+
+        function loadComments() {
+            $scope.loadClass = '';
+            var comments = SoundSocialList.comment({sound: $scope.sound.id, pageNum: $scope.commentPageNum}, function () {
+                $.each(comments, function (index, comment) {
+                    comment.showReply = false;
+                    if (!comment.owner.profile.avatorUrl) {
+                        comment.owner.profile.avatorUrl = "img/default_avatar.png";
+                    }
+                    comment.owner.route = config.userStreamPath + comment.owner.profile.alias;
+                    if (comment.to) {
+                        comment.to.route = config.userStreamPath + comment.to.profile.alias;
+                    }
+                    $scope.comments.push(comment);
+                    $scope.$apply();
+                });
+
+                $scope.loadClass = 'hide';
+                if (comments.length > 0) {
+                    $scope.commentPageNum++;
+                }
+            });
+        }
     }])
 
     .controller('userBasicController', ['$scope', '$routeParams', 'User', 'UserSocial', 'UserService', function ($scope, $routeParams, User, UserSocial, UserService) {
@@ -471,7 +616,7 @@ angular.module('wooice.controllers', []).
                     role: curUser.userRoles[0].role
                 });
                 $.globalMessenger().post({
-                    message: curUser.profile.alias+"，欢迎回来！",
+                    message: curUser.profile.alias + "，欢迎回来！",
                     hideAfter: 10,
                     showCloseButton: true
                 });
@@ -809,9 +954,9 @@ angular.module('wooice.controllers', []).
         }
     }])
 
-    .controller("footerCtrl", ['$scope', '$routeParams', 'User', function($scope, $routeParams, User){
-        var messages = User.listMessages({}, function(){
-            $.each(messages, function(index, message){
+    .controller("footerCtrl", ['$scope', '$routeParams', 'User', function ($scope, $routeParams, User) {
+        var messages = User.listMessages({}, function () {
+            $.each(messages, function (index, message) {
                 $.globalMessenger().post({
                     message: message.content,
                     hideAfter: 0,
@@ -820,9 +965,10 @@ angular.module('wooice.controllers', []).
 
                 var postData = {};
                 postData.toUser = message.to.profile.alias;
-                postData.id =  message.id;
+                postData.id = message.id;
                 postData.status = "read";
-                User.markMessage({},postData, function(){});
+                User.markMessage({}, postData, function () {
+                });
             });
         });
     }]);

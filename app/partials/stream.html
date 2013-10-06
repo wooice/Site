@@ -37,7 +37,9 @@
                             </div>
                         </div>
                         <div id="sound_player_body_{{sound.id}}" class='sound_player_body'>
-                            <div id="sound_wave_{{sound.id}}" class='sound_player_wave'>
+                            <div id="sound_wave_{{sound.id}}" class='sound_player_wave' style="cursor:pointer">
+                                <canvas id="sound_wave_canvas_{{sound.id}}">
+                                </canvas>
                             </div>
                         </div>
                         <div id="sound_player_footer_{{sound.id}}" class='sound_player_footer  border-light-bottom'>

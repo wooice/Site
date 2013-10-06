@@ -28,9 +28,9 @@
         var playStatus = 0; //0: stop. 1: playing
         var currentPlayingPosition = -1;
         var onHover = 0;
+        var commentLenth = 15;
 
-        if (options.color)
-        {
+        if (options.color) {
             playedUpperColor = options.color.upper;
             playedLowerColor = options.color.lower;
             playedUpperDeeper = options.color.deeper;
@@ -65,19 +65,37 @@
 
         function redrawWave() {
             context.fillStyle = "transparent";
-            context.clearRect(0, 0, waveWidth, waveHeight);
-            context.fillRect(0, 0, waveWidth, waveHeight);
             var widthPerLine = waveWidth / waveData.length;
 
             $.each(waveData, function (index, data) {
                 context.fillStyle = getColor(index, index / waveWidth, 'upper');
-                context.clearRect(index * widthPerLine, waveHeight * mainLinePerctg * (1 - data), widthPerLine, waveHeight * mainLinePerctg * data);
                 context.fillRect(index * widthPerLine, waveHeight * mainLinePerctg * (1 - data), widthPerLine, waveHeight * mainLinePerctg * data);
 
                 context.fillStyle = getColor(index, index / waveWidth, 'lower');
-                context.clearRect(index * widthPerLine, waveHeight * mainLinePerctg, widthPerLine, waveHeight * shadowPerctg * data);
-                context.fillRect(index * widthPerLine, waveHeight * mainLinePerctg, widthPerLine, waveHeight * shadowPerctg * data);
+                var hasImage = checkImage(index * widthPerLine);
+                if (hasImage) {
+                    context.fillRect(index * widthPerLine, waveHeight * mainLinePerctg + commentLenth, widthPerLine, waveHeight * shadowPerctg * data - commentLenth);
+                }
+                else {
+                    context.fillRect(index * widthPerLine, waveHeight * mainLinePerctg, widthPerLine, waveHeight * shadowPerctg * data);
+                }
             });
+        }
+
+        function checkImage(pointX) {
+            var comments = $(canvas).data("comments");
+            var comment = null;
+            if (comments) {
+                $.each(comments, function (index, oneComment) {
+                    var x = (oneComment.pointAt * waveWidth) / (soundDuration / 1000);
+                    if (pointX >= x && pointX <= x + commentLenth) {
+                        comment = oneComment
+                        return;
+                    }
+                });
+            }
+
+            return comment;
         }
 
         function interpolateArray(data, fitCount) {
@@ -132,7 +150,6 @@
 
                 //set new point to played color
                 context.fillStyle = getColor(index, index / waveWidth, 'upper');
-                context.clearRect(index * widthPerLine, waveHeight * mainLinePerctg * (1 - waveData[index]), widthPerLine, waveHeight * mainLinePerctg * waveData[index]);
                 context.fillRect(index * widthPerLine, waveHeight * mainLinePerctg * (1 - waveData[index]), widthPerLine, waveHeight * mainLinePerctg * waveData[index]);
             }
             else {
@@ -143,10 +160,16 @@
             if (layerY > waveHeight * mainLinePerctg && layerY < waveHeight * (mainLinePerctg + shadowPerctg * waveData[index])) {
                 pointLowerPosition = index;
 
-                //set new point to played color
-                context.fillStyle = getColor(index, index / waveWidth, 'lower');
-                context.clearRect(index * widthPerLine, waveHeight * mainLinePerctg, widthPerLine, waveHeight * shadowPerctg * waveData[index]);
-                context.fillRect(index * widthPerLine, waveHeight * mainLinePerctg, widthPerLine, waveHeight * shadowPerctg * waveData[index]);
+                var comment = checkImage(index * widthPerLine);
+
+                if (!comment) {
+                    //set new point to played color
+                    context.fillStyle = getColor(index, index / waveWidth, 'lower');
+                    context.fillRect(index * widthPerLine, waveHeight * mainLinePerctg, widthPerLine, waveHeight * shadowPerctg * waveData[index]);
+                }
+                else {
+                    $("#sound_comment_in_sound_" + comment.commentId).removeClass('hide');
+                }
             }
             else {
                 pointLowerPosition = -1;
@@ -155,15 +178,20 @@
             if (-1 != preUpperPosition) {
                 //set previous upper point to the color it should be
                 context.fillStyle = getColor(preUpperPosition, preUpperPosition / waveWidth, 'upper');
-                context.clearRect(preUpperPosition * widthPerLine, waveHeight * mainLinePerctg * (1 - waveData[preUpperPosition]), widthPerLine, waveHeight * mainLinePerctg * waveData[preUpperPosition]);
                 context.fillRect(preUpperPosition * widthPerLine, waveHeight * mainLinePerctg * (1 - waveData[preUpperPosition]), widthPerLine, waveHeight * mainLinePerctg * waveData[preUpperPosition]);
             }
 
             if (-1 != preLowerPosition) {
-                //set previous lower point to the color it should be
-                context.fillStyle = getColor(preLowerPosition, preLowerPosition / waveWidth, 'lower');
-                context.clearRect(preLowerPosition * widthPerLine, waveHeight * mainLinePerctg, widthPerLine, waveHeight * shadowPerctg * waveData[preLowerPosition]);
-                context.fillRect(preLowerPosition * widthPerLine, waveHeight * mainLinePerctg, widthPerLine, waveHeight * shadowPerctg * waveData[preLowerPosition]);
+                var comment = checkImage(preLowerPosition * widthPerLine);
+
+                if (!comment) {
+                    //set previous lower point to the color it should be
+                    context.fillStyle = getColor(preLowerPosition, preLowerPosition / waveWidth, 'lower');
+                    context.fillRect(preLowerPosition * widthPerLine, waveHeight * mainLinePerctg, widthPerLine, waveHeight * shadowPerctg * waveData[preLowerPosition]);
+                }
+                else {
+                    $("#sound_comment_in_sound_" + comment.commentId).addClass('hide');
+                }
             }
         }
 
@@ -194,7 +222,8 @@
                     var leftSec = ((curSec - curMin * 60 * 1000) / 1000).toFixed(2);
 
                     $('#sound_commentbox_' + soundId).show();
-                    $('#sound_commentbox_input_' + soundId).attr("placeholder", ("您将留言在 " + ((curMin>0)?(curMin + "分 "):"") + leftSec + "秒 ..."));
+                    $('#sound_commentbox_input_' + soundId).attr("placeholder", ("您将留言在 " + ((curMin > 0) ? (curMin + "分 ") : "") + leftSec + "秒 ..."));
+                    $('#sound_commentbox_input_' + soundId).focus();
                     $('#sound_comment_point_' + soundId).val((curSec / 1000).toFixed(2));
                 }
             }
@@ -212,7 +241,5 @@
             onHover = false;
             redrawWave();
         }
-
-        $('#sound_wave_' + soundId).css('cursor', 'pointer');
     };
 })(jQuery);

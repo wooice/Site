@@ -4,7 +4,7 @@
     <div class="row-fluid">
         <div class="span2" ng-controller="userBasicController">
             <div style="padding-top: 20px;padding-left: 25px">
-                <img src="{{user.profile.avatorUrl}}" width="200px" height="200px">
+                <img ng-src="{{user.profile.avatorUrl}}" width="200px" height="200px">
 
                 <div style="padding-top: 10px;"><span class="userInfo__title">{{user.profile.alias}}</span> <span
                         ng-show="user.profile.city"
@@ -46,7 +46,7 @@
                 <!-- external  -->
                 <div>
                     <span ng-repeat="site in user.external.sites | filter:{ url: '.' }">
-                        <i title="{{site.displayName}}"> <a href="{{site.url}}"><img src="img/logo/{{site.name}}.png"
+                        <i title="{{site.displayName}}"> <a href="{{site.url}}" target=_blank><img src="img/logo/{{site.name}}.png"
                                                                                      class="external_logo"/></a> </i>
                     </span>
                 </div>
@@ -90,7 +90,9 @@
                             </div>
                         </div>
                         <div id="sound_player_body_{{sound.id}}" class='sound_player_body'>
-                            <div id="sound_wave_{{sound.id}}" class='sound_player_wave'>
+                            <div id="sound_wave_{{sound.id}}" class='sound_player_wave'  style="cursor:pointer">
+                                <canvas id="sound_wave_canvas_{{sound.id}}">
+                                </canvas>
                             </div>
                         </div>
                         <div id="sound_player_footer_{{sound.id}}" class='sound_player_footer border-light-bottom'>

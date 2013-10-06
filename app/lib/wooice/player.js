@@ -191,30 +191,98 @@
 
         $.extend(this, {
             toggle: function (input) {
-                if (input && input.id)
-                {
+                if (input && input.id) {
                     var sound = soundData.soundList[input.id];
                 }
-                else
-                {
-                    if (soundData.currentSound)
-                    {
+                else {
+                    if (soundData.currentSound) {
                         var sound = soundData.soundList[soundData.currentSound];
                     }
-                    else
-                    {
+                    else {
                         var sound = null;
                         for (var oneSound in soundData.soundList) {
-                            if (!sound)
-                            {
+                            if (!sound) {
                                 sound = soundData.soundList[oneSound];
+                                break;
                             }
                         }
                     }
                 }
 
-                if (!sound)
-                {
+                if (!sound) {
+                    return;
+                }
+                if (!sound.inited) {
+                    var playsCount = socialClient.play({sound: sound.id}, null, function (count) {
+                        sound.url = playsCount.url;
+                        sound.autoPlay = true;
+                        $(window).soundPlayer().setup(sound);
+
+                        sound.inited = true;
+                        $('#play_count_' + sound.id).text(playsCount.played);
+                    });
+                }
+                else {
+                    soundManager.togglePause(sound.id);
+                }
+            }
+        });
+
+        $.extend(this, {
+            playSibling: function (sibling) {
+                var sound = null;
+                if (sibling == 'next') {
+                    var length = 0, pre = null, cur = null, soundKey = null;
+                    for (var oneSound in soundData.soundList) {
+                        if (cur && !soundKey) {
+                            soundKey = oneSound;
+                        }
+                        if (soundData.currentSound === oneSound) {
+                            cur = oneSound;
+                        }
+                        pre = oneSound;
+                        length++;
+                    }
+                    if (length == 0) {
+                        return;
+                    }
+                    if (cur === null || pre === cur) {
+                        soundKey = null;
+                        for (var oneSound in soundData.soundList) {
+                            if (!soundKey) {
+                                soundKey = oneSound;
+                                break;
+                            }
+                        }
+                    }
+                    sound = soundData.soundList[soundKey];
+                }
+                else {
+                    var length = 0, soundKey = null, found = false;
+                    for (var oneSound in soundData.soundList) {
+                        if (soundData.currentSound === oneSound) {
+                            found = true;
+                        }
+                        if (!found) {
+                            soundKey = oneSound;
+                        }
+                        length++;
+                    }
+                    if (length == 0) {
+                        return;
+                    }
+                    else {
+                        if (null == soundKey) {
+                            for (var oneSound in soundData.soundList) {
+                                soundKey = oneSound;
+                            }
+                        }
+                    }
+
+                    sound = soundData.soundList[soundKey];
+                }
+
+                if (!sound) {
                     return;
                 }
                 if (!sound.inited) {
@@ -257,6 +325,9 @@
             }, this));
             $(window).bind('onToggle', $.proxy(function (event, sound) {
                 this.toggle(sound);
+            }, this));
+            $(window).bind('onPlaySibling', $.proxy(function (event, sibling) {
+                this.playSibling(sibling);
             }, this));
             $(window).bind('onSoundDestory', $.proxy(function (event, sound) {
                 this.destroy(sound);

@@ -295,6 +295,7 @@ angular.module('wooice.controllers', []).
             });
 
             $scope.comments = [];
+            $scope.commentsInsound = [];
             $scope.loadClass = 'hide';
             $scope.commentPageNum = 1;
 
@@ -342,6 +343,7 @@ angular.module('wooice.controllers', []).
                             showCloseButton: true
                         });
                         $scope.reloadComments();
+                        loadCommentsInSound();
                         $scope.sound.soundSocial.commentsCount = result.commentsCount;
                     });
                 }
@@ -388,6 +390,13 @@ angular.module('wooice.controllers', []).
 
                     loadComments(true);
                 }, this));
+            }
+
+            $scope.replyInSound = function () {
+                $('#sound_commentbox_' + $scope.sound.id).show();
+                $('#sound_commentbox_input_' + $scope.sound.id).attr("placeholder", ("@"+this.comment.owner.profile.alias+": ..."));
+                $('#sound_commentbox_input_' + $scope.sound.id).focus();
+                $('#sound_comment_to_' + $scope.sound.id).val(this.comment.owner.profile.alias);
             }
 
             $scope.editSoundAlias = function () {
@@ -517,7 +526,6 @@ angular.module('wooice.controllers', []).
             $scope.loadSound = function ()
             {
                 $(window).soundPlayer().setSocialClient(SoundSocial);
-
                 var sound = Sound.load({sound: $routeParams.soundId}, function () {
                     $scope.sound = {
                         id: sound.id,
@@ -560,18 +568,20 @@ angular.module('wooice.controllers', []).
                             var postData = {};
                             postData.comment = $(this).val();
                             postData.pointAt = $("#sound_comment_point_" + $scope.sound.id).val();
-                            postData.toUserAlias = null;
+                            postData.toUserAlias = $('#sound_comment_to_' + $scope.sound.id).val();
                             var result = SoundSocial.comment({sound: $scope.sound.id}, postData, function (count) {
                                 $scope.sound.soundSocial.commentsCount = result.commentsCount;
                                 $('#sound_commentbox_input_' + $scope.sound.id).val('');
                                 $('#sound_commentbox_input_' + $scope.sound.id).attr("placeholder", "感谢您的留言!");
 
                                 loadComments(true);
+                                loadCommentsInSound();
                             });
                         }
                     });
 
                     loadComments();
+                    loadCommentsInSound();
                 });
 
                 var scrollComments = $.proxy(function () {
@@ -588,6 +598,36 @@ angular.module('wooice.controllers', []).
             $scope.$on('$viewContentLoaded', function () {
                 $scope.loadSound();
             });
+
+            function loadCommentsInSound() {
+                $scope.commentsInsound = [];
+                var comments = SoundSocialList.comment({sound: $scope.sound.id, justInSound: true}, function () {
+                    var canvasWidth = $("#sound_wave_canvas_"+$scope.sound.id).width();
+                    $.each(comments, function (index, comment) {
+                        comment.showReply = false;
+                        if (!comment.owner.profile.avatorUrl) {
+                            comment.owner.profile.avatorUrl = "img/default_avatar.png";
+                        }
+                        comment.owner.route = config.userStreamPath + comment.owner.profile.alias;
+                        comment.top = '70%';
+                        comment.left = (comment.pointAt*canvasWidth)/($scope.sound.duration/1000) + "px";
+                        $scope.commentsInsound.push(comment);
+
+                        $scope.$apply();
+
+                        $('#sound_comment_in_sound_' + comment.commentId).mouseleave(function (){
+                            $(this).addClass('hide');
+                        });
+                    });
+
+                    var waveFormExtension = new $.waveFormExtension({
+                        id: $scope.sound.id,
+                        duration: $scope.sound.duration,
+                        comments: $scope.commentsInsound
+                    });
+                    waveFormExtension.drawComments();
+                });
+            }
 
             function loadComments(force) {
                 if (force) {
@@ -752,6 +792,14 @@ angular.module('wooice.controllers', []).
         $scope.togglePause = function (id) {
             $(window).trigger('onToggle', {
             });
+        };
+
+        $scope.playPre = function (id) {
+            $(window).trigger('onPlaySibling', 'pre');
+        };
+
+        $scope.playNext = function (id) {
+            $(window).trigger('onPlaySibling', 'next');
         };
 
         $('#search_box').bind('keyup', function (event) {

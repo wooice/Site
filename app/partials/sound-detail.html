@@ -2,21 +2,21 @@
 
 <div role="main" class="container-fluid">
 
-    <div class="row-fluid">
-        <div class="span11">
-            <!--Body content-->
-            <div id="sound_streams">
-                <div id="sound_{{sound.id}}" class='sound_single_item'>
-                    <div id="sound_art_{{sound.id}}" class='sound_art'>
-                        <div id="sound_cover_{{sound.id}}">
-                            <div id="sound_cover_ul_{{sound.id}}" class='poster_img'>
-                                <div class="{{imgUploadMsgClass}}" style="font-size: 10px">
-                                    <i ng-show="imgUploadMsgClass == 'text-info'"
-                                       class="icon-spinner icon-spin icon-large"></i>{{ imgUploadMsg}}
-                                </div>
-                                <img id="poster_img" ng-src="{{sound.poster}}">
+<div class="row-fluid">
+<div class="span11">
+<!--Body content-->
+<div id="sound_streams">
+<div id="sound_{{sound.id}}" class='sound_single_item'>
+    <div id="sound_art_{{sound.id}}" class='sound_art'>
+        <div id="sound_cover_{{sound.id}}">
+            <div id="sound_cover_ul_{{sound.id}}" class='poster_img'>
+                <div class="{{imgUploadMsgClass}}" style="font-size: 10px">
+                    <i ng-show="imgUploadMsgClass == 'text-info'"
+                       class="icon-spinner icon-spin icon-large"></i>{{ imgUploadMsg}}
+                </div>
+                <img id="poster_img" ng-src="{{sound.poster}}">
 
-                                <div style="padding-top: 5px" ng-show="isOwner()">
+                <div style="padding-top: 5px" ng-show="isOwner()">
                                   <span ng-show="!isUploadingPoster"
                                         class="button button-small button-rounded button-flat fileinput-button">
                                     <span>上传海报</span>
@@ -29,60 +29,78 @@
                                     <i class="icon-ban-circle icon-white"></i>
                                         <span>取消海报</span>
                                   </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                    <div id="sound_player_{{sound.id}}" class='sound_player'>
-                        <div id="sound_player_header_{{sound.id}}" class='sound_player_header'>
-                            <div class='sound_player_control'>
-                                <i style="cursor:pointer" id='sound_player_button_{{sound.id}}'
-                                   class='icon-play sound_player_button' ng-click="togglePause(sound.id)"></i>
-                            </div>
-                            <div id="sound_summary_{{sound.id}}">
-                                <div id="sound_owner_{{sound.id}}">
-                                    <a class='sound_owner ' href="{{sound.owner.route}}">{{sound.owner.alias}}</a>
-                                </div>
-                                <div id="sound_title_{{sound.id}}">
+    <div id="sound_player_{{sound.id}}" class='sound_player'>
+        <div id="sound_player_header_{{sound.id}}" class='sound_player_header'>
+            <div class='sound_player_control'>
+                <i style="cursor:pointer" id='sound_player_button_{{sound.id}}'
+                   class='icon-play sound_player_button' ng-click="togglePause(sound.id)"></i>
+            </div>
+            <div id="sound_summary_{{sound.id}}">
+                <div id="sound_owner_{{sound.id}}">
+                    <a class='sound_owner ' href="{{sound.owner.route}}">{{sound.owner.alias}}</a>
+                </div>
+                <div id="sound_title_{{sound.id}}">
                                     <span ng-if="sound.title.readonly">
                                         <a class='sound_title' href="{{sound.title.route}}">{{sound.title.alias}}</a>
                                     </span>
-                                    <input ng-if="!sound.title.readonly" type="text" required  class="input-small"
-                                           ng-model="sound.title.alias"/>
-                                    <a href="#" ng-if="sound.title.readonly" onclick="return false;"
-                                       ng-click="editSoundAlias()" ng-show="isOwner()"
-                                       style="text-decoration:none;color:black"><i class="icon-edit"></i></a>
-                                    <a href="#" ng-if="!sound.title.readonly" onclick="return false;"
-                                       ng-click="editSoundAlias()" ng-show="isOwner()"
-                                       style="text-decoration:none;color:black"><i class="icon-save"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="sound_player_body_{{sound.id}}" class='sound_player_body'>
-                            <div id="sound_wave_{{sound.id}}" class='sound_player_wave'>
-                            </div>
-                        </div>
-                        <div id="sound_player_footer_{{sound.id}}" class='sound_player_footer border-light-bottom'>
-                            <div id="sound_commentbox_{{sound.id}}">
-                                <input type="text" id="sound_commentbox_input_{{sound.id}}" class="input-block-level"
-                                       placeholder="请留下您的评论...">
-                                <input type="hidden" id="sound_comment_point_{{sound.id}}">
-                            </div>
-                            <a href="#" class="button button-small button-rounded button-flat action-button"
-                               onclick="return false;" ng-click="toggleLike(sound.id)"><i class="icon-heart"></i></i>
-                                {{sound.soundUserPrefer.likeWording}}</a>
-                            <a href="#" class="button button-small button-rounded button-flat action-button"
-                               onclick="return false;" ng-click="toggleRepost(sound.id)"><i
-                                    class="icon-retweet"></i></i> {{sound.soundUserPrefer.repostWording}}</a>
+                    <input ng-if="!sound.title.readonly" type="text" required class="input-small"
+                           ng-model="sound.title.alias"/>
+                    <a href="#" ng-if="sound.title.readonly" onclick="return false;"
+                       ng-click="editSoundAlias()" ng-show="isOwner()"
+                       style="text-decoration:none;color:black"><i class="icon-edit"></i></a>
+                    <a href="#" ng-if="!sound.title.readonly" onclick="return false;"
+                       ng-click="editSoundAlias()" ng-show="isOwner()"
+                       style="text-decoration:none;color:black"><i class="icon-save"></i></a>
+                </div>
+            </div>
+        </div>
+        <div id="sound_player_body_{{sound.id}}" class='sound_player_body'  style="cursor:pointer">
+            <div id="sound_wave_{{sound.id}}" class='sound_player_wave' style="position: relative;">
+                <div  ng-repeat="comment in commentsInsound" style="position: absolute;margin-top:-1px;top:{{comment.top}};left:{{comment.left}}">
+                    <div id="sound_comment_in_sound_{{comment.commentId}}" class="hide">
+                    <div>
+                        <a href="{{comment.owner.route}}" title="{{comment.owner.profile.alias}}"><img src="{{comment.owner.profile.avatorUrl}}" style="width: 35px;height: 35px"></a>
+                    </div>
+                    <div>
+                        <a href="#" onclick="return false;" ng-click="replyInSound()"><span style="font-size: 12px">@{{comment.pointAt}}秒:{{comment.comment}}</span></a>
+                    </div>
+                    </div>
+                </div>
+                <canvas id="sound_wave_canvas_{{sound.id}}">
+                </canvas>
+            </div>
+        </div>
+        <div id="sound_player_footer_{{sound.id}}" class='sound_player_footer border-light-bottom'>
+            <div id="sound_commentbox_{{sound.id}}">
+                <input type="text" id="sound_commentbox_input_{{sound.id}}" class="input-block-level"
+                       placeholder="请留下您的评论...">
+                <input type="hidden" id="sound_comment_point_{{sound.id}}" value="-1">
+                <input type="hidden" id="sound_comment_to_{{sound.id}}">
+            </div>
+            <a href="#" class="button button-small button-rounded button-flat action-button"
+               onclick="return false;" ng-click="toggleLike(sound.id)"><i class="icon-heart"></i></i>
+                {{sound.soundUserPrefer.likeWording}}</a>
+            <a href="#" class="button button-small button-rounded button-flat action-button"
+               onclick="return false;" ng-click="toggleRepost(sound.id)"><i
+                    class="icon-retweet"></i></i> {{sound.soundUserPrefer.repostWording}}</a>
 
-                            <div class="pull-right">
+            <div class="pull-right">
                                 <span ng-show="isOwner()">
-                                    <i class="icon-lock" ng-show="sound.status.value == 'private' && sound.status.readonly">私有</i>
-                                    <i class="icon-unlock-alt" ng-show="sound.status.value == 'public' && sound.status.readonly">公开</i>
-                                      <select ng-model="sound.status.value" ng-show="!sound.status.readonly" style="width: 70px">
-                                          <option value="private" ng-selected="sound.status.value == 'private'">私有</option>
-                                          <option value="public" ng-selected="sound.status.value == 'public'">公开</option>
+                                    <i class="icon-lock"
+                                       ng-show="sound.status.value == 'private' && sound.status.readonly">私有</i>
+                                    <i class="icon-unlock-alt"
+                                       ng-show="sound.status.value == 'public' && sound.status.readonly">公开</i>
+                                      <select ng-model="sound.status.value" ng-show="!sound.status.readonly"
+                                              style="width: 70px">
+                                          <option value="private" ng-selected="sound.status.value == 'private'">私有
+                                          </option>
+                                          <option value="public" ng-selected="sound.status.value == 'public'">公开
+                                          </option>
                                       </select>
 
                                     <a href="#" ng-if="sound.status.readonly"
@@ -95,111 +113,112 @@
                                         style="text-decoration:none;"><i class="icon-save"></i></a>
                                     |
                                 </span>
-                                <i class="icon-play-sign stat_icon"></i>{{sound.soundSocial.playedCount}}
-                                |
-                                <i class="icon-heart stat_icon"></i>{{sound.soundSocial.likesCount}}
-                                |
-                                <i class="icon-retweet stat_icon"></i>{{sound.soundSocial.reportsCount}}
-                                |
-                                <i class="icon-comment stat_icon"></i>{{sound.soundSocial.commentsCount}}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <i class="icon-play-sign stat_icon"></i>{{sound.soundSocial.playedCount}}
+                |
+                <i class="icon-heart stat_icon"></i>{{sound.soundSocial.likesCount}}
+                |
+                <i class="icon-retweet stat_icon"></i>{{sound.soundSocial.reportsCount}}
+                |
+                <i class="icon-comment stat_icon"></i>{{sound.soundSocial.commentsCount}}
+            </div>
+        </div>
+    </div>
+</div>
 
-                <div class="row-fluid">
-                    <div class="span2">
-                    </div>
-                    <div class="span8">
-                        <div class="sound_tags">
-                        </div>
-                        <div class="sound_description">
-                            <div style="padding-bottom: 5px">
-                                <i class="icon-headphones"></i> 声音描述
-                                <a href="#" ng-if="sound.description.readonly" onclick="return false;"
-                                   ng-click="editSoundDescription()" ng-show="isOwner()" class="pull-right"
-                                   style="text-decoration:none;"><i class="icon-edit"></i></a>
-                                <a href="#" ng-if="!sound.description.readonly" onclick="return false;"
-                                   ng-click="editSoundDescription()" ng-show="isOwner()" class="pull-right"
-                                   style="text-decoration:none;"><i class="icon-save"></i></a>
-                            </div>
-                            <div class="border-light-top" style="padding-bottom: 15px">
-                                <p ng-if="sound.description.context && sound.description.readonly">
-                                    {{sound.description.context}}</p>
-                                <span ng-if="!sound.description.context && sound.description.readonly">暂无声音描述</span>
-                                <textarea ng-if="!sound.description.readonly" type="text" required
-                                          class="input-block-level"
-                                          ng-model="sound.description.context">
-                                </textarea>
-                            </div>
-                        </div>
-                        <div class="sound_comments" style="padding-top: 20px">
-                            <div style="padding-bottom: 5px">
-                                <i class="icon-comment"></i> {{sound.soundSocial.commentsCount}}条评论
-                                <a href="#" title="刷新评论" onclick="return false;" ng-click="reloadComments()"
-                                   style="text-decoration:none;" class="pull-right"><i class="icon-refresh"></i></a>
-                            </div>
-                            <ul class="ul-nostyle" ng-repeat="comment in comments">
-                                <li class="border-light-top">
-                                    <a href="{{comment.owner.route}}" style="float:left;padding-top:10px">
-                                        <img src="{{comment.owner.profile.avatorUrl}}" width="40px" height="40px">
-                                    </a>
+<div class="row-fluid">
+    <div class="span2">
+    </div>
+    <div class="span8">
+        <div class="sound_tags">
+        </div>
+        <div class="sound_description">
+            <div style="padding-bottom: 5px">
+                <i class="icon-headphones"></i> 声音描述
+                <a href="#" ng-if="sound.description.readonly" onclick="return false;"
+                   ng-click="editSoundDescription()" ng-show="isOwner()" class="pull-right"
+                   style="text-decoration:none;"><i class="icon-edit"></i></a>
+                <a href="#" ng-if="!sound.description.readonly" onclick="return false;"
+                   ng-click="editSoundDescription()" ng-show="isOwner()" class="pull-right"
+                   style="text-decoration:none;"><i class="icon-save"></i></a>
+            </div>
+            <div class="border-light-top" style="padding-bottom: 15px">
+                <p ng-if="sound.description.context && sound.description.readonly">
+                    {{sound.description.context}}</p>
+                <span ng-if="!sound.description.context && sound.description.readonly">暂无声音描述</span>
+                <textarea ng-if="!sound.description.readonly" type="text" required
+                          class="input-block-level"
+                          ng-model="sound.description.context">
+                </textarea>
+            </div>
+        </div>
+        <div class="sound_comments" style="padding-top: 20px">
+            <div style="padding-bottom: 5px">
+                <i class="icon-comment"></i> {{sound.soundSocial.commentsCount}}条评论
+                <a href="#" title="刷新评论" onclick="return false;" ng-click="reloadComments()"
+                   style="text-decoration:none;" class="pull-right"><i class="icon-refresh"></i></a>
+            </div>
+            <ul class="ul-nostyle" ng-repeat="comment in comments">
+                <li class="border-light-top">
+                    <a href="{{comment.owner.route}}" style="float:left;padding-top:10px">
+                        <img src="{{comment.owner.profile.avatorUrl}}" width="40px" height="40px">
+                    </a>
 
-                                    <div class="comment_body">
-                                        <div>
-                                            <a href="{{comment.owner.route}}">
-                                                {{comment.owner.profile.alias}}
-                                            </a>
+                    <div class="comment_body">
+                        <div>
+                            <a href="{{comment.owner.route}}">
+                                {{comment.owner.profile.alias}}
+                            </a>
                                             <span ng-show="comment.to">
                                                 <span style="color:#999; font-size: 12px">@</span>
                                             <a href="{{comment.to.route}}">
                                                 {{comment.to.profile.alias}}
                                             </a>
                                             </span>
-                                            <span style="color:#999; font-size: 12px" ng-show="comment.pointAt"> @ {{comment.pointAt}}秒  </span>
+                            <span style="color:#999; font-size: 12px"
+                                  ng-show="comment.pointAt"> @ {{comment.pointAt}}秒  </span>
 
-                                            <div class="pull-right">
-                                                <a href="#" onclick="return false;" ng-click="reply()" title="回复本条评论"
-                                                   style="text-decoration:none;padding-right: 8px"><i
-                                                        class="icon-reply"></i></a>
-                                                <a href="#" ng-if="isOwner() || isCommentOwner()"
-                                                   onclick="return false;" ng-click="deleteComment()" title="删除本条评论"
-                                                   style="text-decoration:none;padding-right: 8px"><i
-                                                        class="icon-trash"></i></a>
-                                            </div>
-                                        </div>
-                                        <span style="color:#333;padding-top: 5px"> {{comment.comment}} </span>
-
-                                        <div class="pull-right" style="font-size: 12px">
-                                            <time datatime="{{comment.createdTime}}"
-                                                  style="font-style:italic;color:#ccc;">
-                                                {{comment.createdTime}}
-                                            </time>
-                                        </div>
-                                        <div ng-show="comment.showReply">
-                                            <form ng-submit="replyComment()" style="margin-bottom:0px; padding-top: 10px">
-                                                <input type="text" class="input-block-level" style="margin-bottom:0px"
-                                                       id="sound_comment_reply_input_{{$index}}"
-                                                       placeholder="@{{comment.owner.profile.alias}}:"
-                                                       ng-model="comment.reply">
-                                            </form>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
+                            <div class="pull-right">
+                                <a href="#" onclick="return false;" ng-click="reply()" title="回复本条评论"
+                                   style="text-decoration:none;padding-right: 8px"><i
+                                        class="icon-reply"></i></a>
+                                <a href="#" ng-if="isOwner() || isCommentOwner()"
+                                   onclick="return false;" ng-click="deleteComment()" title="删除本条评论"
+                                   style="text-decoration:none;padding-right: 8px"><i
+                                        class="icon-trash"></i></a>
+                            </div>
                         </div>
+                        <span style="color:#333;padding-top: 5px"> {{comment.comment}} </span>
 
-                        <div class="{{loadClass}}" style="text-align: center">
-                            <i class="icon-spinner icon-spin icon-large"></i> 努力加载中...
+                        <div class="pull-right" style="font-size: 12px">
+                            <time datatime="{{comment.createdTime}}"
+                                  style="font-style:italic;color:#ccc;">
+                                {{comment.createdTime}}
+                            </time>
+                        </div>
+                        <div ng-show="comment.showReply">
+                            <form ng-submit="replyComment()" style="margin-bottom:0px; padding-top: 10px">
+                                <input type="text" class="input-block-level" style="margin-bottom:0px"
+                                       id="sound_comment_reply_input_{{$index}}"
+                                       placeholder="@{{comment.owner.profile.alias}}:"
+                                       ng-model="comment.reply">
+                            </form>
                         </div>
                     </div>
-                    <div class="span3">
-                    </div>
-                </div>
-            </div>
-            <!-- Script for wave -->
+                </li>
+            </ul>
         </div>
 
+        <div class="{{loadClass}}" style="text-align: center">
+            <i class="icon-spinner icon-spin icon-large"></i> 努力加载中...
+        </div>
     </div>
+    <div class="span3">
+    </div>
+</div>
+</div>
+<!-- Script for wave -->
+</div>
+
+</div>
 </div>
 <ng-include src="'partials/footer.html'"></ng-include>

@@ -10,6 +10,7 @@
         var owner = sound.owner;
         var poster = sound.poster;
         var duration = sound.duration;
+        var color = sound.color;
 
         this.renderSound = function () {
             renderFrame();
@@ -61,7 +62,8 @@
                 {
                     id: id,
                     waveData: waveData,
-                    duration: duration
+                    duration: duration,
+                    color: color
                 }
             );
             waveData = null;

@@ -1,4 +1,4 @@
-<div class="navbar" ng-controller="heaederCtrl">
+<div class="navbar" ng-controller="headerCtrl">
     <div class="navbar-inner">
         <a class="brand" href="#" title="Wooice">
             <img width="78"  src="img/logo.jpg"/>
@@ -8,11 +8,13 @@
             <li><a href="#">乐趣</a></li>
             <li class="pull-right"><a href="#" onclick="return false;"  ng-click="goto('/stream/user/{{userAlias}}')">你的</a></li>
             <form class="navbar-search" action="" style="padding-left: 30px">
-                <input type="text" class="search-query span2" placeholder="Find a sound" ng-model="q" id="search_box">
+                <input type="text" class="search-query span2" placeholder="寻找一段声音" ng-model="q" id="search_box">
             </form>
         </ul>
 
         <ul class="nav pull-right">
+            <li><a  href="#" onclick="return false;"  ><i style="cursor:pointer;color:white" id='sound_player_button_global'
+                   class='sound_player_button icon-play' ng-click="togglePause()"></i></a></li>
             <li ><a  href="#" onclick="return false;" ng-click="goto('/profile')" >设置</a></li>
             <li><a  href="#" onclick="return false;"  ng-click="goto('/upload')" >上传</a></li>
             <li ><a  href="#" onclick="return false;" ng-click="logout()" >注销</a></li>

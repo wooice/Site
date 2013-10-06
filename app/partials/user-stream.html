@@ -6,7 +6,8 @@
             <div style="padding-top: 20px;padding-left: 25px">
                 <img src="{{user.profile.avatorUrl}}" width="200px" height="200px">
 
-                <div style="padding-top: 10px;"><span class="userInfo__title">{{user.profile.alias}}</span> <span  ng-show="user.profile.city"
+                <div style="padding-top: 10px;"><span class="userInfo__title">{{user.profile.alias}}</span> <span
+                        ng-show="user.profile.city"
                         style="color:#999;">@{{user.profile.city}}</span></div>
                 <div style="color:#999;margin-bottom:20px;margin-top:20px;font-size:16px;">
                     {{user.profile.description}}
@@ -35,10 +36,10 @@
                 </div>
 
                 <!-- social action-->
-                <div style="padding-bottom: 25px"  ng-class="{true: 'hide', false: ''}[user.isCurrent]">
+                <div style="padding-bottom: 25px" ng-class="{true: 'hide', false: ''}[user.isCurrent]">
                     <a href="#" class="button button-rounded button-flat-primary button-small" onclick="return false;"
                        ng-click="follow(user.profile.alias)">{{user.userPrefer.followingString}}</a>
-                    <a href="#" class="button button-rounded button-flat-highlight button-small"
+                    <a href="#" class="button button-rounded button-flat-highlight button-small hide"
                        onclick="return false;">Share</a>
                 </div>
 
@@ -53,13 +54,22 @@
         </div>
 
         <div id="sound_streams" class="span8">
+            <a href="#" onclick="return false;" ng-click="loadStream('true')" class="pull-right"><i class="icon-refresh"></i></a>
+
+            <div  ng-show="isCurUser() && newSoundCount > 0" style="text-align: center">
+                <a href="#" onclick="return false;" ng-click="loadStream('true')">您的声音已处理完成，点此<i class="icon-refresh">刷新</i></a>
+            </div>
+            <div  ng-show="!isCurUser() && newSoundCount > 0" style="text-align: center">
+                <a href="#" onclick="return false;" ng-click="loadStream('true')">{{userCurPage}}上传了新的声音，点此<i class="icon-refresh">刷新</i></a>
+            </div>
+
             <!--Body content-->
             <div ng-repeat="sound in sounds">
                 <div id="sound_{{sound.id}}" class='sound_item'>
                     <div id="sound_art_{{sound.id}}" class='sound_art'>
                         <div id="sound_cover_{{sound.id}}">
                             <div id="sound_cover_ul_{{sound.id}}" class='poster_img'>
-                                <img ng-src="{{sound.poster}}">
+                                <a  href="{{sound.title.route}}"><img ng-src="{{sound.poster}}"></a>
                             </div>
                         </div>
                     </div>
@@ -87,7 +97,7 @@
                             <div id="sound_commentbox_{{sound.id}}" class="hide">
                                 <input type="text" id="sound_commentbox_input_{{sound.id}}" class="input-block-level"
                                        placeholder="请留下您的评论...">
-                                <input type="hidden" id="sound_comment_point_{{sound.id}}">
+                                <input type="hidden" id="sound_comment_point_{{sound.id}}" value="-1">
                             </div>
                             <a href="#" class="button button-small button-rounded  button-flat action-button"
                                onclick="return false;" ng-click="toggleLike(sound.id)"><i class="icon-heart"></i></i>
@@ -98,9 +108,15 @@
                             <a href="#" class="button button-small button-rounded button-flat action-button"
                                ng-show="isOwner()"
                                onclick="return false;" ng-click="delete()"><i
-                                    class="icon-trash"></i></i> Delete</a>
+                                    class="icon-trash"></i></i> 删除</a>
 
                             <div class="pull-right" style="margin-top: 8px">
+                                <span ng-show="isOwner()">
+                                    <i class="icon-lock"
+                                       ng-show="sound.status == 'private'">私有 |</i>
+                                    <i class="icon-unlock-alt"
+                                       ng-show="sound.status == 'public'">公开 |</i>
+                                </span>
                                 <i class="icon-play-sign stat_icon"></i><span id="play_count_{{sound.id}}">{{sound.soundSocial.playedCount}}</span>
                                 |
                                 <i class="icon-heart stat_icon"></i>{{sound.soundSocial.likesCount}}
@@ -114,25 +130,26 @@
                 </div>
             </div>
 
-            <div class="{{loadClass}}" style="text-align: center">
+            <div ng-show="isloading"  style="text-align: center">
                 <i class="icon-spinner icon-spin icon-large"></i> 努力加载中...
             </div>
 
-            <div class="{{noSoundMsg}}" style="position:absolute; top:40%; left:40%;">
+            <div ng-show="sounds.length == 0 && isCurUser()" style="position:absolute; top:40%; left:40%;">
                 您还没有自己的音乐流，<a href="index.html#/upload">上传音乐</a>或<a href="index.html#/interest">发现兴趣</a>， 创建属于自己的音乐流。
             </div>
-            <div class="{{noSearchMsgOther}}" style="position:absolute; top:40%; left:40%;">
-                {{curUser}}还未上传或转发声音
+            <div  ng-show="sounds.length == 0 && !isCurUser()" style="position:absolute; top:40%; left:40%;">
+                {{userCurPage}}未上传或转发声音
             </div>
         </div>
 
         <div class="span2" ng-controller="userSocialController">
-            <div>
-                <legend style="font-size: 18px"><i class="icon-group icon-large" title="3 followers"
+            <div style="padding-bottom: 15px;height:150px">
+                <legend style="font-size: 18px"><i class="icon-user icon-large" title="3 followers"
                                                    style="padding-left:10px;font-size: 18px;"></i>
                     他关注的人({{user.userSocial.following}})
                 </legend>
-                <div ng-repeat="user in followed" style="float:left; padding-right: 8px">
+                <div ng-show="following.length > 0" ng-repeat="user in following"
+                     style="float:left; padding-right: 8px">
                     <div style="text-align:center;">
                         <a href="#" onclick="return false;">
                             <img style="width: 60px;height: 60px" ng-src="{{user.profile.avatorUrl}}">
@@ -143,13 +160,16 @@
                         </div>
                     </div>
                 </div>
+                <div ng-show="following.length == 0" style="padding-left: 10px">
+                    暂无关注任何用户
+                </div>
             </div>
-            <div>
-                <legend style="font-size: 18px"><i class="icon-user icon-large" title="3 followers"
+            <div style="padding-bottom: 15px;height:150px">
+                <legend style="font-size: 18px"><i class="icon-group icon-large" title="3 followers"
                                                    style="padding-left:10px;font-size: 18px;"></i>
                     关注他的人({{user.userSocial.followed}})
                 </legend>
-                <div ng-repeat="user in following" style="float:left; padding-right: 8px">
+                <div ng-show="followed.length > 0" ng-repeat="user in followed" style="float:left; padding-right: 8px">
                     <div style="text-align:center;">
                         <a href="#" onclick="return false;">
                             <img style="width: 60px;height: 60px" ng-src="{{user.profile.avatorUrl}}">
@@ -159,9 +179,14 @@
                             <a href='{{user.route}}'>{{user.profile.alias}}</a>
                         </div>
                     </div>
+                </div>
+                <div ng-show="followed.length == 0" style="padding-left: 10px">
+                    暂无用户关注{{user.profile.alias}}
                 </div>
             </div>
         </div>
 
     </div>
 </div>
+
+<ng-include src="'partials/footer.html'"></ng-include>

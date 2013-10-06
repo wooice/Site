@@ -49,7 +49,8 @@
                     soundPosition: 0,
                     soundDuration: sound.duration,
                     soundBytesloaded: 0,
-                    soundBytesTotal: 0
+                    soundBytesTotal: 0,
+                    color: sound.color
                 });
 
                 waveForm.redraw();
@@ -61,8 +62,12 @@
         $.extend(this, {
             move: function (sound) {
                 var waveForm = $('#sound_wave_' + sound.id).data('waveForm');
-                waveForm.setSoundPosition(sound.soundPosition);
-                waveForm.redraw();
+                if (waveForm)
+                {
+                    waveForm.play();
+                    waveForm.setSoundPosition(sound.soundPosition);
+                    waveForm.redraw();
+                }
             }
         });
 

@@ -10,14 +10,26 @@
                     <div id="sound_art_{{sound.id}}" class='sound_art'>
                         <div id="sound_cover_{{sound.id}}">
                             <div id="sound_cover_ul_{{sound.id}}" class='poster_img'>
-                                <a href='#'><img ng-src="{{sound.poster}}"></a>
-                                <div style="padding-top: 5px"  ng-show="isOwner()">
-                                  <span
+                                <div class="{{imgUploadMsgClass}}" style="font-size: 10px">
+                                    <i ng-show="imgUploadMsgClass == 'text-info'"
+                                       class="icon-spinner icon-spin icon-large"></i>{{ imgUploadMsg}}
+                                </div>
+                                <img id="poster_img" ng-src="{{sound.poster}}">
+
+                                <div style="padding-top: 5px" ng-show="isOwner()">
+                                  <span ng-show="!isUploadingPoster"
                                         class="button button-small button-rounded button-flat fileinput-button">
                                     <span>上传海报</span>
-                                    <input id="poster_upload" type="file" name="file" ng-change="previewImage()">
+                                    <input id="poster_upload" type="file" name="file">
                                   </span>
-                                 </div>
+
+                                    <span ng-click="cancelImageUpload()" id="cancel_img_upload"
+                                          ng-show="isUploadingPoster"
+                                          class="button button-small button-rounded button-flat fileinput-button">
+                                    <i class="icon-ban-circle icon-white"></i>
+                                        <span>取消海报</span>
+                                  </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -36,7 +48,7 @@
                                     <span ng-if="sound.title.readonly">
                                         <a class='sound_title' href="{{sound.title.route}}">{{sound.title.alias}}</a>
                                     </span>
-                                    <input ng-if="!sound.title.readonly" type="text" required
+                                    <input ng-if="!sound.title.readonly" type="text" required  class="input-small"
                                            ng-model="sound.title.alias"/>
                                     <a href="#" ng-if="sound.title.readonly" onclick="return false;"
                                        ng-click="editSoundAlias()" ng-show="isOwner()"
@@ -54,7 +66,7 @@
                         <div id="sound_player_footer_{{sound.id}}" class='sound_player_footer border-light-bottom'>
                             <div id="sound_commentbox_{{sound.id}}">
                                 <input type="text" id="sound_commentbox_input_{{sound.id}}" class="input-block-level"
-                                       placeholder="Leave your comment...">
+                                       placeholder="请留下您的评论...">
                                 <input type="hidden" id="sound_comment_point_{{sound.id}}">
                             </div>
                             <a href="#" class="button button-small button-rounded button-flat action-button"
@@ -65,6 +77,24 @@
                                     class="icon-retweet"></i></i> {{sound.soundUserPrefer.repostWording}}</a>
 
                             <div class="pull-right">
+                                <span ng-show="isOwner()">
+                                    <i class="icon-lock" ng-show="sound.status.value == 'private' && sound.status.readonly">私有</i>
+                                    <i class="icon-unlock-alt" ng-show="sound.status.value == 'public' && sound.status.readonly">公开</i>
+                                      <select ng-model="sound.status.value" ng-show="!sound.status.readonly" style="width: 70px">
+                                          <option value="private" ng-selected="sound.status.value == 'private'">私有</option>
+                                          <option value="public" ng-selected="sound.status.value == 'public'">公开</option>
+                                      </select>
+
+                                    <a href="#" ng-if="sound.status.readonly"
+                                       onclick="return false;"
+                                       ng-click="editSoundStatus()"
+                                       style="text-decoration:none;"><i
+                                            class="icon-edit"></i></a>
+                                     <a href="#" ng-if="!sound.status.readonly" onclick="return false;"
+                                        ng-click="editSoundStatus()"
+                                        style="text-decoration:none;"><i class="icon-save"></i></a>
+                                    |
+                                </span>
                                 <i class="icon-play-sign stat_icon"></i>{{sound.soundSocial.playedCount}}
                                 |
                                 <i class="icon-heart stat_icon"></i>{{sound.soundSocial.likesCount}}
@@ -93,8 +123,9 @@
                                    ng-click="editSoundDescription()" ng-show="isOwner()" class="pull-right"
                                    style="text-decoration:none;"><i class="icon-save"></i></a>
                             </div>
-                            <div class="border-light-top">
-                                <span ng-if="sound.description.context && sound.description.readonly">{{sound.description.context}}</span>
+                            <div class="border-light-top" style="padding-bottom: 15px">
+                                <p ng-if="sound.description.context && sound.description.readonly">
+                                    {{sound.description.context}}</p>
                                 <span ng-if="!sound.description.context && sound.description.readonly">暂无声音描述</span>
                                 <textarea ng-if="!sound.description.readonly" type="text" required
                                           class="input-block-level"
@@ -129,9 +160,12 @@
 
                                             <div class="pull-right">
                                                 <a href="#" onclick="return false;" ng-click="reply()" title="回复本条评论"
-                                                   style="text-decoration:none;padding-right: 8px"><i class="icon-reply"></i></a>
-                                                <a href="#" ng-if="isOwner() || isCommentOwner()" onclick="return false;" ng-click="deleteComment()" title="删除本条评论"
-                                                   style="text-decoration:none;padding-right: 8px"><i class="icon-trash"></i></a>
+                                                   style="text-decoration:none;padding-right: 8px"><i
+                                                        class="icon-reply"></i></a>
+                                                <a href="#" ng-if="isOwner() || isCommentOwner()"
+                                                   onclick="return false;" ng-click="deleteComment()" title="删除本条评论"
+                                                   style="text-decoration:none;padding-right: 8px"><i
+                                                        class="icon-trash"></i></a>
                                             </div>
                                         </div>
                                         <span style="color:#333;padding-top: 5px"> {{comment.comment}} </span>
@@ -143,7 +177,7 @@
                                             </time>
                                         </div>
                                         <div ng-show="comment.showReply">
-                                            <form ng-submit="myFunc()" style="margin-bottom:0px; padding-top: 10px">
+                                            <form ng-submit="replyComment()" style="margin-bottom:0px; padding-top: 10px">
                                                 <input type="text" class="input-block-level" style="margin-bottom:0px"
                                                        id="sound_comment_reply_input_{{$index}}"
                                                        placeholder="@{{comment.owner.profile.alias}}:"
@@ -168,3 +202,4 @@
 
     </div>
 </div>
+<ng-include src="'partials/footer.html'"></ng-include>

@@ -5,6 +5,7 @@
         var waveWidth = parseInt(canvas.width, 10);
         var waveHeight = parseInt(canvas.height, 10);
         var waveData = interpolateArray(options.waveData, waveWidth);
+        options.waveData = null;
 
         var defaultUpperColor = '#4f4f4f';
         var defaultLowerColor = '#9E9E9E';
@@ -27,6 +28,13 @@
         var playStatus = 0; //0: stop. 1: playing
         var currentPlayingPosition = -1;
         var onHover = 0;
+
+        if (options.color)
+        {
+            playedUpperColor = options.color.upper;
+            playedLowerColor = options.color.lower;
+            playedUpperDeeper = options.color.deeper;
+        }
 
         this.redraw = function () {
             redrawWave();
@@ -186,7 +194,7 @@
                     var leftSec = ((curSec - curMin * 60 * 1000) / 1000).toFixed(2);
 
                     $('#sound_commentbox_' + soundId).show();
-                    $('#sound_commentbox_input_' + soundId).attr("placeholder", ("您将留言在 " + ((curMin>0)?("@ " + curMin + "分 "):"") + leftSec + "秒 ..."));
+                    $('#sound_commentbox_input_' + soundId).attr("placeholder", ("您将留言在 " + ((curMin>0)?(curMin + "分 "):"") + leftSec + "秒 ..."));
                     $('#sound_comment_point_' + soundId).val((curSec / 1000).toFixed(2));
                 }
             }

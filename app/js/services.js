@@ -10,24 +10,27 @@ angular.module('wooice.service.sound', ['ngResource'])
     }
     ])
     .factory('Sound', ['$resource', 'config', function ($resource, config) {
-        return $resource(config.service.url + '/sound/:sound', {}, {
+        return $resource(config.service.url + '/sound/:sound/:userAlias', {}, {
             load: {method: 'GET', params: {sound: 'current'}, isArray: false},
             delete: {method: 'DELETE', params: {sound: 'current'}, isArray: false},
             save: {method: 'PUT', params: {}, isArray: false},
             update: {method: 'POST', params: {}, isArray: false },
-            getSoundToUpload: {method: 'GET', params: {}, isArray: false }
+            getSoundToUpload: {method: 'GET', params: {}, isArray: false},
+            hasNew: {method: 'GET', params: {sound: 'hasNew'}, isArray: false},
+            hasNewCreated: {method: 'GET', params: {sound: 'hasNewCreated'}, isArray: false}
         });
     }
     ])
     .factory('SoundSocial', ['$resource', 'config', function ($resource, config) {
-        return $resource(config.service.url + '/soundActivity/:action/:sound', {}, {
+        return $resource(config.service.url + '/soundActivity/:action/:sound/:commentId', {}, {
             play: {method: 'PUT', params: {action: 'play'}, isArray: false},
             like: {method: 'PUT', params: {action: 'like'}, isArray: false},
             unlike: {method: 'DELETE', params: {action: 'like'}, isArray: false},
             repost: {method: 'PUT', params: {action: 'repost'}, isArray: false},
             unrepost: {method: 'DELETE', params: {action: 'repost'}, isArray: false},
             comment: {method: 'PUT', params: {action: 'comment'}, isArray: false},
-            uncomment: {method: 'DELETE', params: {action: 'comment'}, isArray: false}
+            uncomment: {method: 'DELETE', params: {action: 'comment'}, isArray: false},
+            recommandSounds: {method: 'GET', params: {action:'recommand', sound: 'sounds', pageNum:1, pageSize: 5}, isArray: true}
         });
     }
     ])
@@ -43,7 +46,6 @@ angular.module('wooice.service.user', ['ngCookies']).
     factory('User', ['$resource', 'config', function ($resource, config) {
         return $resource(config.service.url + '/user/:uri/:action/:userAlias/:emailAddress', {}, {
             get: {method: 'GET', params: {userAlias: 'current'}, isArray: false},
-            isAlive: {method: 'GET', params: {userAlias: 'isAlive'}, isArray: false},
             logout: {method: 'POST', params: {userAlias: 'logout'}, isArray: false},
             confirm: {method: 'PUT', params: {action: "sendEmailConfirm"}, isArray: false},
             submitPassChange: {method: 'POST', params: {action:'submitPassChange'}, isArray: false},
@@ -53,7 +55,7 @@ angular.module('wooice.service.user', ['ngCookies']).
         });
     }]).
     factory('UserSocial', ['$resource', 'config', function ($resource, config) {
-        return $resource(config.service.url + '/userActivity/:action/:toUserAlias', {}, {
+        return $resource(config.service.url + '/userActivity/:userAlias/:action/:toUserAlias', {}, {
             follow: {method: 'PUT', params: {action: 'follow', toUserAlias: 'current'}, isArray: false},
             unfollow: {method: 'DELETE', params: { action: 'follow', toUserAlias: 'current'}, isArray: false},
             getRecommandByTags: {method: "POST", params:{action: 'recommand', toUserAlias: 'users'}, isArray: true },
@@ -68,11 +70,41 @@ angular.module('wooice.service.user', ['ngCookies']).
             unfollow: {method: 'DELETE', params: { action: 'follow', toUserAlias: 'current'}, isArray: false}
         });
     }]).
+    factory('Storage', ['$resource', 'config', function ($resource, config) {
+        return $resource(config.service.url + '/storageV2/:action/:type/:key', {}, {
+            getSoundUploadURL: {method: 'GET', params: { action: 'upload', type: 'sound'}, isArray: false},
+            getImageUploadURL: {method: 'GET', params: { action: 'upload', type: 'image'}, isArray: false},
+            getDownloadURL: {method: 'GET', params: { action: 'download'}, isArray: false},
+            upload: {method: 'POST', params: { action: 'upload'}, isArray: false}
+        });
+    }]).
+    factory('MessageService', ['User', '$cookies', function (User, $cookies) {
+        function loadMessages() {
+            var messages = User.listMessages({}, function () {
+                $.each(messages, function (index, message) {
+                    $.globalMessenger().post({
+                        message: message.content,
+                        hideAfter: 0,
+                        showCloseButton: true
+                    });
+
+                    var postData = {};
+                    postData.toUser = message.to.profile.alias;
+                    postData.id = message.id;
+                    postData.status = "read";
+                    User.markMessage({}, postData, function () {
+                    });
+                });
+            });
+        }
+        setInterval(loadMessages, 60 * 1000);
+    }]).
     factory('UserService', ['User', '$cookies', function (User, $cookies) {
         var currentUser = {userAlias: '', role: 'guest'};
         var adminRoles = ["admin"];
         var userRoles = ["user"];
         var guestRoles = ["guest"];
+        var color = {upper: '#00B2EE', lower: '#A4D3EE'};
 
         return {
             setupUser: function (user) {
@@ -107,6 +139,21 @@ angular.module('wooice.service.user', ['ngCookies']).
                 {
                     return currentUser.userAlias;
                 }
+            },
+            getColor: function(){
+                if ($cookies.color)
+                {
+                     return $cookies.color;
+                }
+                else
+                {
+                    return color;
+                }
+            },
+            setColor: function(newColor)
+            {
+                color = newColor;
+                $cookies.color = newColor;
             }
         };
     }])
@@ -141,6 +188,7 @@ angular.module('wooice.service.auth', []).
         return $resource(config.service.url + '/auth/:uri/:confirmCode/:action/:code', {}, {
             doConfirm: {method: 'GET', params: {uri:"confirmEmail", confirmCode:''}, isArray: false},
             verifyReset: {method: 'GET', params: {uri:"resetRequest", action:'', code:''}, isArray: false},
+            isAlive: {method: 'GET', params: {uri: 'isAlive'}, isArray: false},
             changePass: {method: 'POST', params: {uri: "updatePassword"}, isArray: false}
         });
     }])

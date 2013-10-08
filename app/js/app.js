@@ -9,29 +9,36 @@ angular.module('wooice', ['ngRoute','wooice.filters','wooice.directives', 'wooic
             when('/stream/user/:userId', {templateUrl: 'partials/user-stream.html', controller: 'streamCtrl'}).
             when('/sound/:soundId', {templateUrl: 'partials/sound-detail.html', controller: 'soundDetailCtrl'}).
             when('/profile', {templateUrl: 'partials/user-profile.html', controller: 'userProfileCtrl'}).
-            when('/upload', {templateUrl: 'partials/upload.html', controller: 'soundUploadCtrl'}).
+            when('/upload', {templateUrl: 'partials/uploadV2.html', controller: 'soundUploadCtrl'}).
             when('/interest', {templateUrl: 'partials/interest.html', controller: 'interestCtrl'}).
             when('/guest/login', {templateUrl: 'partials/guest/login.html', controller: 'loginCtrl'}).
             when('/guest/register', {templateUrl: 'partials/guest/register.html', controller: 'registerCtrl'}).
             when('/guest/forgetPass', {templateUrl: 'partials/guest/forgetPass.html', controller: 'forgetPassCtrl'}).
             when('/auth/confirm', {templateUrl: 'partials/auth/confirm.html', controller: 'confirmControl'}).
             when('/auth/changePass', {templateUrl: 'partials/auth/changePass.html', controller: 'changePassCtrl'}).
+            when('/not_found', {templateUrl: 'partials/not_found.html', controller: ''}).
+            when('/forbidden', {templateUrl: 'partials/forbidden.html', controller: ''}).
             otherwise({redirectTo: '/stream'});
 
-        var logsOutUserOn401 = ['$q', '$location', function ($q, $location) {
+        var httpErrors = ['$q', '$location', function ($q, $location) {
             var success = function (response) {
                 return response;
             };
 
             var error = function (response) {
-                if (response.status === 401 || response.status === 403) {
-                    //redirect them back to login page
-                    $location.path('/guest/login');
-
-                    return $q.reject(response);
-                }
-                else {
-                    return $q.reject(response);
+                switch(response.status)
+                {
+                    case 401:
+                        $location.url('/guest/login');
+                        return $q.reject(response);
+                    case 403:
+                        $location.url('/forbidden');
+                        return $q.reject(response);
+                    case 404:
+                        $location.url('/not_found');
+                        return $q.reject(response);
+                    default:
+                        return $q.reject(response);
                 }
             };
 
@@ -40,9 +47,9 @@ angular.module('wooice', ['ngRoute','wooice.filters','wooice.directives', 'wooic
             };
         }];
 
-        $httpProvider.responseInterceptors.push(logsOutUserOn401);
+        $httpProvider.responseInterceptors.push(httpErrors);
     }])
-    .run(function ($rootScope, config, $location, User, UserService) {
+    .run(function ($rootScope, config, $location, Auth, UserService) {
         $rootScope.config = config;
 
         var routesThatDontRequireAuth = ['/guest', '/auth'];
@@ -70,12 +77,13 @@ angular.module('wooice', ['ngRoute','wooice.filters','wooice.directives', 'wooic
                return;
             }
 
-            var curUser = User.isAlive({},function () {
-
+            var curUser = Auth.isAlive({},function () {
                 UserService.setupUser({
                     userAlias: curUser.profile.alias,
                     role: curUser.userRoles[0].role
                 });
+
+                UserService.setColor(curUser.profile.color);
 
                 if (routeGuest($location.url()) && !UserService.validateRoleGuest() )
                 {
@@ -98,8 +106,15 @@ angular.module('wooice', ['ngRoute','wooice.filters','wooice.directives', 'wooic
                     }
                 }
             },
-            function(){
-                $location.path('/guest/login');
+            function(data){
+                if (data.status == 403)
+                {
+                    $location.url('/forbidden');
+                }
+                else
+                {
+                    $location.url('/guest/login');
+                }
             });
         });
     });

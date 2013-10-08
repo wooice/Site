@@ -2,12 +2,22 @@
     <legend>基本信息</legend>
 
     <div class="span4">
+        <div class="{{posterUploadMsgClass}}">
+            <i ng-show="uplodingPoster"
+               class="icon-spinner icon-spin icon-large"></i>{{posterUploadMsg}}
+        </div>
         <img src="{{user.profile.avatorUrl}}" id="poster_img" height="200" width="200">
-                  <span style="margin-top: -60px;margin-left: 50px"
+                  <span style="margin-top: -60px;margin-left: 50px"    ng-show="!uplodingPoster"
                         class="button button-small button-rounded button-flat action-button fileinput-button">
                     <span>上传头像</span>
                     <input id="avatar_upload" type="file" name="file" onchange="previewImage();">
                   </span>
+
+                 <span style="margin-top: -60px;margin-left: 50px"     id="cancel_button"      ng-show="uplodingPoster"
+                       class="button button-small button-rounded button-flat action-button fileinput-button">
+                     <i class="icon-ban-circle icon-white"></i>
+                    <span>取消上传</span>
+             </span>
     </div>
 
     <div class="span7">
@@ -19,36 +29,51 @@
                 <div class="span6">
                     <label>姓</label>
                     <input type="text" placeholder="姓" ng-model="user.profile.lastName">
-                    <label>国家</label>
-                    <input type="text" placeholder="国家" ng-model="user.profile.country">
-                </div>
-                <div class="span6">
                     <label>名</label>
                     <input type="text" placeholder="名" ng-model="user.profile.firstName">
+                </div>
+                <div class="span6">
                     <label>城市</label>
                     <input type="text" placeholder="城市" ng-model="user.profile.city">
+                    <label>国家</label>
+                    <input type="text" placeholder="国家" ng-model="user.profile.country">
                 </div>
             </div>
             <div>
                 <label>个人描述</label>
-                <textarea class="input-block-level" ng-model="user.profile.description"></textarea>
-            </div>
-            <div class="pull-right" style="padding-top: 15px">
-                <a id="save_button" href="#" class="button button-small button-rounded button-flat-action action-button"
-                   onclick="return false;" ng-click="saveProfile()">
-                    <span>保存信息</span>
-                </a>
+                <textarea class="input-block-level" ng-model="user.profile.description" placeholder="介绍你自己..."></textarea>
             </div>
         </div>
     </div>
+
+    <legend>颜色偏好</legend>
+    <div>
+      <ul style="list-style-type: none;padding-left: 10%">
+        <li data-ng-repeat="color in colors" style="width: 70px;list-style-type: none;display: table-cell;padding-right:5px">
+            <label ng-click="chooiceColor()">
+              <span style="background-color: {{color.upper}} !important;height: 25px;display: block">
+              </span>
+              <span style="background-color: {{color.lower}} !important;height: 25px;display: block">
+              </span>
+             </label>
+        </li>
+      </ul>
+        <div class="span1" style="width: 7%">
+           当前颜色
+         </div>
+        <div class="span8">
+                    <span style="background-color: {{user.profile.color.upper}} !important;height: 10px;display: block">
+                    </span>
+                    <span style="background-color: {{user.profile.color.lower}} !important;height: 10px;display: block">
+                    </span>
+          </div>
+
+        <div class="pull-right" style="padding-top: 15px">
+            <a id="save_button" href="#" class="button button-small button-rounded button-flat-action action-button"
+               onclick="return false;" ng-click="saveProfile()">
+                <span>保存信息</span>
+            </a>
+        </div>
+    </div>
 </div>
-<script>
-    function previewImage() {
-        var oFReader = new FileReader();
-        oFReader.onload = function (oFREvent) {
-            $("#avatar_upload").attr('src', oFREvent.target.result);
-        };
-        oFReader.readAsDataURL(document.getElementById("avatar_upload").files[0]);
-    }
-    ;
-</script>
+<ng-include src="'partials/footer.html'"></ng-include>

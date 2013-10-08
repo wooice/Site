@@ -42,8 +42,8 @@
     </div>
 
     <div id="recommand" style="padding-top: 30px">
-        <div>
-            <legend>推荐的用户</legend>
+        <legend>推荐的用户</legend>
+        <div ng-if="recommendUsers.length > 0">
             <div ng-repeat="recommendUser in recommendUsers" style="float:left" ng-click="toogleFollow()">
                 <div style="text-align:center;padding-right: 20px">
                     <div class="user {{recommendUser.class}}">
@@ -57,10 +57,13 @@
                     </div>
                 </div>
             </div>
+            <i style="cursor:pointer" class='button button-small button-rounded button-flat action-button pull-right'
+               ng-click="save()">保存</i>
         </div>
-        <i style="cursor:pointer" class='button button-small button-rounded button-flat action-button pull-right'
-           ng-click="save()">保存</i>
+    </div>
+    <div ng-if="recommendUsers.length == 0">
+        暂无用户推荐
     </div>
 
 </div>
-
+<ng-include src="'partials/footer.html'"></ng-include>

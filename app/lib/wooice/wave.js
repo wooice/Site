@@ -28,17 +28,14 @@
                     return;
                 }
 
-                if (document.getElementById('sound_wave_canvas_' + sound.id))
+                var canvas = document.getElementById("sound_wave_canvas_" + sound.id);
+                if ($(canvas).data("inited"))
                 {
                     return ;
                 }
-
-                var canvas = document.createElement('canvas');
-                canvas.id = 'sound_wave_canvas_' + sound.id;
-                var temp = $('#sound_wave_' + sound.id);
                 canvas.width = $('#sound_wave_' + sound.id).width();
                 canvas.height = $('#sound_wave_' + sound.id).height();
-                jQuery(canvas).appendTo('#sound_wave_' + sound.id);
+                $(canvas).data("inited", true);
 
                 sound = soundData.soundList[sound.id];
 
@@ -49,7 +46,8 @@
                     soundPosition: 0,
                     soundDuration: sound.duration,
                     soundBytesloaded: 0,
-                    soundBytesTotal: 0
+                    soundBytesTotal: 0,
+                    color: sound.color
                 });
 
                 waveForm.redraw();
@@ -61,8 +59,12 @@
         $.extend(this, {
             move: function (sound) {
                 var waveForm = $('#sound_wave_' + sound.id).data('waveForm');
-                waveForm.setSoundPosition(sound.soundPosition);
-                waveForm.redraw();
+                if (waveForm)
+                {
+                    waveForm.play();
+                    waveForm.setSoundPosition(sound.soundPosition);
+                    waveForm.redraw();
+                }
             }
         });
 

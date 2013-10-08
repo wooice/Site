@@ -15,6 +15,5 @@ angular.module('wooice.config', []).constant(
 		},
 
         userStreamPath: 'index.html#/stream/user/'
-
 	}
 );

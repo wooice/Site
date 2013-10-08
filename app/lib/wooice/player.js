@@ -82,7 +82,6 @@
                                     soundData.currentSound = this.id;
                                     soundManager.pause(pre);
                                     $('#sound_player_button_' + soundData.currentSound).removeClass('icon-pause');
-                                    $('#sound_player_button_' + soundData.currentSound).addClass('icon-play');
                                 }
 
                                 soundManager._writeDebug('Starting sound: ' + this.id);
@@ -90,8 +89,8 @@
                                 $(window).trigger('onPlay', {
                                     id: this.id
                                 });
-                                $('#sound_player_button_' + this.id).removeClass('icon-play');
                                 $('#sound_player_button_' + this.id).addClass('icon-pause');
+                                $('#sound_player_button_global').addClass('icon-pause');
                             },
                             whileloading: function () {
                                 soundManager._writeDebug(this.id + ': loading ' + this.bytesLoaded + ' / ' + this.bytesTotal);
@@ -102,6 +101,9 @@
                                 });
                             },
                             whileplaying: function () {
+                                $('#sound_player_button_' + this.id).addClass('icon-pause');
+                                $('#sound_player_button_global').addClass('icon-pause');
+
                                 $(window).trigger('onPlaying', {
                                     id: this.id,
                                     soundPosition: this.position
@@ -113,7 +115,7 @@
                                     id: this.id
                                 });
                                 $('#sound_player_button_' + this.id).removeClass('icon-pause');
-                                $('#sound_player_button_' + this.id).addClass('icon-play');
+                                $('#sound_player_button_global').removeClass('icon-pause');
                             },
                             onresume: function () {
                                 if (soundData.currentSound != this.id) {
@@ -121,7 +123,7 @@
                                     soundData.currentSound = this.id;
                                     soundManager.pause(pre);
                                     $('#sound_player_button_' + soundData.currentSound).removeClass('icon-pause');
-                                    $('#sound_player_button_' + soundData.currentSound).addClass('icon-play');
+                                    $('#sound_player_button_global').removeClass('icon-pause');
                                 }
 
                                 soundManager._writeDebug('Resuming sound: ' + this.id);
@@ -129,8 +131,8 @@
                                     id: this.id
                                 });
 
-                                $('#sound_player_button_' + this.id).removeClass('icon-play');
                                 $('#sound_player_button_' + this.id).addClass('icon-pause');
+                                $('#sound_player_button_global').addClass('icon-pause');
                             },
                             onfinish: function () {
                                 $(window).trigger('onFinish', {
@@ -189,9 +191,29 @@
 
         $.extend(this, {
             toggle: function (input) {
-                var sound = soundData.soundList[input.id];
-                if (sound && !sound.inited) {
-                    var playsCount = socialClient.play({user: 'robot', sound: sound.id}, null, function (count) {
+                if (input && input.id) {
+                    var sound = soundData.soundList[input.id];
+                }
+                else {
+                    if (soundData.currentSound) {
+                        var sound = soundData.soundList[soundData.currentSound];
+                    }
+                    else {
+                        var sound = null;
+                        for (var oneSound in soundData.soundList) {
+                            if (!sound) {
+                                sound = soundData.soundList[oneSound];
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (!sound) {
+                    return;
+                }
+                if (!sound.inited) {
+                    var playsCount = socialClient.play({sound: sound.id}, null, function (count) {
                         sound.url = playsCount.url;
                         sound.autoPlay = true;
                         $(window).soundPlayer().setup(sound);
@@ -207,18 +229,75 @@
         });
 
         $.extend(this, {
-            updateId: function (oldId, newId) {
-                var sound = soundData.soundList[oldId];
-                sound.id = newId;
-                soundData.soundList[newId] = sound;
-                delete soundData.soundList[oldId];
-
-                var soundObj = soundManager.getSoundById(oldId);
-                if (soundData.currentSound && soundData.currentSound == oldId)
-                {
-                    soundData.currentSound = newId;
+            playSibling: function (sibling) {
+                var sound = null;
+                if (sibling == 'next') {
+                    var length = 0, pre = null, cur = null, soundKey = null;
+                    for (var oneSound in soundData.soundList) {
+                        if (cur && !soundKey) {
+                            soundKey = oneSound;
+                        }
+                        if (soundData.currentSound === oneSound) {
+                            cur = oneSound;
+                        }
+                        pre = oneSound;
+                        length++;
+                    }
+                    if (length == 0) {
+                        return;
+                    }
+                    if (cur === null || pre === cur) {
+                        soundKey = null;
+                        for (var oneSound in soundData.soundList) {
+                            if (!soundKey) {
+                                soundKey = oneSound;
+                                break;
+                            }
+                        }
+                    }
+                    sound = soundData.soundList[soundKey];
                 }
-                soundObj.id = newId;
+                else {
+                    var length = 0, soundKey = null, found = false;
+                    for (var oneSound in soundData.soundList) {
+                        if (soundData.currentSound === oneSound) {
+                            found = true;
+                        }
+                        if (!found) {
+                            soundKey = oneSound;
+                        }
+                        length++;
+                    }
+                    if (length == 0) {
+                        return;
+                    }
+                    else {
+                        if (null == soundKey) {
+                            for (var oneSound in soundData.soundList) {
+                                soundKey = oneSound;
+                            }
+                        }
+                    }
+
+                    sound = soundData.soundList[soundKey];
+                }
+
+                if (!sound) {
+                    return;
+                }
+                if (!sound.inited) {
+                    var playsCount = socialClient.play({sound: sound.id}, null, function (count) {
+                        sound.url = playsCount.url;
+                        sound.autoPlay = true;
+                        $(window).soundPlayer().setup(sound);
+
+                        sound.inited = true;
+                        $('#play_count_' + sound.id).text(playsCount.played);
+                    });
+                }
+                else {
+                    soundManager.togglePause(sound.id);
+                }
             }
         });
 
@@ -234,6 +313,12 @@
             }
         });
 
+        $.extend(this, {
+            destroy: function (sound) {
+                soundManager.destroySound(sound.id);
+            }
+        });
+
         function setupListeners() {
             $(window).bind('onJump', $.proxy(function (event, sound) {
                 this.jump(sound);
@@ -241,7 +326,12 @@
             $(window).bind('onToggle', $.proxy(function (event, sound) {
                 this.toggle(sound);
             }, this));
-
+            $(window).bind('onPlaySibling', $.proxy(function (event, sibling) {
+                this.playSibling(sibling);
+            }, this));
+            $(window).bind('onSoundDestory', $.proxy(function (event, sound) {
+                this.destroy(sound);
+            }, this));
         }
 
         var soundData = init();

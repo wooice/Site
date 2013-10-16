@@ -1,0 +1,71 @@
+<ng-include src="'partials/header.html'"></ng-include>
+
+<div role="main" class="container-fluid">
+
+    <div class="row-fluid">
+
+        <div class="span9">
+            <ng-include src="'partials/stream.html'"></ng-include>
+        </div>
+
+        <div class="span3" ng-controller="recommandUserCtrl">
+            <div class="affix" style="width: 20%">
+                <div style="padding-bottom: 15px;height:150px">
+                <legend style="font-size: 18px">为您推荐的用户
+                    <i style="cursor:pointer" ng-show="recommendUsers.length > 0"
+                       class='button button-small button-pill button-flat'
+                       ng-click="save()">关注选定用户</i>
+                </legend>
+                <div class="{{msgClass}}" style="padding-bottom: 10px">
+                    {{msg}}
+                </div>
+                <div ng-if="recommendUsers.length > 0">
+                    <div ng-repeat="recommendUser in recommendUsers" style="float:left" ng-click="toogleFollow()">
+                        <div style="text-align:center; padding-right: 8px; height: 90px">
+                            <div class="user {{recommendUser.class}}">
+                                <a href="#" onclick="return false;">
+                                    <img style="width: 60px;height: 60px" ng-src="{{recommendUser.profile.avatorUrl}}">
+                                </a>
+                            </div>
+                            </a>
+                            <div>
+                                <a href='{{recommendUser.route}}'>{{recommendUser.profile.alias}}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-if="recommendUsers.length == 0" style="padding-left: 15px">
+                    暂无用户推荐
+                </div>
+                </div>
+
+                <div style="padding-bottom: 15px;height:150px">
+                    <legend style="font-size: 18px">为您推荐的声音
+                    </legend>
+                    <div ng-if="recommendSounds.length > 0">
+                        <div ng-repeat="recommendSound in recommendSounds" style="float:left" ng-click="toogleFollow()">
+                            <div style="text-align:center; padding-right: 8px; height: 90px">
+                                <div>
+                                    <a href='{{recommendSound.route}}'>
+                                        <img style="width: 60px;height: 60px" ng-src="{{recommendSound.profile.poster.url}}">
+                                    </a>
+                                </div>
+                                </a>
+                                <div>
+                                    <a href='{{recommendSound.route}}'>{{recommendSound.profile.alias}}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div ng-if="recommendSounds.length == 0" style="padding-left: 15px">
+                        暂无声音推荐
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<ng-include src="'partials/footer.html'"></ng-include>

@@ -16,7 +16,7 @@
 (function () {
     'use strict';
 
-    angular.module('wooice.module.upload', [
+    angular.module('upload.controllers', [
             'wooice.config'
         ])
         .controller('soundUploadCtrl', [
@@ -26,6 +26,257 @@
                 $scope.uploadUrl = "http://up.qiniu.com";
                 $scope.defaultSound.minutesToUpload = 120;
                 $scope.defaultSound.secondsToUpload = 0;
+
+                $scope.removeTag = function (label) {
+                    $scope.defaultSound.tags = jQuery.grep($scope.defaultSound.tags, function (value) {
+                        return value != label;
+                    });
+                    $("#tag_" + label).remove();
+
+                    if ($scope.defaultSound.tags.length == 0) {
+                        $('#profile_error').removeClass("hide");
+                        $("#tags").attr("placeholder", "请打一个标签");
+                        $("#save_button").addClass("disabled");
+                    }
+                }
+
+                $scope.setPrivate = function () {
+                    $scope.defaultSound.status = "private";
+                }
+
+                $scope.setPublic = function () {
+                    $scope.defaultSound.status = "public";
+                }
+
+                $scope.commentModes = [
+                    {name: '所有人可見', id:'public'},
+                    {name: '自己可見', id:'private'},
+                    {name: '关闭評論', id:'closed'}
+                ];
+                $scope.defaultSound.commentMode =  $scope.commentModes[0];
+
+                $scope.save = function () {
+                    if ($("#save_button").hasClass("disabled")) {
+                        return;
+                    }
+                    if ($scope.defaultSound.name && $scope.defaultSound.tags.length > 0) {
+                        $scope.defaultSound.profileError = '';
+
+                        if ($scope.defaultSound.alias) {
+                            var soundProfile = {};
+                            soundProfile.name = $scope.defaultSound.name;
+                            soundProfile.description = $scope.defaultSound.description;
+                            soundProfile.status = $scope.defaultSound.status;
+                            soundProfile.commentMode = $scope.defaultSound.commentMode.id;
+
+                            if ($scope.defaultSound.posterId)
+                            {
+                                soundProfile.poster = {};
+                                soundProfile.poster.posterId =  $scope.defaultSound.posterId;
+                            }
+                            var sound = Sound.update({sound: $scope.defaultSound.id}, soundProfile, function (count) {
+                                $scope.defaultSound.profileMsgClass = "text-success";
+                                $scope.defaultSound.profileMsg = "声音信息保存成功";
+                                $scope.defaultSound.id = sound.id;
+                                $scope.defaultSound.alias = sound.alias;
+                                Tag.attach({action: sound.id}, {tags: $scope.defaultSound.tags}, function (count) {
+                                    $scope.defaultSound.profileSaved = true;
+                                    if ($scope.defaultSound.dataSaved) {
+                                        $scope.defaultSound.profileMsg = "";
+                                        $.globalMessenger().post({
+                                            message: "您的声音" + $scope.defaultSound.name + "上传成功。我们将尽快处理您上传的声音，这可能需要几分钟，请耐心等待。",
+                                            hideAfter: 15,
+                                            showCloseButton: true
+                                        });
+
+                                        $('#uploadpart').show();
+                                        $('#progresspart').hide();
+                                        $('#sound_info').hide();
+                                        reset();
+                                    }
+                                });
+
+                            }, function () {
+                                $scope.defaultSound.profileMsgClass = "text-error";
+                                $scope.defaultSound.profileMsg = "声音信息保存失败";
+                            });
+                        }
+                        else {
+                            var soundProfile = {};
+                            soundProfile.name = $scope.defaultSound.name;
+                            soundProfile.description = $scope.defaultSound.description;
+                            soundProfile.status = $scope.defaultSound.status;
+                            soundProfile.remoteId = $scope.defaultSound.fileName;
+                            soundProfile.commentMode = $scope.defaultSound.commentMode.id;
+
+                            if ($scope.defaultSound.posterId)
+                            {
+                                soundProfile.poster = {};
+                                soundProfile.poster.posterId =  $scope.defaultSound.posterId;
+                            }
+
+                            var sound = Sound.save({sound: $scope.defaultSound.name}, soundProfile, function (count) {
+                                $scope.defaultSound.profileMsgClass = "text-success";
+                                $scope.defaultSound.profileMsg = "声音信息保存成功";
+                                $scope.defaultSound.id = sound.id;
+                                $scope.defaultSound.alias = sound.alias;
+                                Tag.attach({action: sound.id}, {tags: $scope.defaultSound.tags}, function (count) {
+                                    $scope.defaultSound.profileSaved = true;
+                                    if ($scope.defaultSound.dataSaved) {
+                                        $.globalMessenger().post({
+                                            message: "您的声音" + $scope.defaultSound.name + "上传成功。我们将尽快处理您上传的声音，这可能需要几分钟，请耐心等待。",
+                                            hideAfter: 15,
+                                            showCloseButton: true
+                                        });
+
+                                        $scope.defaultSound.uploadMsg = "";
+                                        $('#uploadpart').show();
+                                        $('#progresspart').hide();
+                                        $('#sound_info').hide();
+                                        reset();
+                                    }
+                                });
+
+                            }, function () {
+                                $scope.defaultSound.profileMsgClass = "text-error";
+                                $scope.defaultSound.profileMsg = "声音信息保存失败";
+                            });
+                        }
+                    }
+                    else {
+                        $scope.defaultSound.profileMsgClass = "text-error";
+                        $scope.defaultSound.profileMsg = "请填写声音名称并打至少一个tag"
+                    }
+                }
+
+                $scope.shouldCheckCapacity = function()
+                {
+                    return UserService.validateRoleUser() || UserService.validateRolePro();
+                }
+
+                $scope.$on('$viewContentLoaded', function () {
+                    var user = User.get({userAlias: UserService.getCurUserAlias()}, function () {
+                        $scope.defaultSound.minutesToUpload = Math.floor(UserService.getTimeCapacity() - user.userSocial.soundDuration / 60);
+                        $scope.defaultSound.secondsToUpload = (user.userSocial.soundDuration == 0)? 0:(60 - user.userSocial.soundDuration % 60);
+                    });
+                    var soundToUpload = Sound.getSoundToUpload(
+                        {sound: 'toupload'}, function () {
+                            if (soundToUpload.profile) {
+                                $scope.defaultSound.id = soundToUpload.id;
+                                $scope.defaultSound.name = soundToUpload.profile.name;
+                                $scope.defaultSound.fileName = soundToUpload.profile.remoteId;
+                                $scope.defaultSound.alias = soundToUpload.profile.alias;
+                                $scope.defaultSound.description = soundToUpload.profile.description;
+                                $scope.defaultSound.status = soundToUpload.profile.status;
+
+                                if (soundToUpload.profile.poster && soundToUpload.profile.poster.url) {
+                                    $scope.defaultSound.posterUrl = soundToUpload.profile.poster.url;
+                                }
+                                var tagList = [];
+                                $.each(soundToUpload.tags, function (index, oneTag) {
+                                    tagList.push(oneTag.label);
+                                });
+                                $scope.defaultSound.uploadStatus = "hide";
+                                $scope.defaultSound.tags = tagList;
+                                $scope.defaultSound.profileSaved = true;
+                                $scope.defaultSound.uploadMsgClass = "text-warning";
+                                $scope.defaultSound.uploadMsg = "您有未完成的声音分享，请完成声音" + $scope.defaultSound.name + "的音频上传。";
+                                $('#uploadpart').hide();
+                                $('#progresspart').show();
+                                $('#sound_info').show();
+                            }
+                            else {
+                                if (soundToUpload.soundData) {
+                                    $scope.defaultSound.uploadStatus = "hide";
+                                    var names = soundToUpload.soundData.originName.split(".");
+                                    $scope.defaultSound.name = names[0];
+                                    $scope.defaultSound.fileName = soundToUpload.soundData.objectId;
+                                    $scope.defaultSound.dataSaved = true;
+                                    $scope.defaultSound.uploadMsgClass = "text-warning";
+                                    $scope.defaultSound.uploadMsg = "您有未完成的声音分享，请完善" + $scope.defaultSound.name + "的声音信息。";
+                                    $('#uploadpart').hide();
+                                    $('#progresspart').show();
+                                    $('#sound_info').show();
+                                }
+                                else {
+                                    $('#uploadpart').show();
+                                }
+                            }
+                        }
+                    );
+
+                    $("#tags").typeahead({
+                        remote: {
+                            url: config.service.url_noescp + '/tag/list?term=%QUERY',
+                            filter: function (parsedResponse) {
+                                var tags = [];
+                                $.each(parsedResponse, function (index, tag) {
+                                    tags.push(tag.label);
+                                });
+                                return tags;
+                            }
+                        }
+                    });
+                    $("#tags").bind('keyup', function (event) {
+                        if (event.keyCode == 13) {
+                            var label = $("#tags").val();
+                            if (label) {
+                                if ($.inArray(label, $scope.defaultSound.tags) != -1) {
+                                    return;
+                                }
+                                $scope.$apply(function () {
+                                    $scope.defaultSound.tags.push(label);
+                                });
+                                $("#tags").val("");
+                                $("#tags").attr("placeholder", "请再多打几个");
+
+                                if ($scope.defaultSound.name && !$scope.defaultSound.uplodingPoster) {
+                                    $("#save_button").removeClass("disabled");
+                                } else {
+                                    $("#save_button").addClass("disabled");
+                                }
+                            }
+                        }
+                    });
+
+                    $('#name').bind('keyup', function (event) {
+                        if ($scope.defaultSound.name && $scope.defaultSound.tags.length > 0 && !$scope.defaultSound.uplodingPoster) {
+                            $("#save_button").removeClass("disabled");
+                        } else {
+                            $("#save_button").addClass("disabled");
+                        }
+                    });
+                });
+
+                $('#poster_upload').change(function () {
+                    var oFReader = new FileReader();
+                    oFReader.onload = function (oFREvent) {
+                        $("#poster_img").attr('src', oFREvent.target.result);
+                    };
+                    oFReader.readAsDataURL(this.files[0]);
+                });
+
+                $scope.$on('$locationChangeStart', function (event, next, current) {
+                    if ($scope.defaultSound.isSoundUploading || $scope.defaultSound.uplodingPoster) {
+                        var result = confirm("你的声音正在上传，离开当然页面将放弃本次上传，确定离开吗？");
+                        if (!result) {
+                            event.preventDefault();
+                        }
+                    }
+                });
+
+                window.onbeforeunload = function (event) {
+                    if ($scope.defaultSound.isSoundUploading || $scope.defaultSound.uplodingPoster) {
+                        var message = '你的声音正在上传，离开当然页面将放弃本次上传，确定离开吗？';
+                        if (typeof event == 'undefined') {
+                            event = window.event;
+                        }
+                        if (event) {
+                            event.returnValue = message;
+                        }
+                        return message;
+                    }
+                }
 
                 $scope.jqXHR = $('.upload_button').fileupload({
                     url: $scope.uploadUrl,
@@ -40,10 +291,10 @@
                             });
                             return;
                         }
-                        if (data.files[0].size > 20000000) {
+                        if (data.files[0].size > 100 * 1000 * 1000) {
                             $scope.$apply(function () {
                                 $scope.defaultSound.uploadMsgClass = "text-error";
-                                $scope.defaultSound.uploadMsg = '对不起,您上传的文件过大，请上传小于20MB的音频文件';
+                                $scope.defaultSound.uploadMsg = '对不起,您上传的文件过大，请上传小于100MB的音频文件';
                             });
                             return;
                         }
@@ -82,6 +333,8 @@
                             $scope.$apply(function () {
                                 $scope.defaultSound.isSoundUploading = false;
                             });
+
+                            return false;
                         });
                     },
                     progress: function (e, data) {
@@ -166,10 +419,10 @@
                             });
                             return;
                         }
-                        if (data.files[0].size > 10000000) {
+                        if (data.files[0].size > 5 * 1000 * 1000) {
                             $scope.$apply(function () {
                                 $scope.defaultSound.imgUploadMsgClass = "text-error";
-                                $scope.defaultSound.imgUploadMsg = '您上传的文件过大，请上传小于10MB的海报图片。';
+                                $scope.defaultSound.imgUploadMsg = '您上传的文件过大，请上传小于5MB的海报图片。';
                             });
                             return;
                         }
@@ -189,6 +442,8 @@
                             $scope.$apply(function () {
                                 $scope.defaultSound.uplodingPoster = false;
                             });
+
+                            return false;
                         });
                     },
                     progress: function (e, data) {
@@ -224,244 +479,6 @@
                             $scope.defaultSound.imgUploadMsg = '海报图片上传失败，请稍后再试。';
                         }
                     }
-                });
-
-                $scope.removeTag = function (label) {
-                    $scope.defaultSound.tags = jQuery.grep($scope.defaultSound.tags, function (value) {
-                        return value != label;
-                    });
-                    $("#tag_" + label).remove();
-
-                    if ($scope.defaultSound.tags.length == 0) {
-                        $('#profile_error').removeClass("hide");
-                        $("#tags").attr("placeholder", "请打一个标签");
-                        $("#save_button").addClass("disabled");
-                    }
-                }
-
-                $scope.setPrivate = function () {
-                    $scope.defaultSound.status = "private";
-                }
-
-                $scope.setPublic = function () {
-                    $scope.defaultSound.status = "public";
-                }
-
-                $scope.save = function () {
-                    if ($("#save_button").hasClass("disabled")) {
-                        return;
-                    }
-                    if ($scope.defaultSound.name && $scope.defaultSound.tags.length > 0) {
-                        $scope.defaultSound.profileError = '';
-
-                        if ($scope.defaultSound.alias) {
-                            var soundProfile = {};
-                            soundProfile.name = $scope.defaultSound.name;
-                            soundProfile.description = $scope.defaultSound.description;
-                            soundProfile.status = $scope.defaultSound.status;
-
-                            if ($scope.defaultSound.posterId)
-                            {
-                                soundProfile.poster = {};
-                                soundProfile.poster.posterId =  $scope.defaultSound.posterId;
-                            }
-                            var sound = Sound.update({sound: $scope.defaultSound.id}, soundProfile, function (count) {
-                                $scope.defaultSound.profileMsgClass = "text-success";
-                                $scope.defaultSound.profileMsg = "声音信息保存成功";
-                                $scope.defaultSound.id = sound.id;
-                                $scope.defaultSound.alias = sound.alias;
-                                Tag.attach({action: sound.id}, {tags: $scope.defaultSound.tags}, function (count) {
-                                    $scope.defaultSound.profileSaved = true;
-                                    if ($scope.defaultSound.dataSaved) {
-                                        $scope.defaultSound.profileMsg = "";
-                                        $.globalMessenger().post({
-                                            message: "您的声音" + $scope.defaultSound.name + "上传成功。我们将尽快处理您上传的声音，这可能需要几分钟，请耐心等待。",
-                                            hideAfter: 15,
-                                            showCloseButton: true
-                                        });
-
-                                        $('#uploadpart').show();
-                                        $('#progresspart').hide();
-                                        $('#sound_info').hide();
-                                        reset();
-                                    }
-                                });
-
-                            }, function () {
-                                $scope.defaultSound.profileMsgClass = "text-error";
-                                $scope.defaultSound.profileMsg = "声音信息保存失败";
-                            });
-                        }
-                        else {
-                            var soundProfile = {};
-                            soundProfile.name = $scope.defaultSound.name;
-                            soundProfile.description = $scope.defaultSound.description;
-                            soundProfile.status = $scope.defaultSound.status;
-                            soundProfile.remoteId = $scope.defaultSound.fileName;
-
-                            if ($scope.defaultSound.posterId)
-                            {
-                                soundProfile.poster = {};
-                                soundProfile.poster.posterId =  $scope.defaultSound.posterId;
-                            }
-
-                            var sound = Sound.save({sound: $scope.defaultSound.name}, soundProfile, function (count) {
-                                $scope.defaultSound.profileMsgClass = "text-success";
-                                $scope.defaultSound.profileMsg = "声音信息保存成功";
-                                $scope.defaultSound.id = sound.id;
-                                $scope.defaultSound.alias = sound.alias;
-                                Tag.attach({action: sound.id}, {tags: $scope.defaultSound.tags}, function (count) {
-                                    $scope.defaultSound.profileSaved = true;
-                                    if ($scope.defaultSound.dataSaved) {
-                                        $.globalMessenger().post({
-                                            message: "您的声音" + $scope.defaultSound.name + "上传成功。我们将尽快处理您上传的声音，这可能需要几分钟，请耐心等待。",
-                                            hideAfter: 15,
-                                            showCloseButton: true
-                                        });
-
-                                        $scope.defaultSound.uploadMsg = "";
-                                        $('#uploadpart').show();
-                                        $('#progresspart').hide();
-                                        $('#sound_info').hide();
-                                        reset();
-                                    }
-                                });
-
-                            }, function () {
-                                $scope.defaultSound.profileMsgClass = "text-error";
-                                $scope.defaultSound.profileMsg = "声音信息保存失败";
-                            });
-                        }
-                    }
-                    else {
-                        $scope.defaultSound.profileMsgClass = "text-error";
-                        $scope.defaultSound.profileMsg = "请填写声音名称并打至少一个tag"
-                    }
-                }
-
-                $('#poster_upload').change(function () {
-                    var oFReader = new FileReader();
-                    oFReader.onload = function (oFREvent) {
-                        $("#poster_img").attr('src', oFREvent.target.result);
-                    };
-                    oFReader.readAsDataURL(this.files[0]);
-                });
-
-                $scope.$on('$locationChangeStart', function (event, next, current) {
-                    if ($scope.defaultSound.isSoundUploading || $scope.defaultSound.uplodingPoster) {
-                        var result = confirm("你的声音正在上传，离开当然页面将放弃本次上传，确定离开吗？");
-                        if (!result) {
-                            event.preventDefault();
-                        }
-                    }
-                });
-
-                window.onbeforeunload = function (event) {
-                    if ($scope.defaultSound.isSoundUploading || $scope.defaultSound.uplodingPoster) {
-                        var message = '你的声音正在上传，离开当然页面将放弃本次上传，确定离开吗？';
-                        if (typeof event == 'undefined') {
-                            event = window.event;
-                        }
-                        if (event) {
-                            event.returnValue = message;
-                        }
-                        return message;
-                    }
-                }
-
-                $scope.$on('$viewContentLoaded', function () {
-                    var user = User.get({userAlias: UserService.getCurUserAlias()}, function () {
-                        $scope.defaultSound.minutesToUpload = Math.floor(120 - user.userSocial.soundDuration / 60);
-                        $scope.defaultSound.secondsToUpload = (user.userSocial.soundDuration == 0)? 0:(60 - user.userSocial.soundDuration % 60);
-                    });
-                    var soundToUpload = Sound.getSoundToUpload(
-                        {sound: 'toupload'}, function () {
-                            if (soundToUpload.profile) {
-                                $scope.defaultSound.id = soundToUpload.id;
-                                $scope.defaultSound.name = soundToUpload.profile.name;
-                                $scope.defaultSound.fileName = soundToUpload.profile.remoteId;
-                                $scope.defaultSound.alias = soundToUpload.profile.alias;
-                                $scope.defaultSound.description = soundToUpload.profile.description;
-                                $scope.defaultSound.status = soundToUpload.profile.status;
-
-                                if (soundToUpload.profile.poster && soundToUpload.profile.poster.url) {
-                                    $scope.defaultSound.posterUrl = soundToUpload.profile.poster.url;
-                                }
-                                var tagList = [];
-                                $.each(soundToUpload.tags, function (index, oneTag) {
-                                    tagList.push(oneTag.label);
-                                });
-                                $scope.defaultSound.uploadStatus = "hide";
-                                $scope.defaultSound.tags = tagList;
-                                $scope.defaultSound.profileSaved = true;
-                                $scope.defaultSound.uploadMsgClass = "text-warning";
-                                $scope.defaultSound.uploadMsg = "您有未完成的声音分享，请完成声音" + $scope.defaultSound.name + "的音频上传。";
-                                $('#uploadpart').hide();
-                                $('#progresspart').show();
-                                $('#sound_info').show();
-                            }
-                            else {
-                                if (soundToUpload.soundData) {
-                                    $scope.defaultSound.uploadStatus = "hide";
-                                    var names = soundToUpload.soundData.originName.split(".");
-                                    $scope.defaultSound.name = names[0];
-                                    $scope.defaultSound.fileName = soundToUpload.soundData.objectId;
-                                    $scope.defaultSound.dataSaved = true;
-                                    $scope.defaultSound.uploadMsgClass = "text-warning";
-                                    $scope.defaultSound.uploadMsg = "您有未完成的声音分享，请完善" + $scope.defaultSound.name + "的声音信息。";
-                                    $('#uploadpart').hide();
-                                    $('#progresspart').show();
-                                    $('#sound_info').show();
-                                }
-                                else {
-                                    $('#uploadpart').show();
-                                }
-                            }
-                        }
-                    );
-
-                    $("#tags").typeahead({
-                        remote: {
-                            url: config.service.url_noescp + '/tag/list?term=%QUERY',
-                            filter: function (parsedResponse) {
-                                var tags = [];
-                                $.each(parsedResponse, function (index, tag) {
-                                    tags.push(tag.label);
-                                });
-                                return tags;
-                            }
-                        }
-
-                    });
-                    $("#tags").bind('keyup', function (event) {
-                        if (event.keyCode == 13) {
-                            var label = $("#tags").val();
-                            if (label) {
-                                if ($.inArray(label, $scope.defaultSound.tags) != -1) {
-                                    return;
-                                }
-                                $scope.$apply(function () {
-                                    $scope.defaultSound.tags.push(label);
-                                });
-                                $("#tags").val("");
-                                $("#tags").attr("placeholder", "请再多打几个");
-
-                                if ($scope.defaultSound.name && !$scope.defaultSound.uplodingPoster) {
-                                    $("#save_button").removeClass("disabled");
-                                } else {
-                                    $("#save_button").addClass("disabled");
-                                }
-                            }
-                        }
-                    });
-
-                    $('#name').bind('keyup', function (event) {
-                        if ($scope.defaultSound.name && $scope.defaultSound.tags.length > 0 && !$scope.defaultSound.uplodingPoster) {
-                            $("#save_button").removeClass("disabled");
-                        } else {
-                            $("#save_button").addClass("disabled");
-                        }
-                    });
                 });
 
                 function reset() {

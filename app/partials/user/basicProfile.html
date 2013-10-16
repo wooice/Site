@@ -7,73 +7,117 @@
                class="icon-spinner icon-spin icon-large"></i>{{posterUploadMsg}}
         </div>
         <img src="{{user.profile.avatorUrl}}" id="poster_img" height="200" width="200">
-                  <span style="margin-top: -60px;margin-left: 50px"    ng-show="!uplodingPoster"
+                  <span style="margin-top: -60px;margin-left: 50px" ng-show="!uplodingPoster"
                         class="button button-small button-rounded button-flat action-button fileinput-button">
                     <span>上传头像</span>
                     <input id="avatar_upload" type="file" name="file" onchange="previewImage();">
                   </span>
 
-                 <span style="margin-top: -60px;margin-left: 50px"     id="cancel_button"      ng-show="uplodingPoster"
+                 <span style="margin-top: -60px;margin-left: 50px" id="cancel_button" ng-show="uplodingPoster"
                        class="button button-small button-rounded button-flat action-button fileinput-button">
                      <i class="icon-ban-circle icon-white"></i>
                     <span>取消上传</span>
              </span>
     </div>
 
-    <div class="span7">
-        <div style="padding-bottom: 10px">
-            <span class="{{messageClass}}">{{message}}</span>
-        </div>
-        <div>
-            <div class="row-fluid">
-                <div class="span6">
-                    <label>姓</label>
-                    <input type="text" placeholder="姓" ng-model="user.profile.lastName">
-                    <label>名</label>
-                    <input type="text" placeholder="名" ng-model="user.profile.firstName">
-                </div>
-                <div class="span6">
-                    <label>城市</label>
-                    <input type="text" placeholder="城市" ng-model="user.profile.city">
-                    <label>国家</label>
-                    <input type="text" placeholder="国家" ng-model="user.profile.country">
-                </div>
+    <form name="the_form" class="form-horizontal" >
+
+        <div class="span7">
+            <div style="padding-bottom: 10px" data-ng-show="{{message}}">
+                <span class="{{messageClass}}">{{message}}</span>
             </div>
             <div>
-                <label>个人描述</label>
-                <textarea class="input-block-level" ng-model="user.profile.description" placeholder="介绍你自己..."></textarea>
+                <div class="row-fluid">
+                    <div class="span6">
+                        <div style="padding-bottom: 10px">
+                            <label>ID</label>
+
+                            <div class="text-warning"
+                                 ng-show="the_form.alias.$dirty && the_form.alias.$invalid">
+                                <small class="text-warning"
+                                       ng-show="the_form.alias.$error.unique">
+                                    用户名已被使用，请重新选择
+                                </small>
+                            </div>
+                            <input type="text" name="alias" placeholder="姓" ng-model="user.profile.alias"
+                                   alias-unique="alias">
+                        </div>
+                        <div style="padding-bottom: 10px">
+                            <label>姓</label>
+                            <input type="text" placeholder="姓" ng-model="user.profile.lastName">
+                        </div>
+                        <div style="padding-bottom: 10px">
+                            <label>名</label>
+                            <input type="text" placeholder="名" ng-model="user.profile.firstName">
+                        </div>
+                    </div>
+                    <div class="span6">
+                        <div style="padding-bottom: 10px">
+                            <label>性别</label>
+
+                            <div style="padding-bottom: 12px">
+                                <span style="padding-right: 5px"><i class="icon-male" title="男生"> </i><input type="radio"
+                                                                                                            ng-model="user.profile.gender"
+                                                                                                            value="man"></span>
+                                 <span style="padding-right: 5px"><i class="icon-female" title="女生"> </i><input
+                                         type="radio" ng-model="user.profile.gender"
+                                         value="women"></span>
+                               <span style="padding-right: 5px"> <i class="icon-question" title="保密"> </i><input
+                                       type="radio"
+                                       ng-model="user.profile.gender" value="unset"> </span>
+                            </div>
+                        </div>
+                        <div style="padding-bottom: 10px">
+                            <label>城市</label>
+                            <input type="text" placeholder="城市" ng-model="user.profile.city">
+                        </div>
+                        <div style="padding-bottom: 10px">
+                            <label>国家</label>
+                            <input type="text" placeholder="国家" ng-model="user.profile.country">
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label>个人描述</label>
+                    <textarea class="input-block-level" ng-model="user.profile.description"
+                              placeholder="介绍你自己..."></textarea>
+                </div>
             </div>
         </div>
-    </div>
 
-    <legend>颜色偏好</legend>
-    <div>
-      <ul style="list-style-type: none;padding-left: 10%">
-        <li data-ng-repeat="color in colors" style="width: 70px;list-style-type: none;display: table-cell;padding-right:5px">
-            <label ng-click="chooiceColor()">
+        <legend>颜色偏好</legend>
+        <div>
+            <ul style="list-style-type: none;padding-left: 10%">
+                <li data-ng-repeat="color in colors"
+                    style="width: 55px;height:20px;list-style-type: none;display: table-cell;padding-right:15px">
+                    <label ng-click="chooiceColor()">
               <span style="background-color: {{color.upper}} !important;height: 25px;display: block">
               </span>
               <span style="background-color: {{color.lower}} !important;height: 25px;display: block">
               </span>
-             </label>
-        </li>
-      </ul>
-        <div class="span1" style="width: 7%">
-           当前颜色
-         </div>
-        <div class="span8">
+                    </label>
+                </li>
+            </ul>
+            <div class="span1" style="width: 7%">
+                当前颜色
+            </div>
+            <div class="span8">
                     <span style="background-color: {{user.profile.color.upper}} !important;height: 10px;display: block">
                     </span>
                     <span style="background-color: {{user.profile.color.lower}} !important;height: 10px;display: block">
                     </span>
-          </div>
+            </div>
 
-        <div class="pull-right" style="padding-top: 15px">
-            <a id="save_button" href="#" class="button button-small button-rounded button-flat-action action-button"
-               onclick="return false;" ng-click="saveProfile()">
-                <span>保存信息</span>
-            </a>
+            <div class="pull-right" style="padding-top: 15px">
+                <button id="save_button" href="#"
+                        class="button button-small button-rounded button-flat-action action-button"
+                        ng-disabled="the_form.$invalid"
+                        onclick="return false;" ng-click="saveProfile()">
+                    <span>保存信息</span>
+                </button>
+            </div>
         </div>
-    </div>
+
+    </form>
 </div>
 <ng-include src="'partials/footer.html'"></ng-include>

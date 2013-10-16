@@ -39,6 +39,34 @@
         });
 
         $.extend(this, {
+            updateAlias: function (sound) {
+                var target = soundData.soundList[sound.id];
+                if (target)
+                {
+                    target.alias = sound.alias;
+                }
+            }
+        });
+
+        $.extend(this, {
+            loadFromCache: function (sound) {
+                for (var oneSound in soundData.soundList) {
+                    if (sound.alias == soundData.soundList[oneSound].alias) {
+                        return soundData.soundList[oneSound];
+                    }
+                }
+
+                return null;
+            }
+        });
+
+        $.extend(this, {
+            getCurSound: function () {
+                return soundData.soundList[soundData.currentSound];
+            }
+        });
+
+        $.extend(this, {
             setSocialClient: function (client) {
                 socialClient = client;
             }
@@ -89,6 +117,10 @@
                                 $(window).trigger('onPlay', {
                                     id: this.id
                                 });
+
+                                $('#cur_sound').attr('href', soundData.soundList[soundData.currentSound].title.route);
+                                $('#cur_sound').text(soundData.soundList[soundData.currentSound].title.alias);
+
                                 $('#sound_player_button_' + this.id).addClass('icon-pause');
                                 $('#sound_player_button_global').addClass('icon-pause');
                             },
@@ -101,9 +133,6 @@
                                 });
                             },
                             whileplaying: function () {
-                                $('#sound_player_button_' + this.id).addClass('icon-pause');
-                                $('#sound_player_button_global').addClass('icon-pause');
-
                                 $(window).trigger('onPlaying', {
                                     id: this.id,
                                     soundPosition: this.position
@@ -114,6 +143,7 @@
                                 $(window).trigger('onPause', {
                                     id: this.id
                                 });
+
                                 $('#sound_player_button_' + this.id).removeClass('icon-pause');
                                 $('#sound_player_button_global').removeClass('icon-pause');
                             },
@@ -130,6 +160,9 @@
                                 $(window).trigger('onResume', {
                                     id: this.id
                                 });
+
+                                $('#cur_sound').attr('href', soundData.soundList[soundData.currentSound].title.route);
+                                $('#cur_sound').text(soundData.soundList[soundData.currentSound].title.alias);
 
                                 $('#sound_player_button_' + this.id).addClass('icon-pause');
                                 $('#sound_player_button_global').addClass('icon-pause');
@@ -185,7 +218,6 @@
                 } else if (soundToJump.readyState === 3) {
                     soundToJump.setPosition(sound.from);
                 }
-
             }
         });
 
@@ -225,6 +257,8 @@
                 else {
                     soundManager.togglePause(sound.id);
                 }
+
+                return sound;
             }
         });
 
@@ -298,6 +332,8 @@
                 else {
                     soundManager.togglePause(sound.id);
                 }
+
+                return sound;
             }
         });
 
@@ -324,10 +360,10 @@
                 this.jump(sound);
             }, this));
             $(window).bind('onToggle', $.proxy(function (event, sound) {
-                this.toggle(sound);
+               return  this.toggle(sound);
             }, this));
             $(window).bind('onPlaySibling', $.proxy(function (event, sibling) {
-                this.playSibling(sibling);
+              return  this.playSibling(sibling);
             }, this));
             $(window).bind('onSoundDestory', $.proxy(function (event, sound) {
                 this.destroy(sound);

@@ -1,7 +1,15 @@
 'use strict';
 
-angular.module('wooice.controller.profile', [])
-    .controller('basicProfileCtrl', ['$scope', '$routeParams','config', 'User','UserService','UserProfile','Storage', function ($scope, $routeParams, config, User, UserService, UserProfile, Storage) {
+angular.module('profile.controllers', [])
+    .controller('userProfileCtrl', ['$scope', '$routeParams', function ($scope, $routeParams, $http) {
+        $scope.innerPage = 'partials/user/basicProfile.html';
+
+        $scope.jumpTo = function (page) {
+            $scope.innerPage = 'partials/user/' + page + '.html';
+        }
+    }])
+
+    .controller('basicProfileCtrl', ['$scope', '$routeParams','config', 'User','UserService','UserProfile','Storage','Util', function ($scope, $routeParams, config, User, UserService, UserProfile, Storage, Util) {
         $scope.message = "";
         $scope.uploadAvatarUrl = "http://up.qiniu.com";
         $scope.uplodingPoster = false;
@@ -28,6 +36,11 @@ angular.module('wooice.controller.profile', [])
                 $scope.user.profile.color.upper = "#00B2EE";
                 $scope.user.profile.color.lower = "#A4D3EE";
             }
+
+           var location = Util.checkLocation({}, function(){
+               $scope.user.profile.country = location.country;
+               $scope.user.profile.city = location.city;
+            });
         });
 
         $scope.saveProfile = function(){
@@ -126,7 +139,6 @@ angular.module('wooice.controller.profile', [])
         });
 
         $scope.saveProfile = function(){
-
             UserProfile.updateExternal({}, $scope.user.external, function(){
                 $scope.messageClass = "text-success";
                 $scope.message = "站外信息保存成功";

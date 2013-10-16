@@ -1,12 +1,12 @@
 (function ($) {
     $.fn.soundWave = function (options) {
-        if ($(window).data('soundWave')) {
-            return $(window).data('soundWave');
+        if (window.soundWave) {
+            return window.soundWave;
         }
 
         function init() {
             var soundData = {};
-            //init sound list, which will cache sounds
+            //init sound list, which will cache waves
             soundData.soundList = [];
             soundData.currentSound = null;
 
@@ -14,8 +14,8 @@
         }
 
         $.extend(this, {
-            addSound: function (sound) {
-                soundData.soundList[sound.id] = sound;
+            cleanUp: function (sound) {
+                soundData.soundList = [];
             }
         });
 
@@ -25,11 +25,14 @@
                     soundData.soundList[sound.id] = sound;
                 }else
                 {
-                    return;
+                    if (!sound.force)
+                    {
+                        return;
+                    }
                 }
 
                 var canvas = document.getElementById("sound_wave_canvas_" + sound.id);
-                if ($(canvas).data("inited"))
+                if (!sound.force && $(canvas).data("inited"))
                 {
                     return ;
                 }
@@ -40,6 +43,7 @@
                 sound = soundData.soundList[sound.id];
 
                 var waveForm = new $.waveForm({
+                    id: sound.id,
                     soundId: sound.id,
                     canvas: canvas,
                     waveData: sound.waveData,
@@ -47,18 +51,20 @@
                     soundDuration: sound.duration,
                     soundBytesloaded: 0,
                     soundBytesTotal: 0,
-                    color: sound.color
+                    color: sound.color,
+                    commentable: sound.commentable
                 });
 
-                waveForm.redraw();
+                sound.waveForm = waveForm;
+                soundData.soundList[sound.id] = sound;
 
-                $('#sound_wave_' + sound.id).data('waveForm', waveForm);
+                waveForm.redraw();
             }
         });
 
         $.extend(this, {
             move: function (sound) {
-                var waveForm = $('#sound_wave_' + sound.id).data('waveForm');
+                var waveForm = soundData.soundList[sound.id].waveForm;
                 if (waveForm)
                 {
                     waveForm.play();
@@ -70,7 +76,7 @@
 
         $.extend(this, {
             load: function (sound) {
-                var waveForm = $('#sound_wave_' + sound.id).data('waveForm');
+                var waveForm = soundData.soundList[sound.id].waveForm;
                 waveForm.setSoundBytesloaded(sound.soundBytesloaded);
                 waveForm.setSoundBytesTotal(sound.soundBytesTotal);
                 waveForm.redraw();
@@ -79,8 +85,7 @@
 
         $.extend(this, {
             stop: function (sound) {
-                var waveForm = $('#sound_wave_' + sound.id).data('waveForm');
-
+                var waveForm = soundData.soundList[sound.id].waveForm;
                 if (waveForm)
                 {
                     waveForm.stop();
@@ -90,14 +95,14 @@
 
         $.extend(this, {
             play: function (sound) {
-                var waveForm = $('#sound_wave_' + sound.id).data('waveForm');
+                var waveForm = soundData.soundList[sound.id].waveForm;
                 waveForm.play();
             }
         });
 
         $.extend(this, {
             jump: function (sound, toWavePoint) {
-                var waveForm = $('#sound_wave_' + sound.id).data('waveForm');
+                var waveForm = soundData.soundList[sound.id].waveForm;
                 waveForm.setSoundPosition(sound.soundPosition);
                 waveForm.redraw();
 

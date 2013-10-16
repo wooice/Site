@@ -1,150 +1,139 @@
-<ng-include src="'partials/header.html'"></ng-include>
+<div id="sound_streams"  ng-controller="streamCtrl" >
+    <a href="#" onclick="return false;" ng-click="loadStream('true')" class="pull-right"><i
+            class="icon-refresh"></i></a>
 
-<div role="main" class="container-fluid">
+    <div ng-show="routeParams.userId == UserService.getCurUserAlias() && newSoundCount > 0" style="text-align: center">
+        <a href="#" onclick="return false;" ng-click="loadStream('true')">您的声音已处理完成，点此<i
+                class="icon-refresh">刷新</i></a>
+    </div>
+    <div ng-show="routeParams.userId !== UserService.getCurUserAlias() && newSoundCount > 0" style="text-align: center">
+        <a href="#" onclick="return false;" ng-click="loadStream('true')">{{userCurPage}}上传了新的声音，点此<i
+                class="icon-refresh">刷新</i></a>
+    </div>
 
-    <div class="row-fluid">
-        <div id="sound_streams" class="span9">
-            <a href="#" onclick="return false;" ng-click="loadStream('true')" class="pull-right"><i class="icon-refresh"></i></a>
-
-            <div  ng-show="!isloading && newSoundCount > 0" style="text-align: center">
-                <a href="#" onclick="return false;" ng-click="loadStream('true')">有{{newSoundCount}}条新上传的声音，请点此刷新<i class="icon-refresh"></i></a>
-            </div>
-
-            <!--Body content-->
-            <div ng-repeat="sound in sounds" ng-controller="streamCtrl">
-                <div id="sound_{{sound.id}}" class='sound_item'>
-                    <div id="sound_art_{{sound.id}}" class='sound_art'>
-                        <div id="sound_cover_{{sound.id}}">
-                            <div id="sound_cover_ul_{{sound.id}}" class='poster_img'>
-                                <a href="{{sound.title.route}}"><img ng-src="{{sound.poster}}"></a>
-                            </div>
-                        </div>
+    <!--Body content-->
+    <div ng-repeat="sound in sounds">
+        <div id="sound_{{sound.id}}" class='sound_item'>
+            <div id="sound_art_{{sound.id}}" class='sound_art'>
+                <div id="sound_cover_{{sound.id}}">
+                    <div id="sound_cover_ul_{{sound.id}}" class='poster_img'>
+                        <a href="{{sound.title.route}}"><img ng-src="{{sound.poster}}"></a>
                     </div>
+                </div>
+            </div>
+            <div id="sound_player_{{sound.id}}" class='sound_player'>
+                <div class="pull-right">
+                    <div style="font-size: 12px;color: gray" class="pull-right">
+                        {{sound.createdTime}}
+                    </div>
+                </div>
 
-                    <div id="sound_player_{{sound.id}}" class='sound_player'>
-                        <div id="sound_player_header_{{sound.id}}" class='sound_player_header'>
-                            <div class='sound_player_control'>
-                                <i style="cursor:pointer" id='sound_player_button_{{sound.id}}'
-                                   class='icon-play sound_player_button' ng-click="togglePause(sound.id)"></i>
-                            </div>
-                            <div id="sound_summary_{{sound.id}}">
-                                <div id="sound_owner_{{sound.id}}">
-                                    <a class='sound_owner' href="{{sound.owner.route}}">{{sound.owner.alias}}</a>
-                                </div>
-                                <div id="sound_title_{{sound.id}}">
-                                    <a class='sound_title' href="{{sound.title.route}}">{{sound.title.alias}}</a>
-                            </div>
-                            </div>
+                <div id="sound_player_header_{{sound.id}}" class='sound_player_header'>
+                    <div class='sound_player_control'>
+                        <i style="cursor:pointer" id='sound_player_button_{{sound.id}}'
+                           class='icon-play sound_player_button' ng-click="togglePause(sound.id)"></i>
+                    </div>
+                    <div id="sound_summary_{{sound.id}}">
+                        <div id="sound_owner_{{sound.id}}">
+                            <a class='sound_owner' href="{{sound.owner.route}}">{{sound.owner.alias}}</a>
                         </div>
-                        <div id="sound_player_body_{{sound.id}}" class='sound_player_body'>
-                            <div id="sound_wave_{{sound.id}}" class='sound_player_wave' style="cursor:pointer">
-                                <canvas id="sound_wave_canvas_{{sound.id}}">
-                                </canvas>
-                            </div>
-                        </div>
-                        <div id="sound_player_footer_{{sound.id}}" class='sound_player_footer  border-light-bottom'>
-                            <div id="sound_commentbox_{{sound.id}}" class="hide">
-                                <input type="text" id="sound_commentbox_input_{{sound.id}}" class="input-block-level"
-                                       placeholder="请留下您的评论...">
-                                <input type="hidden" id="sound_comment_point_{{sound.id}}" value="-1">
-                            </div>
-                            <a href="#" class="button button-small button-rounded button-flat action-button"
-                               onclick="return false;" ng-click="toggleLike(sound.id)"><i class="icon-heart"></i></i>
-                                {{sound.soundUserPrefer.likeWording}}</a>
-                            <a href="#" class="button button-small button-rounded button-flat action-button"
-                               onclick="return false;" ng-click="toggleRepost(sound.id)"><i
-                                    class="icon-retweet"></i> {{sound.soundUserPrefer.repostWording}}</a>
-
-                            <a href="#" class="button button-small button-rounded button-flat action-button"
-                               ng-show="isOwner()"
-                               onclick="return false;" ng-click="delete()"><i
-                                    class="icon-trash"></i> 删除</a>
-
-                            <div class="pull-right">
-                                <i class="icon-play-sign stat_icon"></i><span id="play_count_{{sound.id}}">{{sound.soundSocial.playedCount}}</span>
-                                |
-                                <i class="icon-heart stat_icon"></i>{{sound.soundSocial.likesCount}}
-                                |
-                                <i class="icon-retweet stat_icon"></i>{{sound.soundSocial.reportsCount}}
-                                |
-                                <i class="icon-comment stat_icon"></i>{{sound.soundSocial.commentsCount}}
+                        <div id="sound_title_{{sound.id}}">
+                            <a class='sound_title' href="{{sound.title.route}}">{{sound.title.alias}}</a>
+                            <div class="pull-right" >
+                                <ul class="tags">
+                                    <li ng-repeat="tag in sound.tags | filter: {curated:true}" style="display: inline">
+                                        <a href="#/stream/tags/{{tag.label}}">
+                                            <span ng-show="tag.curated" style="color:#FFDF00">{{tag.label}}</span>
+                                            <span ng-show="!tag.curated">{{tag.label}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-
-            <div ng-show="isloading" style="text-align: center">
-                <i class="icon-spinner icon-spin icon-large"></i> 努力加载中...
-            </div>
-
-            <div  ng-show="sounds.length == 0 && $routeParams.userId == UserService.getCurUserAlias() && !$routeParams.q" style="position:absolute; top:40%; left:25%;">
-                您还没有推送的声音流，发现自己的<a href="index.html#/interest">乐趣</a>，将有更多声音推送。
-            </div>
-            <div  ng-show="sounds.length == 0 && $routeParams.q"  style="position:absolute; top:40%; left:35%;">
-                没有找到结果，请尝试其他关键词
-            </div>
-        </div>
-
-        <div class="span3" ng-controller="recommandUserCtrl">
-            <div class="affix" style="width: 20%">
-                <div style="padding-bottom: 15px;height:150px">
-                <legend style="font-size: 18px">为您推荐的用户
-                    <i style="cursor:pointer" ng-show="recommendUsers.length > 0"
-                       class='button button-small button-pill button-flat'
-                       ng-click="save()">关注选定用户</i>
-                </legend>
-                <div class="{{msgClass}}" style="padding-bottom: 10px">
-                    {{msg}}
-                </div>
-                <div ng-if="recommendUsers.length > 0">
-                    <div ng-repeat="recommendUser in recommendUsers" style="float:left" ng-click="toogleFollow()">
-                        <div style="text-align:center; padding-right: 8px; height: 90px">
-                            <div class="user {{recommendUser.class}}">
-                                <a href="#" onclick="return false;">
-                                    <img style="width: 60px;height: 60px" ng-src="{{recommendUser.profile.avatorUrl}}">
-                                </a>
-                            </div>
-                            </a>
-                            <div>
-                                <a href='{{recommendUser.route}}'>{{recommendUser.profile.alias}}</a>
-                            </div>
-                        </div>
+                <div id="sound_player_body_{{sound.id}}" class='sound_player_body'>
+                    <div id="sound_wave_{{sound.id}}" class='sound_player_wave' style="cursor:pointer">
+                        <canvas id="sound_wave_canvas_{{sound.id}}">
+                        </canvas>
                     </div>
                 </div>
-
-                <div ng-if="recommendUsers.length == 0" style="padding-left: 15px">
-                    暂无用户推荐
-                </div>
-                </div>
-
-                <div style="padding-bottom: 15px;height:150px">
-                    <legend style="font-size: 18px">为您推荐的声音
-                    </legend>
-                    <div ng-if="recommendSounds.length > 0">
-                        <div ng-repeat="recommendSound in recommendSounds" style="float:left" ng-click="toogleFollow()">
-                            <div style="text-align:center; padding-right: 8px; height: 90px">
-                                <div>
-                                    <a href='{{recommendSound.route}}'>
-                                        <img style="width: 60px;height: 60px" ng-src="{{recommendSound.profile.poster.url}}">
-                                    </a>
-                                </div>
-                                </a>
-                                <div>
-                                    <a href='{{recommendSound.route}}'>{{recommendSound.profile.alias}}</a>
-                                </div>
-                            </div>
-                        </div>
+                <div id="sound_player_footer_{{sound.id}}" class='sound_player_footer border-light-bottom'>
+                    <div id="sound_commentbox_{{sound.id}}" class="hide">
+                        <form ng-submit="comment()" style="margin-bottom:0px; padding-top: 10px">
+                            <input type="text" id="sound_commentbox_input_{{sound.id}}"
+                                   class="input-block-level"
+                                   placeholder="请留下您的评论...">
+                            <input type="hidden" id="sound_comment_point_{{sound.id}}" value="-1">
+                        </form>
                     </div>
+                    <a href="#" class="button button-small button-rounded  button-flat action-button"
+                       onclick="return false;" ng-click="toggleLike(sound.id)"><i class="icon-heart"></i></i>
+                        <span ng-show="sound.soundUserPrefer.like=='0'">赞之</span></a>
+                    <a href="#" class="button button-small button-rounded  button-flat action-button"
+                       onclick="return false;" ng-click="toggleRepost(sound.id)"><i
+                            class="icon-retweet"></i></i> <span
+                            ng-show="sound.soundUserPrefer.repost==0">转之</span></a>
+                    <a href="#" class="button button-small button-rounded button-flat action-button"
+                       ng-show="sound.owner.alias == UserService.getCurUserAlias()"
+                       onclick="return false;" ng-click="delete()"><i
+                            class="icon-trash"></i></i> 删除</a>
 
-                    <div ng-if="recommendSounds.length == 0" style="padding-left: 15px">
-                        暂无声音推荐
+                    <div class="pull-right" style="margin-top: 8px">
+                                <span ng-show="sound.owner.alias == UserService.getCurUserAlias()">
+                                    <i class="icon-lock"
+                                       ng-show="sound.status == 'private'">私有 |</i>
+                                    <i class="icon-unlock-alt"
+                                       ng-show="sound.status == 'public'">公开 |</i>
+                                </span>
+                        <i class="icon-play-sign stat_icon"></i>
+                                <span id="play_count_{{sound.id}}">
+                                    <span ng-show="!(userService.validateRolePro() || userService.validateRolesPro())">{{sound.soundSocial.playedCount}}</span>
+                                    <span ng-show="userService.validateRolePro() || userService.validateRolesPro()"><a
+                                            href="#/sound/{{sound.alias}}?scrollTo=plays">{{sound.soundSocial.playedCount}}</a></span>
+                                </span>
+                        |
+                        <i class="icon-heart stat_icon"></i><a href="#/sound/{{sound.alias}}?scrollTo=likes">{{sound.soundSocial.likesCount}}</a>
+                        |
+                        <i class="icon-retweet stat_icon"></i><a
+                            href="#/sound/{{sound.alias}}?scrollTo=reposts">{{sound.soundSocial.reportsCount}}</a>
+                        |
+                        <i class="icon-comment stat_icon"></i><a
+                            href="#/sound/{{sound.alias}}?scrollTo=comments">{{sound.soundSocial.commentsCount}}</a>
+                                <span ng-show="userService.validateRolesPro()">
+                                    |
+                                    <i class="icon-eye-open stat_icon"></i><a
+                                        href="#/sound/{{sound.alias}}?scrollTo=visits">{{sound.soundSocial.visitsCount}}</a>
+                                </span>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
+    <div ng-show="isloading" style="text-align: center">
+        <i class="icon-spinner icon-spin icon-large"></i> 努力加载中...
+    </div>
+
+    <div ng-show="sounds.length == 0">
+    <div ng-show="!$routeParams.filter && routeParams.value && routeParams.value === UserService.getCurUserAlias()" style="padding-top:20%; padding-left:30%;">
+        您还没有自己的音乐流，<a href="index.html#/upload">上传音乐</a>或<a href="index.html#/interest">发现兴趣</a>， 创建属于自己的音乐流。
+    </div>
+    <div ng-show="!routeParams.filter && routeParams.value && routeParams.value !== UserService.getCurUserAlias()" style="padding-top:20%; padding-left:30%;">
+        {{userCurPage}}未上传或转发声音
+    </div>
+
+    <div  ng-show="!routeParams.filter && !routeParams.value && routeParams.userId == UserService.getCurUserAlias()" style="padding-top:20%; padding-left:30%;">
+        您还没有推送的声音流，发现自己的<a href="index.html#/interest">乐趣</a>，将有更多声音推送。
+    </div>
+    <div  ng-show="routeParams.filter === 'match'"  style="padding-top:20%; padding-left:35%;">
+        没有找到结果，请尝试其他关键词
+    </div>
+    <div  ng-show="routeParams.filter === 'tags' && !$parent.curatedTags"  style="padding-top:20%; padding-left:35%;">
+        没有找到结果，请尝试其他标签
+    </div>
+     <div  ng-show="routeParams.filter === 'tags' && $parent.curatedTags" >
+            暂无声音推荐
+     </div>
     </div>
 </div>
-<ng-include src="'partials/footer.html'"></ng-include>

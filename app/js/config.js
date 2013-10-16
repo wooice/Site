@@ -14,6 +14,13 @@ angular.module('wooice.config', []).constant(
             url_noescp : 'http://localhost:8080/commonService'
 		},
 
-        userStreamPath: 'index.html#/stream/user/'
+        userStreamPath: 'index.html#/stream/',
+
+        soundsPerPage: 4,
+        commentsPerPage: 8,
+        likesPerPage: 9,
+        repostsPerPage:9,
+        playsPerPage: 9,
+        visitsPerPage: 9
 	}
 );

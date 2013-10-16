@@ -3,11 +3,6 @@
 /* Directives */
 
 angular.module('wooice.directives', []).
-    directive('appVersion', ['version', function (version) {
-        return function (scope, elm, attrs) {
-            elm.text(version);
-        };
-    }]).
     directive('passEqual', ['Guest', function (Guest) {
         return {
             require: 'ngModel',
@@ -29,11 +24,17 @@ angular.module('wooice.directives', []).
             }
         }
     }]).
-    directive('aliasUnique', ['Guest', function (Guest) {
+    directive('aliasUnique', ['Guest', 'UserService', function (Guest, UserService) {
         return {
             require: 'ngModel',
             link: function (scope, ele, attrs, c) {
                 scope.$watch(attrs.ngModel, function () {
+                    if (UserService.getCurUserAlias() === c.$modelValue)
+                    {
+                        c.$setValidity('unique', true);
+                        return;
+                    }
+
                     if (c.$modelValue)
                     {
                        var result = Guest.checkAlias({userAlias: c.$modelValue}, function(){

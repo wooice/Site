@@ -5,11 +5,15 @@
         </a>
 
         <ul class="nav">
-            <li><a href="#"><i class="icon-bullhorn"></i></a></li>
+            <li><a href="#"><i class="icon-eye-open"></i></a></li>
             <li class="pull-right"
                 style="border-left-width: 1px;border-left-style: solid;border-left-color: rgba(0, 0, 0, 0.498039);"><a
                     href="#" onclick="return false;"
-                    ng-click="goto('/stream/user/{{userAlias}}')"><i class="icon-eye-open"></i></a></li>
+                    ng-click="goto('/stream/{{userAlias}}')"><i class="icon-bullhorn"></i></a></li>
+            <li class="pull-right"
+                style="border-left-width: 1px;border-left-style: solid;border-left-color: rgba(0, 0, 0, 0.498039);"><a
+                    href="#" onclick="return false;"
+                    ng-click="goto('/interest')"><i class="icon-question-sign"></i></a></li>
             <form class="navbar-search" action=""
                   style="padding-left: 30px;border-left-width: 1px;border-left-style: solid;border-left-color: rgba(0, 0, 0, 0.498039);">
                 <span class="add-on"><i class="icon-search" style="color:gray"></i></span>
@@ -25,12 +29,13 @@
                                                        id='sound_player_button_global'
                                                        class='sound_player_button icon-play'
                                                        ng-click="togglePause()"></i></a></li>
-            <li><a href="#" onclick="return false;"><i style="cursor:pointer;color:#e5e5e5" id='sound_player_next_global'
+            <li style="padding-left: 0px;padding-right: 0px"><a id="cur_sound" style="padding-left: 0px;padding-right: 0px"></a></li>
+            <li style="padding-right: 40px"><a href="#" onclick="return false;"><i style="cursor:pointer;color:#e5e5e5" id='sound_player_next_global'
                                                        class='icon-step-forward' ng-click="playNext()"></i></a>
             </li>
             <li style="border-left-width: 1px;border-left-style: solid;border-left-color: rgba(0, 0, 0, 0.498039);"><a
-                    href="#" onclick="return false;" ng-click="goto('/profile')"><i class="icon-wrench"></i></a></li>
-            <li><a href="#" onclick="return false;" ng-click="goto('/upload')"><i class="icon-cloud-upload"></i></a>
+                    href="#" onclick="return false;" ng-click="goto('/profile')"><i class="icon-cog"></i></a></li>
+            <li style="padding-right: 90px"><a href="#" onclick="return false;" ng-click="goto('/upload')"><i class="icon-cloud-upload"></i></a>
             </li>
             <li><a href="#" onclick="return false;" ng-click="logout()"><i class="icon-signout"></i></a></li>
         </ul>

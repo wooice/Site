@@ -1,3 +1,7 @@
+<style>
+    html{overflow-y:scroll}
+</style>
+
 <ng-include src="'partials/header.html'"></ng-include>
 
 <div class="container">
@@ -8,11 +12,14 @@
                     <div style="padding-top: 30px;">
                         <legend>{{cate.name}}</legend>
                         <div style="padding-top: 15px;">
-                            <div ng-repeat="curatedTag in curatedTags | filter:{category.name: cate.name}"
-                                 style="float:left;padding-right: 25px">
-                                <label ng-click="toogleInterest()"><i class="icon-tag {{curatedTag.class}}">
-                                    {{curatedTag.label}}</i></label>
-                            </div>
+                            <ul class="tags">
+                                <li ng-repeat="curatedTag in curatedTags | filter:{category.name: cate.name}"
+                                     style="float:left;padding-right: 25px;padding-bottom: 10px;">
+                                    <a  onclick="return false;" ng-click="toogleInterest()" style="background: {{curatedTag.class}};cursor:pointer;">
+                                        {{curatedTag.label}}
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                     <br>
@@ -24,11 +31,14 @@
                     <div style="padding-top: 30px;">
                         <legend>{{cate.name}}</legend>
                         <div style="padding-top: 15px;">
-                            <div ng-repeat="curatedTag in curatedTags | filter:{category.name: cate.name}"
-                                 style="float:left;padding-right: 25px">
-                                <label ng-click="toogleInterest()"><i class="icon-tag {{curatedTag.class}}">
-                                    {{curatedTag.label}}</i></label>
-                            </div>
+                            <ul class="tags">
+                                <li ng-repeat="curatedTag in curatedTags | filter:{category.name: cate.name}"
+                                    style="float:left;padding-right: 25px;padding-bottom: 10px;">
+                                    <a   onclick="return false;" ng-click="toogleInterest()" style="background: {{curatedTag.class}};cursor:pointer;">
+                                        {{curatedTag.label}}
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                     <br>
@@ -42,7 +52,7 @@
     </div>
 
     <div id="recommand" style="padding-top: 30px">
-        <legend>推荐的用户</legend>
+        <legend>推荐用户</legend>
         <div ng-if="recommendUsers.length > 0">
             <div ng-repeat="recommendUser in recommendUsers" style="float:left" ng-click="toogleFollow()">
                 <div style="text-align:center;padding-right: 20px">
@@ -65,5 +75,11 @@
         暂无用户推荐
     </div>
 
+    <div style="padding-top: 20px">
+        <legend>推荐声音</legend>
+        <ng-include src="includePage" autoscroll></ng-include>
+    </div>
 </div>
+<div>
 <ng-include src="'partials/footer.html'"></ng-include>
+</div>

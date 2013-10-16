@@ -29,6 +29,7 @@
         var currentPlayingPosition = -1;
         var onHover = 0;
         var commentLenth = 15;
+        var commentable = options.commentable;
 
         if (options.color) {
             playedUpperColor = options.color.upper;
@@ -72,30 +73,8 @@
                 context.fillRect(index * widthPerLine, waveHeight * mainLinePerctg * (1 - data), widthPerLine, waveHeight * mainLinePerctg * data);
 
                 context.fillStyle = getColor(index, index / waveWidth, 'lower');
-                var hasImage = checkImage(index * widthPerLine);
-                if (hasImage) {
-                    context.fillRect(index * widthPerLine, waveHeight * mainLinePerctg + commentLenth, widthPerLine, waveHeight * shadowPerctg * data - commentLenth);
-                }
-                else {
-                    context.fillRect(index * widthPerLine, waveHeight * mainLinePerctg, widthPerLine, waveHeight * shadowPerctg * data);
-                }
+                context.fillRect(index * widthPerLine, waveHeight * mainLinePerctg, widthPerLine, waveHeight * shadowPerctg * data);
             });
-        }
-
-        function checkImage(pointX) {
-            var comments = $(canvas).data("comments");
-            var comment = null;
-            if (comments) {
-                $.each(comments, function (index, oneComment) {
-                    var x = (oneComment.pointAt * waveWidth) / (soundDuration / 1000);
-                    if (pointX >= x && pointX <= x + commentLenth) {
-                        comment = oneComment
-                        return;
-                    }
-                });
-            }
-
-            return comment;
         }
 
         function interpolateArray(data, fitCount) {
@@ -160,16 +139,9 @@
             if (layerY > waveHeight * mainLinePerctg && layerY < waveHeight * (mainLinePerctg + shadowPerctg * waveData[index])) {
                 pointLowerPosition = index;
 
-                var comment = checkImage(index * widthPerLine);
-
-                if (!comment) {
-                    //set new point to played color
-                    context.fillStyle = getColor(index, index / waveWidth, 'lower');
-                    context.fillRect(index * widthPerLine, waveHeight * mainLinePerctg, widthPerLine, waveHeight * shadowPerctg * waveData[index]);
-                }
-                else {
-                    $("#sound_comment_in_sound_" + comment.commentId).removeClass('hide');
-                }
+                //set new point to played color
+                context.fillStyle = getColor(index, index / waveWidth, 'lower');
+                context.fillRect(index * widthPerLine, waveHeight * mainLinePerctg, widthPerLine, waveHeight * shadowPerctg * waveData[index]);
             }
             else {
                 pointLowerPosition = -1;
@@ -182,16 +154,9 @@
             }
 
             if (-1 != preLowerPosition) {
-                var comment = checkImage(preLowerPosition * widthPerLine);
-
-                if (!comment) {
-                    //set previous lower point to the color it should be
-                    context.fillStyle = getColor(preLowerPosition, preLowerPosition / waveWidth, 'lower');
-                    context.fillRect(preLowerPosition * widthPerLine, waveHeight * mainLinePerctg, widthPerLine, waveHeight * shadowPerctg * waveData[preLowerPosition]);
-                }
-                else {
-                    $("#sound_comment_in_sound_" + comment.commentId).addClass('hide');
-                }
+                //set previous lower point to the color it should be
+                context.fillStyle = getColor(preLowerPosition, preLowerPosition / waveWidth, 'lower');
+                context.fillRect(preLowerPosition * widthPerLine, waveHeight * mainLinePerctg, widthPerLine, waveHeight * shadowPerctg * waveData[preLowerPosition]);
             }
         }
 
@@ -217,14 +182,17 @@
                 }
 
                 if (layerY > waveHeight * mainLinePerctg && layerY <= waveHeight * (mainLinePerctg + shadowPerctg * waveData[index])) {
-                    var curSec = (soundDuration * (index / waveWidth));
-                    var curMin = Math.floor(curSec / (60 * 1000));
-                    var leftSec = ((curSec - curMin * 60 * 1000) / 1000).toFixed(2);
+                    if (commentable)
+                    {
+                        var curSec = (soundDuration * (index / waveWidth));
+                        var curMin = Math.floor(curSec / (60 * 1000));
+                        var leftSec = ((curSec - curMin * 60 * 1000) / 1000).toFixed(2);
 
-                    $('#sound_commentbox_' + soundId).show();
-                    $('#sound_commentbox_input_' + soundId).attr("placeholder", ("您将留言在 " + ((curMin > 0) ? (curMin + "分 ") : "") + leftSec + "秒 ..."));
-                    $('#sound_commentbox_input_' + soundId).focus();
-                    $('#sound_comment_point_' + soundId).val((curSec / 1000).toFixed(2));
+                        $('#sound_commentbox_' + soundId).show();
+                        $('#sound_commentbox_input_' + soundId).attr("placeholder", ("您将留言在 " + ((curMin > 0) ? (curMin + "分 ") : "") + leftSec + "秒 ..."));
+                        $('#sound_commentbox_input_' + soundId).focus();
+                        $('#sound_comment_point_' + soundId).val((curSec / 1000).toFixed(2));
+                    }
                 }
             }
         }

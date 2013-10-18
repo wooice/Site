@@ -1,4 +1,4 @@
-<div id="sound_streams"  ng-controller="streamCtrl" >
+<div id="sound_streams" ng-controller="streamCtrl">
     <a href="#" onclick="return false;" ng-click="loadStream('true')" class="pull-right"><i
             class="icon-refresh"></i></a>
 
@@ -39,7 +39,8 @@
                         </div>
                         <div id="sound_title_{{sound.id}}">
                             <a class='sound_title' href="{{sound.title.route}}">{{sound.title.alias}}</a>
-                            <div class="pull-right" >
+
+                            <div class="pull-right">
                                 <ul class="tags">
                                     <li ng-repeat="tag in sound.tags | filter: {curated:true}" style="display: inline">
                                         <a href="#/stream/tags/{{tag.label}}">
@@ -74,6 +75,14 @@
                        onclick="return false;" ng-click="toggleRepost(sound.id)"><i
                             class="icon-retweet"></i></i> <span
                             ng-show="sound.soundUserPrefer.repost==0">转之</span></a>
+                    <a href="#" class="button button-small button-rounded button-flat action-button hasTooltip"   onclick="return false;"
+                            ><i class="icon-share"></i>分享
+                    </a>
+                    <div style="display: none;">
+                        <label style="font-size: 9px">链接分享</label><input  type="text" style="width: 240px;font-size: 9px" value="{{config.site.url}}#/sound/{{sound.alias}}">
+                        <label style="font-size: 9px">代码分享</label><input   type="text"  class="input-xlarge" style="width: 240px;font-size: 9px"
+                                                                           value='<iframe width="100%" height="188" scrolling="no" frameborder="no" src="{{config.site.url}}#/player/{{sound.alias}}"></iframe>'>
+                    </div>
                     <a href="#" class="button button-small button-rounded button-flat action-button"
                        ng-show="sound.owner.alias == UserService.getCurUserAlias()"
                        onclick="return false;" ng-click="delete()"><i
@@ -116,24 +125,27 @@
     </div>
 
     <div ng-show="sounds.length == 0">
-    <div ng-show="!$routeParams.filter && routeParams.value && routeParams.value === UserService.getCurUserAlias()" style="padding-top:20%; padding-left:30%;">
-        您还没有自己的音乐流，<a href="index.html#/upload">上传音乐</a>或<a href="index.html#/interest">发现兴趣</a>， 创建属于自己的音乐流。
-    </div>
-    <div ng-show="!routeParams.filter && routeParams.value && routeParams.value !== UserService.getCurUserAlias()" style="padding-top:20%; padding-left:30%;">
-        {{userCurPage}}未上传或转发声音
-    </div>
+        <div ng-show="!$routeParams.filter && routeParams.value && routeParams.value === UserService.getCurUserAlias()"
+             style="padding-top:20%; padding-left:30%;">
+            您还没有自己的音乐流，<a href="index.html#/upload">上传音乐</a>或<a href="index.html#/interest">发现兴趣</a>， 创建属于自己的音乐流。
+        </div>
+        <div ng-show="!routeParams.filter && routeParams.value && routeParams.value !== UserService.getCurUserAlias()"
+             style="padding-top:20%; padding-left:30%;">
+            {{userCurPage}}未上传或转发声音
+        </div>
 
-    <div  ng-show="!routeParams.filter && !routeParams.value && routeParams.userId == UserService.getCurUserAlias()" style="padding-top:20%; padding-left:30%;">
-        您还没有推送的声音流，发现自己的<a href="index.html#/interest">乐趣</a>，将有更多声音推送。
-    </div>
-    <div  ng-show="routeParams.filter === 'match'"  style="padding-top:20%; padding-left:35%;">
-        没有找到结果，请尝试其他关键词
-    </div>
-    <div  ng-show="routeParams.filter === 'tags' && !$parent.curatedTags"  style="padding-top:20%; padding-left:35%;">
-        没有找到结果，请尝试其他标签
-    </div>
-     <div  ng-show="routeParams.filter === 'tags' && $parent.curatedTags" >
+        <div ng-show="!routeParams.filter && !routeParams.value && routeParams.userId == UserService.getCurUserAlias()"
+             style="padding-top:20%; padding-left:30%;">
+            您还没有推送的声音流，发现自己的<a href="index.html#/interest">乐趣</a>，将有更多声音推送。
+        </div>
+        <div ng-show="routeParams.filter === 'match'" style="padding-top:20%; padding-left:35%;">
+            没有找到结果，请尝试其他关键词
+        </div>
+        <div ng-show="routeParams.filter === 'tags' && !$parent.curatedTags" style="padding-top:20%; padding-left:35%;">
+            没有找到结果，请尝试其他标签
+        </div>
+        <div ng-show="routeParams.filter === 'tags' && $parent.curatedTags">
             暂无声音推荐
-     </div>
+        </div>
     </div>
 </div>

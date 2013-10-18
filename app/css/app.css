@@ -153,6 +153,9 @@ icon-step-backward.sound_player_button{
     padding-bottom:  20px;
 }
 
+.iframe_player{
+    height: 100%;
+}
 
 .action-button {
     margin-left:6px
@@ -316,3 +319,13 @@ input.ng-dirty.ng-valid {
 .tags a:hover{background:#555;}
 
 .tags a:hover:before{border-color:transparent #555 transparent transparent;}
+
+.tip {
+    border-color: rgb(233, 233, 233);
+    background-color: rgb(233, 233, 233);
+    width: 500px
+}
+
+.tip .qtip-content{
+    font-size: 9px;
+}

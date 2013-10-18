@@ -240,6 +240,28 @@ angular.module('stream.controllers', []).
                     $('#cur_sound').attr('href', curSound.title.route);
                     $('#cur_sound').text(curSound.title.alias);
                 }
+
+                $('.hasTooltip').each(function() {
+                    $(this).qtip({
+                        content: {
+                            text: $(this).next('div')
+                        },
+                        show: {
+                            event: 'click'
+                        },
+                        hide: {
+                            event: 'unfocus'
+                        },
+                        position: {
+                            at: 'bottom left',
+                            target: $(this)
+                        },
+                        style: {
+                            def: false,
+                            classes: 'tip qtip-rounded qtip-bootstrap'
+                        }
+                    });
+                });
             });
         };
 

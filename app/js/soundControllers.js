@@ -4,32 +4,39 @@ angular.module('sound.controllers', [])
     .controller('soundDetailCtrl', ['$scope', '$window', 'config', '$routeParams', 'Sound', 'SoundUtilService', 'Storage', 'SoundSocial', 'SoundSocialList', 'UserService', '$location', '$anchorScroll', 'SoundSocialProSocial', 'SoundProSocial', 'UserSocial', 'Tag',
         function ($scope, $window, config, $routeParams, Sound, SoundUtilService, Storage, SoundSocial, SoundSocialList, UserService, $location, $anchorScroll, SoundSocialProSocial, SoundProSocial, UserSocial, Tag) {
             $scope.userService = UserService;
-
-            var rewriteF5 = function (e) {
-                if (e.which === 116) {
-                    $scope.loadSound();
-                    return false;
-                }
-                if (e.which === 82 && e.ctrlKey) {
-                    $scope.loadSound();
-                    return false;
-                }
-            };
-
-            $(document).bind('keydown keyup', rewriteF5);
-            $scope.$on('$destroy', function (e) {
-                $(document).unbind('keydown keyup', rewriteF5);
-            });
-
-            $scope.target = "comments";
-            var query = $location.search();
-            if (query.scrollTo) {
-                $scope.target = query.scrollTo;
-                $location.hash($routeParams.scrollTo);
-                $anchorScroll();
+            $scope.config = config;
+            $scope.mode = "default";
+            if ($scope.$parent.mode) {
+                $scope.mode = $scope.$parent.mode;
             }
-            $("#" + $scope.target + "_li").addClass("active");
-            $("#" + $scope.target).addClass("active");
+
+            if ($scope.mode == "default") {
+                var rewriteF5 = function (e) {
+                    if (e.which === 116) {
+                        $scope.loadSound();
+                        return false;
+                    }
+                    if (e.which === 82 && e.ctrlKey) {
+                        $scope.loadSound();
+                        return false;
+                    }
+                };
+
+                $(document).bind('keydown keyup', rewriteF5);
+                $scope.$on('$destroy', function (e) {
+                    $(document).unbind('keydown keyup', rewriteF5);
+                });
+
+                var scrollComments = $.proxy(function () {
+                    if ($(window).height() + $(window).scrollTop() >= ($('#sound_streams').height())) {
+                        $scope.reloadTarget();
+                    }
+                }, this);
+                $(window).scroll(scrollComments);
+                $scope.$on('$destroy', function (e) {
+                    $(window).off("scroll", scrollComments);
+                });
+            }
 
             $scope.comments = [];
             $scope.commentsInsound = [];
@@ -97,7 +104,7 @@ angular.module('sound.controllers', [])
                     $scope.sound.soundSocial.commentsCount = result.commentsCount;
                     $('#sound_commentbox_input_' + $scope.sound.id).val('');
                     $('#sound_commentbox_input_' + $scope.sound.id).attr("placeholder", "感谢您的留言!");
-                    $('#sound_comment_point_' + this.sound.id).val(-1);
+                    $('#sound_comment_point_' + $scope.sound.id).val(-1);
 
                     $scope.refreshTarget("comments");
                     loadCommentsInSound();
@@ -190,6 +197,7 @@ angular.module('sound.controllers', [])
                     postData.name = $scope.sound.title.alias;
                     var sound = Sound.update({sound: $scope.sound.id}, postData, function () {
                         $scope.sound.alias = sound.profile.alias;
+                        $scope.sound.title.route = '#/sound/' + $scope.sound.alias;
                         $(window).soundPlayer().updateAlias({
                             id: $scope.sound.id,
                             alias: $scope.sound.alias
@@ -235,55 +243,12 @@ angular.module('sound.controllers', [])
                     $.proxy(function () {
                         $scope.sound.tags = $.grep($scope.sound.tags, $.proxy(function (value) {
                             return value != this.tag;
-                        },this));
+                        }, this));
                     }, this));
             };
 
             $scope.uploadPosterUrl = "http://up.qiniu.com";
             $scope.isUploadingPoster = false;
-
-
-            $scope.$on('$viewContentLoaded', function () {
-                if (!$scope.localLoad()) {
-                    $scope.loadSound();
-                }
-
-                $("#tags").typeahead({
-                    remote: {
-                        url: config.service.url_noescp + '/tag/list?term=%QUERY',
-                        filter: function (parsedResponse) {
-                            var tags = [];
-                            $.each(parsedResponse, function (index, tag) {
-                                tags.push(tag.label);
-                            });
-                            return tags;
-                        }
-                    }
-                });
-
-                $("#tags").bind('keyup', function (event) {
-                    if (event.keyCode == 13) {
-                        var attached = false;
-                        var label = $("#tags").val();
-                        $.each($scope.sound.tags, function (index, tag) {
-                            if (label == tag.label) {
-                                attached = true;
-                                return;
-                            }
-                        });
-                        if (attached) {
-                            return;
-                        }
-
-                        var tags = Tag.attach({action: $scope.sound.id}, {tags: [label]}, function () {
-                            $scope.newTag = "";
-                            $.each(tags, function (index, tag) {
-                                $scope.sound.tags.push(tag);
-                            });
-                        });
-                    }
-                });
-            });
 
             $scope.localLoad = function () {
                 var sound = $(window).soundPlayer({}).loadFromCache(
@@ -304,19 +269,45 @@ angular.module('sound.controllers', [])
                         }
                     );
                     loadCommentsInSound();
-                    $scope.reloadTarget();
 
-                    var curSound = $(window).soundPlayer().getCurSound();
-                    if (curSound) {
-                        $('#sound_player_button_' + curSound.id).addClass('icon-pause');
-                        $('#cur_sound').attr('href', curSound.title.route);
-                        $('#cur_sound').text(curSound.title.alias);
+                    if ($scope.mode == 'default') {
+                        $scope.reloadTarget();
+
+                        var curSound = $(window).soundPlayer().getCurSound();
+                        if (curSound) {
+                            $('#sound_player_button_' + curSound.id).addClass('icon-pause');
+                            $('#cur_sound').attr('href', curSound.title.route);
+                            $('#cur_sound').text(curSound.title.alias);
+                        }
                     }
+
+                    $('.hasTooltip').each(function () {
+                        $(this).qtip({
+                            content: {
+                                text: $(this).next('div')
+                            },
+                            show: {
+                                event: 'click'
+                            },
+                            hide: {
+                                event: 'unfocus'
+                            },
+                            position: {
+                                at: 'bottom left',
+                                target: $(this)
+                            },
+                            style: {
+                                def: false,
+                                classes: 'tip qtip-rounded qtip-bootstrap'
+                            }
+                        });
+                    });
                     return true;
                 }
                 else {
                     return false;
                 }
+
             }
 
             $scope.loadSound = function () {
@@ -344,25 +335,41 @@ angular.module('sound.controllers', [])
                     $(window).soundPlayer().addSound($scope.sound);
 
                     loadCommentsInSound();
-                    $scope.reloadTarget();
 
-                    var curSound = $(window).soundPlayer().getCurSound();
-                    if (curSound) {
-                        $('#sound_player_button_' + curSound.id).addClass('icon-pause');
-                        $('#cur_sound').attr('href', curSound.title.route);
-                        $('#cur_sound').text(curSound.title.alias);
-                    }
-                });
-
-                var scrollComments = $.proxy(function () {
-                    if ($(window).height() + $(window).scrollTop() >= ($('#sound_streams').height())) {
+                    if ($scope.mode == 'default') {
                         $scope.reloadTarget();
+
+                        var curSound = $(window).soundPlayer().getCurSound();
+                        if (curSound) {
+                            $('#sound_player_button_' + curSound.id).addClass('icon-pause');
+                            $('#cur_sound').attr('href', curSound.title.route);
+                            $('#cur_sound').text(curSound.title.alias);
+                        }
                     }
-                }, this);
-                $(window).scroll(scrollComments);
-                $scope.$on('$destroy', function (e) {
-                    $(window).off("scroll", scrollComments);
+
+                    $('.hasTooltip').each(function () {
+                        $(this).qtip({
+                            content: {
+                                text: $(this).next('div')
+                            },
+                            show: {
+                                event: 'click'
+                            },
+                            hide: {
+                                event: 'unfocus'
+                            },
+                            position: {
+                                at: 'bottom left',
+                                target: $(this)
+                            },
+                            style: {
+                                def: false,
+                                classes: 'tip qtip-rounded qtip-bootstrap'
+                            }
+                        });
+                    });
                 });
+
             }
 
             $scope.reloadTarget = function (force) {
@@ -569,95 +576,107 @@ angular.module('sound.controllers', [])
                 });
             }
 
-            $('#poster_upload').change(function () {
-                var oFReader = new FileReader();
-                oFReader.onload = function (oFREvent) {
-                    $("#poster_img").attr('src', oFREvent.target.result);
-                };
-                oFReader.readAsDataURL(this.files[0]);
-            });
-
-            $('#poster_upload').fileupload({
-                url: $scope.uploadPosterUrl,
-                dataType: 'json',
-                acceptFileTypes: /\.(gif|jpg|jpeg|tiff|png)$/i,
-                dropZone: null,
-
-                add: function (e, data) {
-                    if (!(/\.(gif|jpg|jpeg|tiff|png)$/i).test(data.files[0].name)) {
-                        $.globalMessenger().post({
-                            message: '您上传的海报图片可能不正确，请上传以下格式中的一种:gif, jpg, jpeg, tiff, png。',
-                            hideAfter: 15,
-                            showCloseButton: true
-                        });
-                        return;
-                    }
-                    if (data.files[0].size > 10000000) {
-                        $.globalMessenger().post({
-                            message: '您上传的文件过大，请上传小于10MB的海报图片。',
-                            hideAfter: 15,
-                            showCloseButton: true
-                        });
-                        return;
-                    }
-
-                    if (!$scope.sound.posterPosterId) {
-                        $scope.sound.posterPosterId = new Date().getTime();
-                    }
-                    $scope.posterInfo = Storage.getImageUploadURL({key: $scope.sound.posterPosterId}, function () {
-                        data.formData = {key: $scope.sound.posterPosterId, token: $scope.posterInfo.token};
-                        data.submit();
-                    });
-                },
-                submit: function (e, data) {
-                    $scope.isUploadingPoster = true;
-                    $('#cancel_img_upload').click(function () {
-                        data.abort();
-                        $scope.$apply(function () {
-                            $scope.isUploadingPoster = false;
-                        });
-                    });
-                },
-                progress: function (e, data) {
-                    var progress = parseInt(data.loaded / data.total * 100, 10);
-                    $scope.$apply(function () {
-                        $scope.imgUploadMsg = '已上传' + progress + '%';
-                    });
-                },
-                send: function (e, data) {
-                    $scope.imgUploadMsgClass = "text-info";
-                    $scope.imgUploadMsg = '已上传0%';
-                },
-                done: function (e, data) {
-                    var soundProfile = {};
-                    soundProfile.poster = {};
-                    soundProfile.poster.posterId = $scope.sound.posterPosterId;
-                    soundProfile.poster.extension = $scope.sound.posterExtension;
-                    Sound.update({sound: $scope.sound.id}, soundProfile, function (count) {
-                        $scope.isUploadingPoster = false;
-                        $scope.imgUploadMsgClass = "hide";
-                        $.globalMessenger().post({
-                            message: "声音海报更新成功！",
-                            hideAfter: 10,
-                            showCloseButton: true
-                        });
-                    });
-                },
-                fail: function (e, data) {
-                    $scope.isUploadingPoster = false;
-                    if (data.errorThrown === 'abort') {
-                        $scope.imgUploadMsgClass = "text-success";
-                        $scope.imgUploadMsg = '海报上传已取消。';
-                    }
-                    else {
-                        $.globalMessenger().post({
-                            message: "海报图片上传失败，请稍后再试。",
-                            hideAfter: 10,
-                            showCloseButton: true
-                        });
-                    }
+            $scope.$parent.$on("$includeContentLoaded", function (event) {
+                if (event.currentScope.$id != event.targetScope.$id)
+                {
+                    return;
+                }
+                if (!$scope.localLoad()) {
+                    $scope.loadSound();
                 }
             });
+
+            if ($scope.mode == 'default') {
+                $('#poster_upload').change(function () {
+                    var oFReader = new FileReader();
+                    oFReader.onload = function (oFREvent) {
+                        $("#poster_img").attr('src', oFREvent.target.result);
+                    };
+                    oFReader.readAsDataURL(this.files[0]);
+                });
+
+                $('#poster_upload').fileupload({
+                    url: $scope.uploadPosterUrl,
+                    dataType: 'json',
+                    acceptFileTypes: /\.(gif|jpg|jpeg|tiff|png)$/i,
+                    dropZone: null,
+
+                    add: function (e, data) {
+                        if (!(/\.(gif|jpg|jpeg|tiff|png)$/i).test(data.files[0].name)) {
+                            $.globalMessenger().post({
+                                message: '您上传的海报图片可能不正确，请上传以下格式中的一种:gif, jpg, jpeg, tiff, png。',
+                                hideAfter: 15,
+                                showCloseButton: true
+                            });
+                            return;
+                        }
+                        if (data.files[0].size > 10000000) {
+                            $.globalMessenger().post({
+                                message: '您上传的文件过大，请上传小于10MB的海报图片。',
+                                hideAfter: 15,
+                                showCloseButton: true
+                            });
+                            return;
+                        }
+
+                        if (!$scope.sound.posterPosterId) {
+                            $scope.sound.posterPosterId = new Date().getTime();
+                        }
+                        $scope.posterInfo = Storage.getImageUploadURL({key: $scope.sound.posterPosterId}, function () {
+                            data.formData = {key: $scope.sound.posterPosterId, token: $scope.posterInfo.token};
+                            data.submit();
+                        });
+                    },
+                    submit: function (e, data) {
+                        $scope.isUploadingPoster = true;
+                        $('#cancel_img_upload').click(function () {
+                            data.abort();
+                            $scope.$apply(function () {
+                                $scope.isUploadingPoster = false;
+                            });
+                        });
+                    },
+                    progress: function (e, data) {
+                        var progress = parseInt(data.loaded / data.total * 100, 10);
+                        $scope.$apply(function () {
+                            $scope.imgUploadMsg = '已上传' + progress + '%';
+                        });
+                    },
+                    send: function (e, data) {
+                        $scope.imgUploadMsgClass = "text-info";
+                        $scope.imgUploadMsg = '已上传0%';
+                    },
+                    done: function (e, data) {
+                        var soundProfile = {};
+                        soundProfile.poster = {};
+                        soundProfile.poster.posterId = $scope.sound.posterPosterId;
+                        soundProfile.poster.extension = $scope.sound.posterExtension;
+                        Sound.update({sound: $scope.sound.id}, soundProfile, function (count) {
+                            $scope.isUploadingPoster = false;
+                            $scope.imgUploadMsgClass = "hide";
+                            $.globalMessenger().post({
+                                message: "声音海报更新成功！",
+                                hideAfter: 10,
+                                showCloseButton: true
+                            });
+                        });
+                    },
+                    fail: function (e, data) {
+                        $scope.isUploadingPoster = false;
+                        if (data.errorThrown === 'abort') {
+                            $scope.imgUploadMsgClass = "text-success";
+                            $scope.imgUploadMsg = '海报上传已取消。';
+                        }
+                        else {
+                            $.globalMessenger().post({
+                                message: "海报图片上传失败，请稍后再试。",
+                                hideAfter: 10,
+                                showCloseButton: true
+                            });
+                        }
+                    }
+                });
+            }
         }])
 ;
 

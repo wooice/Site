@@ -4,14 +4,16 @@
 angular.module('wooice', ['ngRoute', 'wooice.directives', 'wooice.config',
         'auth.services', 'guest.services', 'profile.services', 'sound.services', 'tag.services', 'storage.services', 'user.services', 'sound.pro.services', 'util.services',
         'auth.controllers', 'guest.controllers', 'profile.controllers', 'stream.controllers', 'common.stream.controllers', 'user.stream.controllers', 'footer.controllers', 'header.controllers', 'interest.controllers', 'message.services',
-        'sound.controllers', 'upload.controllers']).
+        'sound.controllers', 'sound.social.controllers', 'player.controllers', 'upload.controllers']).
 
     config(['$routeProvider', '$httpProvider', function ($routeProvider, $httpProvider) {
         $routeProvider.
             when('/stream', {templateUrl: 'partials/commonStream.html', controller: ''}).
             when('/stream/:value', {templateUrl: 'partials/userStream.html', controller: ''}).
             when('/stream/:filter/:value', {templateUrl: 'partials/commonStream.html', controller: ''}).
-            when('/sound/:soundId', {templateUrl: 'partials/soundDetail.html', controller: 'soundDetailCtrl'}).
+            when('/sound/:soundId', {templateUrl: 'partials/soundDetail.html', controller: ''}).
+            when('/player/:soundId', {templateUrl: 'partials/player.html', controller: ''}).
+            when('/iframe', {templateUrl: 'partials/iframe.html', controller: ''}).
             when('/profile', {templateUrl: 'partials/userProfile.html', controller: 'userProfileCtrl'}).
             when('/upload', {templateUrl: 'partials/upload.html', controller: 'soundUploadCtrl'}).
             when('/interest', {templateUrl: 'partials/interest.html', controller: 'interestCtrl'}).
@@ -57,7 +59,7 @@ angular.module('wooice', ['ngRoute', 'wooice.directives', 'wooice.config',
 
         var routesThatDontRequireAuth = ['/guest', '/auth'];
         var routesThatForAdmins = ['/admin'];
-        var routesNoCheck = ["/forbidden", "/not_found"];
+        var routesNoCheck = ["/forbidden", "/not_found", "/player", "/iframe"];
 
         // check if current location matches route
         var routeGuest = function (route) {
@@ -83,38 +85,44 @@ angular.module('wooice', ['ngRoute', 'wooice.directives', 'wooice.config',
         }
 
         $rootScope.$on('$routeChangeStart', function (event, next, current) {
-            if ($location.url()) {
-                if (routeGuest($location.url()) && UserService.validateRoleGuest()) {
-                    return;
-                }
-
-                if (noCheck($location.url())) {
-                    return;
-                }
-
-                if (!routeGuest($location.url()) && UserService.validateRoleGuest()) {
-                    $location.path('/guest/login');
-                    return;
-                }
-            }
-
             var curUser = Auth.isAlive({}, function () {
-                    UserService.setupUser({
-                        userAlias: curUser.profile.alias,
-                        role: curUser.userRoles[0].role
-                    });
+                    if (curUser.profile)
+                    {
+                        UserService.setupUser({
+                            userAlias: curUser.profile.alias,
+                            role: curUser.userRoles[0].role
+                        });
+                        UserService.setColor(curUser.profile.color);
+                    }
+                    else
+                    {
+                        UserService.setupUser(null);
+                    }
 
-                    UserService.setColor(curUser.profile.color);
 
                     if ($location.url()) {
-                        if (routeAdmin($location.url() && !UserService.validateRoleAdmin())) {
+                        if (noCheck($location.url())) {
+                            return;
+                        }
+                        if (routeAdmin($location.url()) && !UserService.validateRoleAdmin()) {
                             $location.path('/forbidden');
+                            return;
+                        }
+                        if (!routeGuest($location.url()) && UserService.validateRoleGuest())
+                        {
+                            $location.path('/guest/login');
+                            return;
                         }
                     }
                     else {
                         if (UserService.validateRoleAdmin())
                         {
                             $location.path('/admin');
+                            return ;
+                        }
+                        if (UserService.validateRoleGuest())
+                        {
+                            $location.path('/guest/login');
                         }
                         else
                         {
@@ -131,9 +139,4 @@ angular.module('wooice', ['ngRoute', 'wooice.directives', 'wooice.config',
                     }
                 });
         });
-
-//        $rootScope.$on('$routeChangeSuccess', function(newRoute, oldRoute) {
-//            $location.hash($routeParams.scrollTo);
-//            $anchorScroll();
-//        });
     });

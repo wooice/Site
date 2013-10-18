@@ -46,10 +46,10 @@ angular.module('profile.controllers', [])
         $scope.saveProfile = function(){
             UserProfile.updateBasic({},$scope.user.profile, function(){
                 $scope.messageClass = "text-success";
-                $scope.message = "个人信息保存成功";
+                $scope.message = "基本信息保存成功";
             },function(){
                 $scope.messageClass = "text-error";
-                $scope.message = "个人信息保存失败，请稍后再试";
+                $scope.message = "基本信息保存失败，请稍后再试";
             });
         }
 

@@ -4,6 +4,8 @@
 
 angular.module('message.services', ['ngCookies']).
     factory('MessageService', ['User', function (User) {
+        var timer = null;
+
         function loadMessages() {
             var messages = User.listMessages({}, function () {
                 $.each(messages, function (index, message) {
@@ -22,5 +24,14 @@ angular.module('message.services', ['ngCookies']).
                 });
             });
         }
-        setInterval(loadMessages, 60 * 1000);
+
+        return {
+            setupTimer: function(){
+                timer = setInterval(loadMessages, 60 * 1000);
+            },
+
+            destroyTimer: function(){
+                clearInterval(timer);
+            }
+        }
     }]);

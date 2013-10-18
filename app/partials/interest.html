@@ -16,7 +16,7 @@
                                 <li ng-repeat="curatedTag in curatedTags | filter:{category.name: cate.name}"
                                      style="float:left;padding-right: 25px;padding-bottom: 10px;">
                                     <a  onclick="return false;" ng-click="toogleInterest()" style="background: {{curatedTag.class}};cursor:pointer;">
-                                        {{curatedTag.label}}
+                                       <span style="color:#FFDF00"> {{curatedTag.label}} </span>
                                     </a>
                                 </li>
                             </ul>
@@ -35,7 +35,7 @@
                                 <li ng-repeat="curatedTag in curatedTags | filter:{category.name: cate.name}"
                                     style="float:left;padding-right: 25px;padding-bottom: 10px;">
                                     <a   onclick="return false;" ng-click="toogleInterest()" style="background: {{curatedTag.class}};cursor:pointer;">
-                                        {{curatedTag.label}}
+                                          <span style="color:#FFDF00"> {{curatedTag.label}} </span>
                                     </a>
                                 </li>
                             </ul>

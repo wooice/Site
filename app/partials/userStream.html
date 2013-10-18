@@ -47,7 +47,7 @@
                 <div>
                     <span ng-repeat="site in user.external.sites | filter:{ url: '.' }">
                         <i title="{{site.displayName}}"> <a href="{{site.url}}" target=_blank><img
-                                src="img/logo/{{site.name}}.png"
+                                ng-src="img/logo/{{site.name}}.png"
                                 class="external_logo"/></a> </i>
                     </span>
                 </div>

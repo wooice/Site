@@ -43,7 +43,11 @@
                 var target = soundData.soundList[sound.id];
                 if (target)
                 {
-                    target.alias = sound.alias;
+                    if (sound.id == soundData.currentSound)
+                    {
+                        $('#cur_sound').attr('href', soundData.soundList[soundData.currentSound].title.route);
+                        $('#cur_sound').text(soundData.soundList[soundData.currentSound].title.alias);
+                    }
                 }
             }
         });

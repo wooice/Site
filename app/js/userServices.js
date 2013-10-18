@@ -6,6 +6,7 @@ angular.module('user.services', ['ngCookies']).
     factory('User', ['$resource', 'config', function ($resource, config) {
         return $resource(config.service.url + '/user/:uri/:action/:userAlias/:emailAddress', {}, {
             get: {method: 'GET', params: {userAlias: 'current'}, isArray: false},
+            getExternal: {method: 'GET', params: {emailAddress:'external', userAlias: 'current'}, isArray: false},
             logout: {method: 'POST', params: {userAlias: 'logout'}, isArray: false},
             confirm: {method: 'PUT', params: {action: "sendEmailConfirm"}, isArray: false},
             submitPassChange: {method: 'POST', params: {action:'submitPassChange'}, isArray: false},

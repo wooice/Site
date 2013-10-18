@@ -96,10 +96,18 @@ angular.module('storage.services', []).
     }])
 
 angular.module('util.services', []).
-    factory('Util', ['$resource', 'config', function ($resource, config) {
-        return $resource('http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js', {}, {
-            checkLocation: {method: 'GET', params: { action: 'upload', type: 'sound'}, isArray: false}
-        });
+    factory('Util', ['$http', 'config', function ($http, config) {
+        return {
+            checkLocation: function() {
+                $http.jsonp('http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js').
+                    success(function(data, status, headers, config) {
+                        console.log(data);
+                    }).
+                    error(function(data, status, headers, config) {
+                        $scope.error = true;
+                    });
+            }
+        };
     }])
 ;
 

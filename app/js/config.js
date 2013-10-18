@@ -6,7 +6,7 @@ angular.module('wooice.config', []).constant(
 	'config',
 	{
 		site : {
-			url : 'http://localhost:8080/code/sources/xduo/Site/app'
+			url : 'http://localhost:8080/Site/app/index.html'
 		},
 
 		service : {

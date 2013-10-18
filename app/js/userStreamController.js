@@ -22,6 +22,10 @@ angular.module('user.stream.controllers', [])
                 $scope.user.userPrefer.followingString = "关注";
             }
 
+            var external = User.getExternal({userAlias: $routeParams.value}, function () {
+                $scope.user.external =  external;
+            });
+
             $scope.follow = function (userAlias) {
                 if ($scope.user.userPrefer.following) {
                     var result = UserSocial.unfollow({toUserAlias: userAlias}, null, function (count) {
@@ -41,9 +45,7 @@ angular.module('user.stream.controllers', [])
         });
     }])
     .controller('userSocialController', ['$scope', 'config', '$routeParams', 'UserSocial', 'User', function ($scope, config, $routeParams, UserSocial, User) {
-        var user = User.get({userAlias: $routeParams.value}, function () {
-            $scope.user = user;
-        });
+        $scope.user = $scope.$parent.user;
         var followed = UserSocial.getFollowed({userAlias: $routeParams.value, pageNum: 1}, function () {
             $.each(followed, function (index, user) {
                 if (!user.profile.avatorUrl) {

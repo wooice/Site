@@ -52,8 +52,15 @@ angular.module('interest.controllers', [])
 
         var tags = Tag.curated({}, function () {
             $.each(tags, function (index, tag) {
-                tag.interested = false;
-                tag.class = 'gray';
+                if (tag.interested)
+                {
+                    tag.class = "#0089e0";
+
+                }
+                else
+                {
+                    tag.class = 'gray';
+                }
                 $scope.curatedTags.push(tag);
             });
 

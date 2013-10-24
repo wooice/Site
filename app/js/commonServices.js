@@ -43,7 +43,8 @@ angular.module('sound.services', ['ngResource'])
                     comment: {mode: sound.profile.commentMode, readonly: true},
                     createdTime: sound.profile.createdTime,
                     priority: sound.profile.priority,
-                    played: false
+                    played: false,
+                    downloadable: sound.profile.downloadable
                 };
 
                 return  newSound;

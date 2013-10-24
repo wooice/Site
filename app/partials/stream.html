@@ -88,6 +88,11 @@
                        onclick="return false;" ng-click="delete()"><i
                             class="icon-trash"></i></i> 删除</a>
 
+                    <a href="#" class="button button-small button-rounded button-flat action-button"
+                       ng-show="sound.downloadable"
+                       onclick="return false;" ng-click="download()"><i
+                            class="icon-trash"></i></i> 下载</a>
+
                     <div class="pull-right" style="margin-top: 8px">
                                 <span ng-show="sound.owner.alias == UserService.getCurUserAlias()">
                                     <i class="icon-lock"

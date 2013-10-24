@@ -114,7 +114,8 @@
                             <div class="btn-group" data-toggle="buttons-radio" style="padding-left: 15px">
                                 <label style="color:rgb(51, 51, 51)">版权信息</label>
                                 <button type="button" class="btn" ng-click="defaultSound.recordType = 'resing'">翻唱</button>
-                                <button type="button" class="btn active" ng-click="defaultSound.recordType = 'original'">原创</button>
+                                <button type="button" class="btn active" ng-click="defaultSound.recordType = 'original'"
+                                      tooltip="上传3首原创音乐即可获得永久会员资格"  >原创</button>
                             </div>
 
                             <div style="padding-top: 15px">
@@ -141,17 +142,19 @@
                                 </div>
                             </div>
 
-                            <div  class="btn-group" data-toggle="buttons-radio"   style="padding-top: 15px"  ng-show="defaultSound.recordType == 'original'">
+                            <div  style="padding-top: 15px">
+                            <div   class="btn-group" >
+                                <label style="color:rgb(51, 51, 51)">评论模式</label>
+                                <select ng-model="defaultSound.commentMode" ng-options="cm.name for cm in commentModes" style="width: 120px">
+                                </select>
+                             </div>
+
+                            <div  class="btn-group" data-toggle="buttons-radio"   style="padding-left:30px;margin-top: -15px"  ng-show="defaultSound.recordType == 'original'">
                                 <label style="color:rgb(51, 51, 51)">允许下载</label>
                                 <button type="button" class="btn" ng-click="defaultSound.downloadable = true">是</button>
                                 <button type="button" class="btn active" ng-click="defaultSound.downloadable = false">否</button>
                             </div>
-
-                            <div  style="padding-top: 15px">
-                                <label style="color:rgb(51, 51, 51)">评论模式</label>
-                                <select ng-model="defaultSound.commentMode" ng-options="cm.name for cm in commentModes">
-                                </select>
-                             </div>
+                            </div>
                         </div>
 
                         <div class="pull-right">

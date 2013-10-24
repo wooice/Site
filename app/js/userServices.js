@@ -113,8 +113,8 @@ angular.module('user.services', ['ngCookies']).
             {
                 if (userAlias)
                 {
-                    currentUser.userAlias = user.userAlias;
-                    $cookies.userAlias =  user.userAlias;
+                    currentUser.userAlias = userAlias;
+                    $cookies.userAlias =  userAlias;
                 }
                 else
                 {

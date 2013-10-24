@@ -91,6 +91,17 @@ angular.module('stream.controllers', []).
             return false;
         }
 
+        $scope.download = function() {
+           var sound = SoundSocial.play({sound: this.sound.id}, null, $.proxy(function (count) {
+               var downloadUrl = sound.url + "&download/" + this.sound.alias + ".mp3";
+
+               var downloadFrame = document.createElement("iframe");
+               downloadFrame.src = downloadUrl;
+               downloadFrame.style.display = "none";
+               document.body.appendChild(downloadFrame);
+            }, this));
+        }
+
         $scope.comment = function () {
             var postData = {};
             postData.comment = $('#sound_commentbox_input_' + this.sound.id).val();

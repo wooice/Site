@@ -36,17 +36,9 @@
                     if ($scope.defaultSound.tags.length == 0) {
                         $('#profile_error').removeClass("hide");
                         $("#tags").attr("placeholder", "请打一个标签");
-                        $("#save_button").addClass("disabled");
                     }
                 }
 
-                $scope.setPrivate = function () {
-                    $scope.defaultSound.status = "private";
-                }
-
-                $scope.setPublic = function () {
-                    $scope.defaultSound.status = "public";
-                }
 
                 $scope.commentModes = [
                     {name: '所有人可見', id:'public'},
@@ -56,9 +48,6 @@
                 $scope.defaultSound.commentMode =  $scope.commentModes[0];
 
                 $scope.save = function () {
-                    if ($("#save_button").hasClass("disabled")) {
-                        return;
-                    }
                     if ($scope.defaultSound.name && $scope.defaultSound.tags.length > 0) {
                         $scope.defaultSound.profileError = '';
 
@@ -68,6 +57,9 @@
                             soundProfile.description = $scope.defaultSound.description;
                             soundProfile.status = $scope.defaultSound.status;
                             soundProfile.commentMode = $scope.defaultSound.commentMode.id;
+                            soundProfile.recordType = $scope.defaultSound.recordType;
+                            soundProfile.soundRight = $scope.defaultSound.soundRight;
+                            soundProfile.downloadable = $scope.defaultSound.downloadable;
 
                             if ($scope.defaultSound.posterId)
                             {
@@ -108,6 +100,9 @@
                             soundProfile.status = $scope.defaultSound.status;
                             soundProfile.remoteId = $scope.defaultSound.fileName;
                             soundProfile.commentMode = $scope.defaultSound.commentMode.id;
+                            soundProfile.recordType = $scope.defaultSound.recordType;
+                            soundProfile.soundRight = $scope.defaultSound.soundRight;
+                            soundProfile.downloadable = $scope.defaultSound.downloadable;
 
                             if ($scope.defaultSound.posterId)
                             {
@@ -229,21 +224,7 @@
                                 });
                                 $("#tags").val("");
                                 $("#tags").attr("placeholder", "请再多打几个");
-
-                                if ($scope.defaultSound.name && !$scope.defaultSound.uplodingPoster) {
-                                    $("#save_button").removeClass("disabled");
-                                } else {
-                                    $("#save_button").addClass("disabled");
-                                }
                             }
-                        }
-                    });
-
-                    $('#name').bind('keyup', function (event) {
-                        if ($scope.defaultSound.name && $scope.defaultSound.tags.length > 0 && !$scope.defaultSound.uplodingPoster) {
-                            $("#save_button").removeClass("disabled");
-                        } else {
-                            $("#save_button").addClass("disabled");
                         }
                     });
                 });
@@ -386,9 +367,6 @@
                                 $(document)
                             );
                             $scope.defaultSound.isSoundUploading = false;
-                            if ($scope.defaultSound.name && $scope.defaultSound.tags.length > 0) {
-                                $("#save_button").removeClass("disabled");
-                            }
                         });
                     },
                     fail: function (e, data) {
@@ -436,7 +414,6 @@
                     },
                     submit: function (e, data) {
                         $scope.defaultSound.uplodingPoster = true;
-                        $("#save_button").addClass("disabled");
                         $('#cancel_img_upload').click(function () {
                             data.abort();
                             $scope.$apply(function () {
@@ -464,9 +441,6 @@
                         });
 
                         $scope.defaultSound.posterId = $scope.defaultSound.fileName;
-                        if ($scope.defaultSound.name && $scope.defaultSound.tags.length > 0) {
-                            $("#save_button").removeClass("disabled");
-                        }
                     },
                     fail: function (e, data) {
                         $scope.defaultSound.uplodingPoster = false;
@@ -483,6 +457,7 @@
 
                 function reset() {
                     $scope.defaultSound = {};
+                    $scope.defaultSound.soundRight = {};
                     $scope.defaultSound.name = null;
                     $scope.defaultSound.fileName = null;
                     $scope.defaultSound.alias = null;
@@ -491,6 +466,8 @@
                     $scope.defaultSound.tags = [];
                     $scope.defaultSound.profileSaved = false;
                     $scope.defaultSound.dataSaved = false;
+                    $scope.defaultSound.downloadable = false;
+                    $scope.defaultSound.recordType = 'original';
                     $scope.defaultSound.posterUrl = "img/voice.jpg";
 
                     $scope.defaultSound.profileMsgClass = "";

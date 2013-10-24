@@ -1,0 +1,63 @@
+<div>
+<form name="infringe">
+<div>
+    <label>侵权举报</label>
+    <p style="font-size: 10px">如果您发现Wooice有内容侵犯了您的版权，请及时完成下表告知。谢谢合作。</p>
+</div>
+<div>
+    <p>请填写侵权音乐链接 <span style="color: red">*</span></p>
+    <textarea ng-model="links" required></textarea>
+</div>
+
+<div>
+    <p>您对侵权音频有何种权限？ <span style="color: red">*</span></p>
+    <input type="radio" ng-model="ownerRight" value="owner"> 我是版权的拥有者 - 我拥有并且绝对控制侵权内容的版权<br/>
+    <input type="radio" ng-model="ownerRight" value="agent"> 我是授权的代理 - 我授权代表侵权内容的所有者 <br/>
+    <input type="radio" ng-model="ownerRight" value="other"> 我不是侵权内容的直接关系人，但希望举报侵权行为 <br/>
+</div>
+
+<div>
+     <p>有哪些具体的侵权问题？ <span style="color: red">*</span></p>
+     <input type="radio" ng-model="rightIssue" value="work"> 文字（歌词）， 谱曲<br/>
+     <input type="radio" ng-model="rightIssue" value="record"> 录制 <br/>
+     <input type="radio" ng-model="rightIssue" value="other"> 其他版权问题 <br/>
+    <p>请尽可能多的提供侵权问题的细节 <span style="color: red">*</span></p>
+    <textarea ng-model="links" required></textarea>
+</div>
+
+<div>
+    <p>请填写真实的个人信息 <span style="color: red">*</span></p>
+    <div class="row-fluid">
+        <div class="span6">
+            <label>姓</label>    <input ng-model="xing" required>
+            <label>公司</label>    <input ng-model="company" required>
+            <label>街</label>    <input ng-model="street" required>
+            <label>邮编</label>    <input ng-model="postalCode" required>
+            <label>用户名</label>    <input ng-model="username" required>
+            <label>手机</label>    <input ng-model="mobile" required>
+        </div>
+        <div class="span6">
+            <label>名</label>    <input ng-model="ming" required>
+            <label>版权拥有者</label>    <input  ng-model="rightsHolder" required>
+            <label>城市</label>    <input ng-model="city" required>
+            <label>国家</label>    <input ng-model="country" required>
+            <label>邮箱</label>    <input ng-model="email" required>
+            <label>固定电话</label>    <input ng-model="phone">
+        </div>
+    </div>
+</div>
+
+<div>
+    <p>请认真阅读下列内容并确认： <span style="color: red">*</span></p>
+    <input type="checkbox" ng-model="notAuthorized">我确信侵权音频未经其所有人，代理授权   <span style="color: red">*</span>
+    <input type="checkbox" ng-model="accurateInfo">我确定以上填写内容真实可信    <span style="color: red">*</span>
+    <input type="checkbox" ng-model="responsibility">我愿意承担如下责任: 1. 当我做出虚假，恶意或未经查实的举报，Wooice将会暂停或关闭我的账号。2.我愿意承担虚假，恶意或未经查实的举报对被举报者造成的损失。   <span style="color: red">*</span>
+
+    <p>举报人前面 <span style="color: red">*</span></p>
+    <input type="text" ng-model="sign">
+</div>
+
+<button type="submit" ng-disabled="infringe.$invalid" class="button button-small button-rounded button-flat-action action-button"
+        ng-click="submit()">提交侵权举报   </button>
+</form>
+</div>

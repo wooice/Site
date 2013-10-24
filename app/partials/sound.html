@@ -130,6 +130,11 @@
                     <span ng-show="!sound.priority || sound.priority == 0">优先</span>
                 </a>
 
+                <a href="#" class="button button-small button-rounded button-flat action-button"
+                   ng-show="sound.downloadable"
+                   onclick="return false;" ng-click="download()"><i
+                        class="icon-trash"></i></i> 下载</a>
+
                 <div class="pull-right">
                                  <span ng-show="mode == 'default' && !userService.validateRoleGuest() && sound.owner.alias == userService.getCurUserAlias()">
                                     <i class="icon-lock"

@@ -45,6 +45,9 @@ angular.module('profile.controllers', [])
 
         $scope.saveProfile = function(){
             UserProfile.updateBasic({},$scope.user.profile, function(){
+                UserService.setUserAlias($scope.user.profile.alias);
+                UserService.setColor($scope.user.profile.color);
+
                 $scope.messageClass = "text-success";
                 $scope.message = "基本信息保存成功";
             },function(){

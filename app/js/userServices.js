@@ -108,6 +108,19 @@ angular.module('user.services', ['ngCookies']).
             {
                 color = newColor;
                 $cookies.color = newColor;
+            } ,
+            setUserAlias: function(userAlias)
+            {
+                if (userAlias)
+                {
+                    currentUser.userAlias = userAlias;
+                    $cookies.userAlias =  userAlias;
+                }
+                else
+                {
+                    currentUser.userAlias = '';
+                    $cookies.userAlias =  '';
+                }
             }
         };
     }])

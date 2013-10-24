@@ -14,6 +14,7 @@ angular.module('wooice', ['ngRoute', 'wooice.directives', 'wooice.config',
             when('/sound/:soundId', {templateUrl: 'partials/soundDetail.html', controller: ''}).
             when('/player/:soundId', {templateUrl: 'partials/player.html', controller: ''}).
             when('/iframe', {templateUrl: 'partials/iframe.html', controller: ''}).
+            when('/infringement', {templateUrl: 'partials/infringement.html', controller: 'infringeCtrl'}).
             when('/profile', {templateUrl: 'partials/userProfile.html', controller: 'userProfileCtrl'}).
             when('/upload', {templateUrl: 'partials/upload.html', controller: 'soundUploadCtrl'}).
             when('/interest', {templateUrl: 'partials/interest.html', controller: 'interestCtrl'}).
@@ -85,58 +86,34 @@ angular.module('wooice', ['ngRoute', 'wooice.directives', 'wooice.config',
         }
 
         $rootScope.$on('$routeChangeStart', function (event, next, current) {
-            var curUser = Auth.isAlive({}, function () {
-                    if (curUser.profile)
-                    {
-                        UserService.setupUser({
-                            userAlias: curUser.profile.alias,
-                            role: curUser.userRoles[0].role
-                        });
-                        UserService.setColor(curUser.profile.color);
-                    }
-                    else
-                    {
-                        UserService.setupUser(null);
-                    }
-
-
-                    if ($location.url()) {
-                        if (noCheck($location.url())) {
-                            return;
-                        }
-                        if (routeAdmin($location.url()) && !UserService.validateRoleAdmin()) {
-                            $location.path('/forbidden');
-                            return;
-                        }
-                        if (!routeGuest($location.url()) && UserService.validateRoleGuest())
-                        {
-                            $location.path('/guest/login');
-                            return;
-                        }
-                    }
-                    else {
-                        if (UserService.validateRoleAdmin())
-                        {
-                            $location.path('/admin');
-                            return ;
-                        }
-                        if (UserService.validateRoleGuest())
-                        {
-                            $location.path('/guest/login');
-                        }
-                        else
-                        {
-                            $location.path('/stream');
-                        }
-                    }
-                },
-                function (data) {
-                    if (data.status == 403) {
-                        $location.url('/forbidden');
-                    }
-                    else {
-                        $location.url('/guest/login');
-                    }
-                });
+            if ($location.url()) {
+                if (noCheck($location.url())) {
+                    return;
+                }
+                if (routeAdmin($location.url()) && !UserService.validateRoleAdmin()) {
+                    $location.path('/forbidden');
+                    return;
+                }
+                if (!routeGuest($location.url()) && UserService.validateRoleGuest())
+                {
+                    $location.path('/guest/login');
+                    return;
+                }
+            }
+            else {
+                if (UserService.validateRoleAdmin())
+                {
+                    $location.path('/admin');
+                    return ;
+                }
+                if (UserService.validateRoleGuest())
+                {
+                    $location.path('/guest/login');
+                }
+                else
+                {
+                    $location.path('/stream');
+                }
+            }
         });
     });

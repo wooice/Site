@@ -39,10 +39,6 @@ angular.module('interest.controllers', [])
             return cate.id % 2 == 1;
         }
 
-        $scope.filterTags = function (a, b) {
-            console.log('a');
-        }
-
         var categories = Tag.categories({}, function () {
             $.each(categories, function (index, cate) {
                 cate.id = index;

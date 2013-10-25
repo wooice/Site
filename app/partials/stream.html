@@ -130,19 +130,20 @@
     </div>
 
     <div ng-show="sounds.length == 0">
+        <div ng-show="!routeParams.filter && !routeParams.value"
+             style="padding-top:20%; padding-left:30%;">
+            您还没有推送的声音流，发现自己的<a href="index.html#/interest">乐趣</a>，将有更多声音推送。
+        </div>
+
         <div ng-show="!routeParams.filter && routeParams.value && routeParams.value == userService.getCurUserAlias()"
              style="padding-top:20%; padding-left:30%;">
-            您还没有自己的音乐流，<a href="index.html#/upload">上传音乐</a>或<a href="index.html#/interest">发现兴趣</a>， 创建属于自己的音乐流。
+            您还没有自己的音乐流，<a href="index.html#/upload">上传音乐</a>或<a href="index.html#/interest">发现乐趣</a>， 创建属于自己的音乐流。
         </div>
         <div ng-show="!routeParams.filter && routeParams.value && routeParams.value != userService.getCurUserAlias()"
              style="padding-top:20%; padding-left:30%;">
             {{userCurPage}}未上传或转发声音
         </div>
 
-        <div ng-show="!routeParams.filter && !routeParams.value && routeParams.userId == userService.getCurUserAlias()"
-             style="padding-top:20%; padding-left:30%;">
-            您还没有推送的声音流，发现自己的<a href="index.html#/interest">乐趣</a>，将有更多声音推送。
-        </div>
         <div ng-show="routeParams.filter === 'match'" style="padding-top:20%; padding-left:35%;">
             没有找到结果，请尝试其他关键词
         </div>

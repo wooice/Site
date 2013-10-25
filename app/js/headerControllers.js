@@ -46,7 +46,7 @@ angular.module('header.controllers', [])
         $('#search_box').bind('keyup', function (event) {
             if (event.keyCode == 13) {
                 $scope.$apply(function () {
-                    $location.url('/stream/do/search\?q=' + $scope.q);
+                    $location.url('/stream/match/' + $scope.q);
                 });
             }
         });

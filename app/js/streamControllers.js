@@ -5,7 +5,7 @@
 angular.module('stream.controllers', []).
     controller('streamCtrl', ['$scope', 'config', '$location', 'Stream', 'Sound', 'SoundUtilService', 'SoundSocial', '$routeParams', 'UserService', function ($scope, config, $location, Stream, Sound, SoundUtilService, SoundSocial, $routeParams, UserService) {
         $scope.userService = UserService;
-        $scope.routeParams =  $routeParams;
+        $scope.routeParams = $routeParams;
 
         function checkNewSound() {
             var count = Sound.hasNew({startTime: $scope.lastLoadedTime}, function () {
@@ -24,15 +24,13 @@ angular.module('stream.controllers', []).
             soundsReLoad = setInterval(checkNewCreated, 60 * 1000);
         }
         else {
-            if (!$routeParams.q && !$routeParams.tag)
-            {
+            if (!$routeParams.q && !$routeParams.tag) {
                 soundsReLoad = setInterval(checkNewSound, 60 * 1000);
             }
         }
 
         $scope.$on('$destroy', function (e) {
-            if (soundsReLoad)
-            {
+            if (soundsReLoad) {
                 clearInterval(soundsReLoad);
             }
         });
@@ -91,14 +89,14 @@ angular.module('stream.controllers', []).
             return false;
         }
 
-        $scope.download = function() {
-           var sound = SoundSocial.play({sound: this.sound.id}, null, $.proxy(function (count) {
-               var downloadUrl = sound.url + "&download/" + this.sound.alias + ".mp3";
+        $scope.download = function () {
+            var sound = SoundSocial.play({sound: this.sound.id}, null, $.proxy(function (count) {
+                var downloadUrl = sound.url + "&download/" + this.sound.alias + ".mp3";
 
-               var downloadFrame = document.createElement("iframe");
-               downloadFrame.src = downloadUrl;
-               downloadFrame.style.display = "none";
-               document.body.appendChild(downloadFrame);
+                var downloadFrame = document.createElement("iframe");
+                downloadFrame.src = downloadUrl;
+                downloadFrame.style.display = "none";
+                document.body.appendChild(downloadFrame);
             }, this));
         }
 
@@ -168,12 +166,12 @@ angular.module('stream.controllers', []).
             return false;
         }
 
-            $scope.pageNum = 1;
-            $scope.sounds = [];
-            $scope.isloading = false;
-            $scope.newSoundCount = 0;
-            $scope.lastLoadedTime = new Date().Format("yyyy-MM-dd hh:mm:ss");
-            $scope.userCurPage = $routeParams.value;
+        $scope.pageNum = 1;
+        $scope.sounds = [];
+        $scope.isloading = false;
+        $scope.newSoundCount = 0;
+        $scope.lastLoadedTime = new Date().Format("yyyy-MM-dd hh:mm:ss");
+        $scope.userCurPage = $routeParams.value;
 
         $scope.loadStream = function (force) {
             if (force) {
@@ -187,20 +185,18 @@ angular.module('stream.controllers', []).
             $scope.isloading = true;
 
             var postData = {};
-            if($scope.$parent.curatedTags)
-            {
+            if ($scope.$parent.curatedTags) {
                 postData = [];
                 $routeParams.filter = "tags";
 
-                $.each($scope.$parent.curatedTags, function(index, tag){
-                    if (tag.interested)
-                    {
+                $.each($scope.$parent.curatedTags, function (index, tag) {
+                    if (tag.interested) {
                         postData.push(tag.label);
                     }
                 });
             }
 
-            var soundsData = Stream.stream({filter: $routeParams.filter, value: $routeParams.value},postData, function () {
+            var soundsData = Stream.stream({filter: $routeParams.filter, value: $routeParams.value}, postData, function () {
                 $.each(soundsData, function (index, soundRecord) {
                     if (!soundRecord) {
                         return;
@@ -217,25 +213,53 @@ angular.module('stream.controllers', []).
                     }
 
                     var sound = SoundUtilService.buildSound(soundRecord);
-
                     $scope.sounds.push(sound);
-                    $scope.$apply();
 
-                    //render wave
-                    $(window).soundWave({}).render(
+                    //record sound info
+                    $(window).soundPlayer().addSound(sound);
+                });
+
+                $scope.$apply();
+
+                var toLoadList = [];
+                $.each($scope.sounds, function (index, oneSound) {
+                    var soundWave = $(window).soundWave({}).loadFromCache(
                         {
-                            id: sound.id,
-                            waveData: sound.waveData,
-                            duration: sound.duration,
-                            color: sound.color,
-                            commentable: sound.comment.mode !== 'closed'
+                            id: oneSound.id
                         }
                     );
 
-                    //record sound info
-                    sound.waveData = null;
-                    $(window).soundPlayer().addSound(sound);
+                    if (soundWave) {
+                        $(window).soundWave({}).render(
+                            {
+                                id: oneSound.id,
+                                hasCache: true,
+                                color: UserService.getColor(),
+                                commentable: oneSound.commentMode !== 'closed'
+                            }
+                        );
+                    }
+                    else {
+                        toLoadList.push(oneSound.id);
+                    }
                 });
+
+                if (toLoadList && toLoadList.length > 0) {
+                    var newDatas = Sound.loadData({}, toLoadList, function () {
+                        $.each(newDatas, function (index, oneData) {
+                            //render wave
+                            $(window).soundWave({}).render(
+                                {
+                                    id: oneData.soundId,
+                                    waveData: oneData.wave[0],
+                                    duration: oneData.duration * 1000,
+                                    color: UserService.getColor(),
+                                    commentable: oneData.commentMode !== 'closed'
+                                }
+                            );
+                        });
+                    });
+                }
 
                 if (soundsData.length >= config.soundsPerPage) {
                     $scope.pageNum++;
@@ -252,7 +276,7 @@ angular.module('stream.controllers', []).
                     $('#cur_sound').text(curSound.title.alias);
                 }
 
-                $('.hasTooltip').each(function() {
+                $('.hasTooltip').each(function () {
                     $(this).qtip({
                         content: {
                             text: $(this).next('div')
@@ -277,7 +301,6 @@ angular.module('stream.controllers', []).
         };
 
         $(window).soundPlayer().setSocialClient(SoundSocial);
-        $(window).soundWave({}).cleanUp();
         $scope.loadStream();
 
         var scrollHandler = function () {

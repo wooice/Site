@@ -21,8 +21,8 @@
                 <span>上传声音</span>
                 <input id="sound_upload" type="file" name="file" class="upload_button">
         </span> 或将音频文件拖放到此页面 </h4>
-                <h5 ng-show="shouldCheckCapacity()" style="color: #999;padding-top: 10px">除去已完成的上传，您还可以上传时长<span style="color: rgb(51, 51, 51)">{{defaultSound.minutesToUpload}}</span>分钟<span
-                        style="color: rgb(51, 51, 51)">{{defaultSound.secondsToUpload}}</span>秒的音频文件</h5>
+                <h5 ng-show="shouldCheckCapacity()" style="color: #999;padding-top: 10px">除去已完成的上传，您还可以上传时长<span style="color: rgb(51, 51, 51)">{{defaultSound.minutesToUpload}}分钟</span><span
+                        style="color: rgb(51, 51, 51)" ng-show="defaultSound.secondsToUpload > 0">{{defaultSound.secondsToUpload}}秒</span>的音频文件</h5>
             </div>
         </div>
 
@@ -133,7 +133,7 @@
                                             请输入正确的版权编号
                                         </small>
                                     </div>
-                                    <input type="text" name="rightNumber" ng-model="defaultSound.soundRight.rightNumber" required  ng-pattern="/^\d{16}$/">
+                                    <input type="text" name="rightNumber" ng-model="defaultSound.soundRight.rightNumber"  ng-pattern="/^\d{16}$/">
                                     <div style="color: gray;font-size: 10px">
                                         * 为了更好的保护您和他人的音乐版权，请提供由中国音乐著作权协会认证的版权信息。
                                         如果您尚未注册版权，请登录<a  href="http://morp.mcsc.com.cn/www_new/mainPage.php" target="_blank">音著协版权服务中心</a>注册版权，获得合法的版权保护。

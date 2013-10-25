@@ -36,7 +36,7 @@ angular.module('user.services', ['ngCookies']).
         var proRoles = ["pro"];
         var sproRoles = ["spro"];
         var guestRoles = ["guest"];
-        var color = {upper: '#00B2EE', lower: '#A4D3EE'};
+        var color = {upper: '#00B2EE', lower: '#A4D3EE', deeper: '#008AEE'};
 
         return {
             setupUser: function (user) {

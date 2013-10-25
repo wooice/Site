@@ -10,8 +10,9 @@ angular.module('sound.services', ['ngResource'])
     }
     ])
     .factory('Sound', ['$resource', 'config', function ($resource, config) {
-        return $resource(config.service.url + '/sound/:sound/:userAlias', {}, {
+        return $resource(config.service.url + '/sound/:sound/:userAlias/:action', {}, {
             load: {method: 'GET', params: {sound: 'current'}, isArray: false},
+            loadData: {method: 'POST', params: { action: 'data'}, isArray: true},
             delete: {method: 'DELETE', params: {sound: 'current'}, isArray: false},
             save: {method: 'PUT', params: {}, isArray: false},
             update: {method: 'POST', params: {}, isArray: false },
@@ -27,15 +28,12 @@ angular.module('sound.services', ['ngResource'])
                 var newSound = {
                     id: sound.id,
                     alias: sound.profile.alias,
-                    waveData: sound.soundData.wave[0],
-                    url: sound.soundData.url,
                     poster: sound.profile.poster.url,
                     posterPosterId: sound.profile.posterId,
                     title: {alias: sound.profile.name, route: 'index.html#/sound/' + sound.profile.alias, readonly: true},
                     owner: {alias: sound.profile.owner.profile.alias, route: config.userStreamPath + sound.profile.owner.profile.alias},
                     description: {context: sound.profile.description, readonly: true},
                     tags: sound.tags,
-                    duration: sound.soundData.duration * 1000,
                     soundSocial: sound.soundSocial,
                     soundUserPrefer: sound.userPrefer,
                     status: {value: sound.profile.status, readonly: true},
@@ -43,6 +41,7 @@ angular.module('sound.services', ['ngResource'])
                     comment: {mode: sound.profile.commentMode, readonly: true},
                     createdTime: sound.profile.createdTime,
                     priority: sound.profile.priority,
+                    duration: sound.profile.duration,
                     played: false,
                     downloadable: sound.profile.downloadable
                 };

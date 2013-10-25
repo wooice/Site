@@ -5,7 +5,6 @@
         var waveWidth = parseInt(canvas.width, 10);
         var waveHeight = parseInt(canvas.height, 10);
         var waveData = interpolateArray(options.waveData, waveWidth);
-        options.waveData = null;
 
         var defaultUpperColor = '#4f4f4f';
         var defaultLowerColor = '#9E9E9E';
@@ -28,7 +27,6 @@
         var playStatus = 0; //0: stop. 1: playing
         var currentPlayingPosition = -1;
         var onHover = 0;
-        var commentLenth = 15;
         var commentable = options.commentable;
 
         if (options.color) {
@@ -39,6 +37,26 @@
 
         this.redraw = function () {
             redrawWave();
+        }
+
+        this.updateCanvas = function (newCanvas) {
+            canvas = newCanvas;
+            context = canvas.getContext("2d");
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            waveWidth = parseInt(canvas.width, 10);
+            waveHeight = parseInt(canvas.height, 10);
+            waveData = interpolateArray(options.waveData, waveWidth);
+            attachCanvasEvents();
+        }
+
+        this.updateCommentable = function (newValue) {
+            commentable =  newValue;
+        }
+
+        this.updateColor = function (newColor) {
+            playedUpperColor = newColor.upper;
+            playedLowerColor = newColor.lower;
+            playedUpperDeeper = newColor.deeper;
         }
 
         this.setSoundPosition = function (position) {
@@ -113,8 +131,6 @@
             return   y == 'upper' ? ((!playStatus && onHover) ? loadedUpperColor : defaultUpperColor) : (defaultLowerColor);
         }
 
-        canvas.addEventListener('mousemove', onMouseMove);
-
         function onMouseMove(evt) {
             var layerX = evt.layerX;
             var layerY = evt.layerY;
@@ -160,8 +176,6 @@
             }
         }
 
-        canvas.addEventListener('click', onClick);
-
         function onClick(evt) {
             if (playStatus == 0) {
                 $(window).trigger('onToggle', {
@@ -197,17 +211,24 @@
             }
         }
 
-        canvas.addEventListener('mouseover', onMouseOver);
         function onMouseOver(evt) {
             onHover = true;
             redrawWave();
         }
 
-        canvas.addEventListener('mouseout', onMouseOut);
-
         function onMouseOut(evt) {
             onHover = false;
             redrawWave();
         }
+
+        function attachCanvasEvents()
+        {
+            canvas.addEventListener('click', onClick);
+            canvas.addEventListener('mousemove', onMouseMove);
+            canvas.addEventListener('mouseout', onMouseOut);
+            canvas.addEventListener('mouseover', onMouseOver);
+        }
+
+        attachCanvasEvents();
     };
 })(jQuery);

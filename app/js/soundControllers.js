@@ -272,14 +272,7 @@ angular.module('sound.controllers', [])
                     $scope.sound = sound;
                     $scope.$apply();
 
-                    //render wave
-                    $(window).soundWave({}).render(
-                        {
-                            id: sound.id,
-                            force: true
-                        }
-                    );
-                    loadCommentsInSound();
+                    loadSoundData();
 
                     if ($scope.mode == 'default') {
                         $scope.reloadTarget();
@@ -330,20 +323,10 @@ angular.module('sound.controllers', [])
                     //TODO
                     $scope.$apply();
 
-                    //render wave
-                    $(window).soundWave({}).render(
-                        {
-                            id: $scope.sound.id,
-                            waveData: $scope.sound.waveData,
-                            duration: $scope.sound.duration,
-                            color: $scope.sound.color,
-                            commentable: $scope.sound.comment.mode !== 'closed'
-                        }
-                    );
-
                     //record sound info
-                    $scope.sound.waveData = null;
                     $(window).soundPlayer().addSound($scope.sound);
+
+                    loadSoundData();
 
                     loadCommentsInSound();
 
@@ -540,7 +523,7 @@ angular.module('sound.controllers', [])
                         comment.showReply = false;
                         comment.owner.route = config.userStreamPath + comment.owner.profile.alias;
                         comment.top = '70%';
-                        comment.left = (comment.pointAt * canvasWidth) / ($scope.sound.duration / 1000) + "px";
+                        comment.left = (comment.pointAt * canvasWidth) / ($scope.sound.duration) + "px";
                         $scope.commentsInsound.push(comment);
 
                         $scope.$apply();
@@ -585,6 +568,46 @@ angular.module('sound.controllers', [])
                         $scope.commentPageNum++;
                     }
                 });
+            }
+
+            function loadSoundData(){
+                var soundWave = $(window).soundWave({}).loadFromCache(
+                    {
+                        id: $scope.sound.id
+                    }
+                );
+
+                if (soundWave)
+                {
+                    $(window).soundWave({}).render(
+                        {
+                            id: $scope.sound.id,
+                            hasCache: true,
+                            color: UserService.getColor(),
+                            commentable: $scope.sound.commentMode !== 'closed'
+                        }
+                    );
+                }
+                else
+                {
+                    var toLoadList = [];
+                    toLoadList.push($scope.sound.id);
+                    var newDatas = Sound.loadData({}, toLoadList, function(){
+                        $.each(newDatas, function(index, oneData){
+                            //render wave
+                            $(window).soundWave({}).render(
+                                {
+                                    id: oneData.soundId,
+                                    waveData: oneData.wave[0],
+                                    duration: oneData.duration * 1000,
+                                    color: UserService.getColor(),
+                                    commentable: oneData.commentMode !== 'closed'
+                                }
+                            );
+                        });
+                    });
+                }
+                loadCommentsInSound();
             }
 
             $scope.$parent.$on("$includeContentLoaded", function (event) {

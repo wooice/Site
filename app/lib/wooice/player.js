@@ -148,6 +148,8 @@
                                     id: this.id
                                 });
 
+                                soundData.currentSound = null;
+
                                 $('#sound_player_button_' + this.id).removeClass('icon-pause');
                                 $('#sound_player_button_global').removeClass('icon-pause');
                             },
@@ -172,6 +174,7 @@
                                 $('#sound_player_button_global').addClass('icon-pause');
                             },
                             onfinish: function () {
+                                soundData.currentSound = null;
                                 $(window).trigger('onFinish', {
                                     id: this.id
                                 });

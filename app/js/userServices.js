@@ -97,7 +97,7 @@ angular.module('user.services', ['ngCookies']).
             getColor: function(){
                 if ($cookies.color)
                 {
-                    return $cookies.color;
+                    return JSON.parse($cookies.color);
                 }
                 else
                 {
@@ -107,7 +107,7 @@ angular.module('user.services', ['ngCookies']).
             setColor: function(newColor)
             {
                 color = newColor;
-                $cookies.color = newColor;
+                $cookies.color = JSON.stringify(newColor);
             } ,
             setUserAlias: function(userAlias)
             {

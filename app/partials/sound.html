@@ -28,7 +28,6 @@
             </div>
         </div>
 
-
         <div id="sound_player_{{sound.id}}" class='sound_player'>
             <div id="sound_player_header_{{sound.id}}" class='sound_player_header'>
                 <div class='sound_player_control'>
@@ -65,8 +64,8 @@
                 <div id="sound_wave_{{sound.id}}" class='sound_player_wave' style="position: relative;">
                     <div ng-repeat="comment in commentsInsound"
                          style="position: absolute;margin-top:-1;top:71%;left:{{comment.left}};line-height:0px">
-                        <div>
-                            <img id="sound_comment_in_sound_minor_{{comment.commentId}}"
+                        <div id="sound_comment_in_sound_minor_{{comment.commentId}}" >
+                            <img
                                  ng-src="{{comment.owner.profile.avatorUrl}}" style="width: 15px;height: 15px"
                                  ng-mouseover="onImageHavor()">
                         </div>

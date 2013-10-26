@@ -1,15 +1,15 @@
 'use strict';
 
 /* App Module */
-angular.module('wooice', ['ngRoute', 'wooice.directives', 'wooice.config',
+angular.module('wooice', ['ngRoute', 'wooice.directives', 'wooice.config','wooice.player', 'wooice.waver',
         'auth.services', 'guest.services', 'profile.services', 'sound.services', 'tag.services', 'storage.services', 'user.services', 'sound.pro.services', 'util.services',
         'auth.controllers', 'guest.controllers', 'profile.controllers', 'stream.controllers', 'common.stream.controllers', 'user.stream.controllers', 'footer.controllers', 'header.controllers', 'interest.controllers', 'message.services',
         'sound.controllers', 'sound.social.controllers', 'player.controllers', 'upload.controllers']).
 
-    config(['$routeProvider', '$httpProvider', function ($routeProvider, $httpProvider) {
+    config(['$routeProvider', '$httpProvider','$locationProvider', function ($routeProvider, $httpProvider, $locationProvider) {
         $routeProvider.
             when('/stream', {templateUrl: 'partials/commonStream.html', controller: ''}).
-            when('/stream/:value', {templateUrl: 'partials/userStream.html', controller: ''}).
+            when('/stream/:value', {templateUrl: 'partials/userStream.html', controller: 'userBasicController'}).
             when('/stream/:filter/:value', {templateUrl: 'partials/commonStream.html', controller: ''}).
             when('/sound/:soundId', {templateUrl: 'partials/soundDetail.html', controller: ''}).
             when('/player/:soundId', {templateUrl: 'partials/player.html', controller: ''}).
@@ -53,6 +53,7 @@ angular.module('wooice', ['ngRoute', 'wooice.directives', 'wooice.config',
             };
         }];
 
+//        $locationProvider.html5Mode(true);
         $httpProvider.responseInterceptors.push(httpErrors);
     }])
     .run(function ($rootScope, config, $location, $anchorScroll, $routeParams, Auth, UserService) {

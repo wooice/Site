@@ -25,6 +25,17 @@ angular.module('sound.services', ['ngResource'])
     .factory('SoundUtilService', ['User', 'UserService','config', function (User, UserService, config) {
         return {
             buildSound: function (sound) {
+                var posterUrl = $.cookie(sound.id + '_poster_url');
+
+                if (posterUrl)
+                {
+                    sound.profile.poster.url = posterUrl;
+                }
+                else
+                {
+                    $.cookie(sound.id + '_poster_url', sound.profile.poster.url, {expires: config.imageAccessExpires});
+                }
+
                 var newSound = {
                     id: sound.id,
                     alias: sound.profile.alias,
@@ -43,7 +54,8 @@ angular.module('sound.services', ['ngResource'])
                     priority: sound.profile.priority,
                     duration: sound.profile.duration,
                     played: false,
-                    downloadable: sound.profile.downloadable
+                    downloadable: sound.profile.downloadable,
+                    url: sound.profile.url
                 };
 
                 return  newSound;
@@ -87,7 +99,7 @@ angular.module('tag.services', []).
 
 angular.module('storage.services', []).
     factory('Storage', ['$resource', 'config', function ($resource, config) {
-        return $resource(config.service.url + '/storageV2/:action/:type/:key', {}, {
+        return $resource(config.service.url + '/storage/:action/:type/:key', {}, {
             getSoundUploadURL: {method: 'GET', params: { action: 'upload', type: 'sound'}, isArray: false},
             getImageUploadURL: {method: 'GET', params: { action: 'upload', type: 'image'}, isArray: false},
             getDownloadURL: {method: 'GET', params: { action: 'download'}, isArray: false},
@@ -96,15 +108,14 @@ angular.module('storage.services', []).
     }])
 
 angular.module('util.services', []).
-    factory('Util', ['$http', 'config', function ($http, config) {
+    factory('Util', ['$http', 'config', '$cookies','Storage', function ($http, config, $cookies, Storage) {
+
         return {
             checkLocation: function() {
                 $http.jsonp('http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js').
                     success(function(data, status, headers, config) {
-                        console.log(data);
                     }).
                     error(function(data, status, headers, config) {
-                        $scope.error = true;
                     });
             }
         };

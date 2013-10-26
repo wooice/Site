@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('header.controllers', [])
-    .controller('headerCtrl', ['$scope', '$location', '$routeParams', 'User', 'UserService', function ($scope, $location, $routeParams, User, UserService) {
+    .controller('headerCtrl', ['$scope', '$location', '$routeParams', 'User', 'UserService','WooicePlayer', function ($scope, $location, $routeParams, User, UserService, WooicePlayer) {
         $scope.q = $routeParams.q;
         $scope.userAlias = UserService.getCurUserAlias();
         $scope.logout = function () {
@@ -20,7 +20,7 @@ angular.module('header.controllers', [])
             })
         };
 
-        var curSound = $(window).soundPlayer().getCurSound();
+        var curSound = WooicePlayer.getCurSound();
         if (curSound)
         {
             $('#sound_player_button_global').addClass('icon-pause');
@@ -31,16 +31,15 @@ angular.module('header.controllers', [])
         }
 
         $scope.togglePause = function (id) {
-            $(window).triggerHandler('onToggle', {
-            });
+            WooicePlayer.toggle({});
         };
 
         $scope.playPre = function (id) {
-           $(window).triggerHandler('onPlaySibling', 'pre');
+            WooicePlayer.playSibling('pre');
         };
 
         $scope.playNext = function (id) {
-           $(window).triggerHandler('onPlaySibling', 'next');
+            WooicePlayer.playSibling('next');
         };
 
         $('#search_box').bind('keyup', function (event) {

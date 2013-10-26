@@ -1,8 +1,10 @@
 'use strict';
 
 angular.module('sound.controllers', [])
-    .controller('soundDetailCtrl', ['$scope', '$window', 'config', '$routeParams', 'Sound', 'SoundUtilService', 'Storage', 'SoundSocial', 'SoundSocialList', 'UserService', '$location', '$anchorScroll', 'SoundSocialProSocial', 'SoundProSocial', 'UserSocial', 'Tag',
-        function ($scope, $window, config, $routeParams, Sound, SoundUtilService, Storage, SoundSocial, SoundSocialList, UserService, $location, $anchorScroll, SoundSocialProSocial, SoundProSocial, UserSocial, Tag) {
+    .controller('soundDetailCtrl', ['$scope', '$window', 'config', '$routeParams', 'Sound', 'SoundUtilService', 'Storage', 'SoundSocial', 'SoundSocialList', 'UserService',
+        '$location', '$anchorScroll', 'SoundSocialProSocial', 'SoundProSocial', 'UserSocial', 'Tag', 'WooicePlayer', 'WooiceWaver',
+        function ($scope, $window, config, $routeParams, Sound, SoundUtilService, Storage, SoundSocial, SoundSocialList, UserService, $location, $anchorScroll,
+                  SoundSocialProSocial, SoundProSocial, UserSocial, Tag, WooicePlayer, WooiceWaver) {
             $scope.userService = UserService;
             $scope.config = config;
             $scope.mode = "default";
@@ -57,7 +59,7 @@ angular.module('sound.controllers', [])
             $scope.togglePause = function (id) {
                 var sound = $scope.sound;
 
-                $(window).trigger('onToggle', {
+                WooicePlayer.toggle({
                     id: sound.id
                 });
             };
@@ -104,8 +106,8 @@ angular.module('sound.controllers', [])
             }
 
             $scope.onImageHavor = function () {
-                $("#sound_comment_in_sound_" + this.comment.commentId).removeClass('hide');
                 $("#sound_comment_in_sound_minor_" + this.comment.commentId).addClass("hide");
+                $("#sound_comment_in_sound_" + this.comment.commentId).removeClass("hide");
             };
 
             $scope.comment = function () {
@@ -209,7 +211,7 @@ angular.module('sound.controllers', [])
                     var sound = Sound.update({sound: $scope.sound.id}, postData, function () {
                         $scope.sound.alias = sound.profile.alias;
                         $scope.sound.title.route = '#/sound/' + $scope.sound.alias;
-                        $(window).soundPlayer().updateAlias({
+                        WooicePlayer.updateAlias({
                             id: $scope.sound.id,
                             alias: $scope.sound.alias
                         });
@@ -262,11 +264,9 @@ angular.module('sound.controllers', [])
             $scope.isUploadingPoster = false;
 
             $scope.localLoad = function () {
-                var sound = $(window).soundPlayer({}).loadFromCache(
-                    {
-                        alias: $routeParams.soundId
-                    }
-                );
+                var sound = WooicePlayer.loadFromCache( {
+                    alias: $routeParams.soundId
+                });
 
                 if (sound) {
                     $scope.sound = sound;
@@ -277,7 +277,7 @@ angular.module('sound.controllers', [])
                     if ($scope.mode == 'default') {
                         $scope.reloadTarget();
 
-                        var curSound = $(window).soundPlayer().getCurSound();
+                        var curSound = WooicePlayer.getCurSound();
                         if (curSound) {
                             $('#sound_player_button_' + curSound.id).addClass('icon-pause');
                             $('#cur_sound').attr('href', curSound.title.route);
@@ -315,8 +315,6 @@ angular.module('sound.controllers', [])
             }
 
             $scope.loadSound = function () {
-                $(window).soundPlayer().setSocialClient(SoundSocial);
-
                 var sound = Sound.load({sound: $routeParams.soundId}, function () {
                     $scope.sound = SoundUtilService.buildSound(sound);
 
@@ -324,7 +322,7 @@ angular.module('sound.controllers', [])
                     $scope.$apply();
 
                     //record sound info
-                    $(window).soundPlayer().addSound($scope.sound);
+                    WooicePlayer.addSound($scope.sound);
 
                     loadSoundData();
 
@@ -333,7 +331,7 @@ angular.module('sound.controllers', [])
                     if ($scope.mode == 'default') {
                         $scope.reloadTarget();
 
-                        var curSound = $(window).soundPlayer().getCurSound();
+                        var curSound = WooicePlayer.getCurSound();
                         if (curSound) {
                             $('#sound_player_button_' + curSound.id).addClass('icon-pause');
                             $('#cur_sound').attr('href', curSound.title.route);
@@ -518,12 +516,29 @@ angular.module('sound.controllers', [])
             function loadCommentsInSound() {
                 $scope.commentsInsound = [];
                 var comments = SoundSocialList.comment({sound: $scope.sound.id, justInSound: true}, function () {
-                    var canvasWidth = $("#sound_wave_canvas_" + $scope.sound.id).width();
+                    var canvasWidth = $("#sound_wave_" + $scope.sound.id).width();
                     $.each(comments, function (index, comment) {
                         comment.showReply = false;
                         comment.owner.route = config.userStreamPath + comment.owner.profile.alias;
                         comment.top = '70%';
                         comment.left = (comment.pointAt * canvasWidth) / ($scope.sound.duration) + "px";
+
+                        if (!comment.owner.profile.avatorUrl) {
+                            comment.owner.profile.avatorUrl = "img/default_avatar.png";
+                        }
+                        else
+                        {
+                            var avatorUrl = $.cookie(comment.owner.profile.alias + '_avator_small_url');
+
+                            if (avatorUrl)
+                            {
+                                comment.owner.profile.avatorUrl = avatorUrl;
+                            }
+                            else
+                            {
+                                $.cookie(comment.owner.profile.alias + '_avator_small_url', comment.owner.profile.avatorUrl, {expires: config.imageAccessExpires});
+                            }
+                        }
                         $scope.commentsInsound.push(comment);
 
                         $scope.$apply();
@@ -558,6 +573,22 @@ angular.module('sound.controllers', [])
                             if (comment.to) {
                                 comment.to.route = config.userStreamPath + comment.to.profile.alias;
                             }
+                            if (!comment.owner.profile.avatorUrl) {
+                                comment.owner.profile.avatorUrl = "img/default_avatar.png";
+                            }
+                            else
+                            {
+                                var avatorUrl = $.cookie(comment.owner.profile.alias + '_avator_small_url');
+
+                                if (avatorUrl)
+                                {
+                                    comment.owner.profile.avatorUrl = avatorUrl;
+                                }
+                                else
+                                {
+                                    $.cookie(comment.owner.profile.alias + '_avator_small_url', comment.owner.profile.avatorUrl, {expires: config.imageAccessExpires});
+                                }
+                            }
                             $scope.comments.push(comment);
                             $scope.$apply();
                         }
@@ -571,7 +602,7 @@ angular.module('sound.controllers', [])
             }
 
             function loadSoundData(){
-                var soundWave = $(window).soundWave({}).loadFromCache(
+                var soundWave = WooiceWaver.loadFromCache(
                     {
                         id: $scope.sound.id
                     }
@@ -579,7 +610,7 @@ angular.module('sound.controllers', [])
 
                 if (soundWave)
                 {
-                    $(window).soundWave({}).render(
+                    WooiceWaver.render(
                         {
                             id: $scope.sound.id,
                             hasCache: true,
@@ -595,7 +626,7 @@ angular.module('sound.controllers', [])
                     var newDatas = Sound.loadData({}, toLoadList, function(){
                         $.each(newDatas, function(index, oneData){
                             //render wave
-                            $(window).soundWave({}).render(
+                            WooiceWaver.render(
                                 {
                                     id: oneData.soundId,
                                     waveData: oneData.wave[0],

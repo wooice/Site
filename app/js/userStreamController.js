@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('user.stream.controllers', [])
-    .controller('userBasicController', ['$scope', '$routeParams', 'User', 'UserSocial', 'UserService', function ($scope, $routeParams, User, UserSocial, UserService) {
+    .controller('userBasicController', ['$scope', 'config', '$routeParams', 'User', 'UserSocial', 'UserService', function ($scope, config, $routeParams, User, UserSocial, UserService) {
         $scope.curAlias = UserService.getCurUserAlias();
         var user = User.get({userAlias: $routeParams.value}, function () {
             $scope.user = user;
@@ -14,6 +14,19 @@ angular.module('user.stream.controllers', [])
 
             if (!$scope.user.profile.avatorUrl) {
                 $scope.user.profile.avatorUrl = 'img/default_avatar_large.png';
+            }
+            else
+            {
+                var avatorUrl = $.cookie($scope.user.profile.alias + '_avator_large_url');
+
+                if (avatorUrl)
+                {
+                    $scope.user.profile.avatorUrl = avatorUrl;
+                }
+                else
+                {
+                    $.cookie($scope.user.profile.alias + '_avator_large_url', $scope.user.profile.avatorUrl, {expires: config.imageAccessExpires});
+                }
             }
             if ($scope.user.userPrefer.following) {
                 $scope.user.userPrefer.followingString = "关注中";
@@ -45,11 +58,23 @@ angular.module('user.stream.controllers', [])
         });
     }])
     .controller('userSocialController', ['$scope', 'config', '$routeParams', 'UserSocial', 'User', function ($scope, config, $routeParams, UserSocial, User) {
-        $scope.user = $scope.$parent.user;
         var followed = UserSocial.getFollowed({userAlias: $routeParams.value, pageNum: 1}, function () {
             $.each(followed, function (index, user) {
                 if (!user.profile.avatorUrl) {
                     user.profile.avatorUrl = "img/default_avatar.png";
+                }
+                else
+                {
+                    var avatorUrl = $.cookie($scope.user.profile.alias + '_avator_small_url');
+
+                    if (avatorUrl)
+                    {
+                        $scope.user.profile.avatorUrl = avatorUrl;
+                    }
+                    else
+                    {
+                        $.cookie($scope.user.profile.alias + '_avator_small_url', $scope.user.profile.avatorUrl, {expires: config.imageAccessExpires});
+                    }
                 }
                 user.route = config.userStreamPath + user.profile.alias;
             });
@@ -60,6 +85,19 @@ angular.module('user.stream.controllers', [])
             $.each(following, function (index, user) {
                 if (!user.profile.avatorUrl) {
                     user.profile.avatorUrl = "img/default_avatar.png";
+                }
+                else
+                {
+                    var avatorUrl = $.cookie($scope.user.profile.alias + '_avator_small_url');
+
+                    if (avatorUrl)
+                    {
+                        $scope.user.profile.avatorUrl = avatorUrl;
+                    }
+                    else
+                    {
+                        $.cookie($scope.user.profile.alias + '_avator_small_url', $scope.user.profile.avatorUrl, {expires: config.imageAccessExpires});
+                    }
                 }
                 user.route = config.userStreamPath + user.profile.alias;
             });

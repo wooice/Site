@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('guest.controllers', [])
-    .controller('loginCtrl', ['$scope', '$location', 'Guest', 'UserService', function ($scope, $location, Guest, UserService) {
+    .controller('loginCtrl', ['$scope', '$location', 'Guest', 'UserService', 'Util', function ($scope, $location, Guest, UserService, Util) {
         $scope.userId = "";
         $scope.password = "";
 

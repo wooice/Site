@@ -44,7 +44,7 @@
                                 <ul class="tags">
                                     <li ng-repeat="tag in sound.tags | filter: {curated:true}" style="display: inline">
                                         <a href="#/stream/tags/{{tag.label}}">
-                                            <span ng-show="tag.curated" style="color:#FFDF00">{{tag.label}}</span>
+                                            <span ng-show="tag.curated">{{tag.label}}</span>
                                             <span ng-show="!tag.curated">{{tag.label}}</span>
                                         </a>
                                     </li>

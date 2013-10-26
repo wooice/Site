@@ -3,7 +3,8 @@
 /* Controllers */
 
 angular.module('stream.controllers', []).
-    controller('streamCtrl', ['$scope', 'config', '$location', 'Stream', 'Sound', 'SoundUtilService', 'SoundSocial', '$routeParams', 'UserService', function ($scope, config, $location, Stream, Sound, SoundUtilService, SoundSocial, $routeParams, UserService) {
+    controller('streamCtrl', ['$scope', 'config', '$location', 'Stream', 'Sound', 'SoundUtilService', 'SoundSocial', '$routeParams', 'UserService', 'WooicePlayer', 'WooiceWaver',
+        function ($scope, config, $location, Stream, Sound, SoundUtilService, SoundSocial, $routeParams, UserService, WooicePlayer, WooiceWaver) {
         $scope.userService = UserService;
         $scope.routeParams = $routeParams;
 
@@ -60,7 +61,7 @@ angular.module('stream.controllers', []).
                 }
             });
 
-            $(window).trigger('onToggle', {
+            WooicePlayer.toggle({
                 id: sound.id
             });
         };
@@ -120,7 +121,7 @@ angular.module('stream.controllers', []).
 
             if (confirm('确定要删除当前音乐吗?')) {
                 Sound.delete({sound: this.sound.id}, $.proxy(function () {
-                    $(window).trigger('onSoundDestory', {
+                    WooicePlayer.destroy({
                         id: this.sound.id
                     });
 
@@ -177,7 +178,6 @@ angular.module('stream.controllers', []).
             if (force) {
                 $scope.pageNum = 1;
                 $scope.sounds = [];
-                $(window).soundWave({}).cleanUp();
             }
             if ($scope.isloading) {
                 return;
@@ -216,28 +216,24 @@ angular.module('stream.controllers', []).
                     $scope.sounds.push(sound);
 
                     //record sound info
-                    $(window).soundPlayer().addSound(sound);
+                    WooicePlayer.addSound(sound);
                 });
 
                 $scope.$apply();
 
                 var toLoadList = [];
                 $.each($scope.sounds, function (index, oneSound) {
-                    var soundWave = $(window).soundWave({}).loadFromCache(
-                        {
-                            id: oneSound.id
-                        }
-                    );
+                    var soundWave = WooiceWaver.loadFromCache({
+                        id: oneSound.id
+                    });
 
                     if (soundWave) {
-                        $(window).soundWave({}).render(
-                            {
-                                id: oneSound.id,
-                                hasCache: true,
-                                color: UserService.getColor(),
-                                commentable: oneSound.commentMode !== 'closed'
-                            }
-                        );
+                        WooiceWaver.render({
+                            id: oneSound.id,
+                            hasCache: true,
+                            color: UserService.getColor(),
+                            commentable: oneSound.commentMode !== 'closed'
+                        });
                     }
                     else {
                         toLoadList.push(oneSound.id);
@@ -248,15 +244,13 @@ angular.module('stream.controllers', []).
                     var newDatas = Sound.loadData({}, toLoadList, function () {
                         $.each(newDatas, function (index, oneData) {
                             //render wave
-                            $(window).soundWave({}).render(
-                                {
-                                    id: oneData.soundId,
-                                    waveData: oneData.wave[0],
-                                    duration: oneData.duration * 1000,
-                                    color: UserService.getColor(),
-                                    commentable: oneData.commentMode !== 'closed'
-                                }
-                            );
+                            WooiceWaver.render( {
+                                id: oneData.soundId,
+                                waveData: oneData.wave[0],
+                                duration: oneData.duration * 1000,
+                                color: UserService.getColor(),
+                                commentable: oneData.commentMode !== 'closed'
+                            });
                         });
                     });
                 }
@@ -269,7 +263,7 @@ angular.module('stream.controllers', []).
                 $scope.newSoundCount = 0;
                 $scope.lastLoadedTime = new Date().Format("yyyy-MM-dd hh:mm:ss");
 
-                var curSound = $(window).soundPlayer().getCurSound();
+                var curSound = WooicePlayer.getCurSound();
                 if (curSound) {
                     $('#sound_player_button_' + curSound.id).addClass('icon-pause');
                     $('#cur_sound').attr('href', curSound.title.route);
@@ -300,7 +294,6 @@ angular.module('stream.controllers', []).
             });
         };
 
-        $(window).soundPlayer().setSocialClient(SoundSocial);
         $scope.loadStream();
 
         var scrollHandler = function () {

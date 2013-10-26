@@ -16,6 +16,9 @@ angular.module('wooice.config', []).constant(
 
         userStreamPath: 'index.html#/stream/',
 
+        soundAccessExpires: 1,
+        imageAccessExpires: 7,
+
         soundsPerPage: 4,
         commentsPerPage: 8,
         likesPerPage: 9,

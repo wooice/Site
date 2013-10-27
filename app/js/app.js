@@ -1,7 +1,7 @@
 'use strict';
 
 /* App Module */
-angular.module('wooice', ['ngRoute', 'wooice.directives', 'wooice.config','wooice.player', 'wooice.waver',
+angular.module('wooice', ['ngRoute', 'wooice.directives', 'wooice.config','wooice.player', 'wooice.waver', 'angularLocalStorage',
         'auth.services', 'guest.services', 'profile.services', 'sound.services', 'tag.services', 'storage.services', 'user.services', 'sound.pro.services', 'util.services',
         'auth.controllers', 'guest.controllers', 'profile.controllers', 'stream.controllers', 'common.stream.controllers', 'user.stream.controllers', 'footer.controllers', 'header.controllers', 'interest.controllers', 'message.services',
         'sound.controllers', 'sound.social.controllers', 'player.controllers', 'upload.controllers']).

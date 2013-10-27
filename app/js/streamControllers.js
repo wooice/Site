@@ -3,8 +3,8 @@
 /* Controllers */
 
 angular.module('stream.controllers', []).
-    controller('streamCtrl', ['$scope', 'config', '$location', 'Stream', 'Sound', 'SoundUtilService', 'SoundSocial', '$routeParams', 'UserService', 'WooicePlayer', 'WooiceWaver',
-        function ($scope, config, $location, Stream, Sound, SoundUtilService, SoundSocial, $routeParams, UserService, WooicePlayer, WooiceWaver) {
+    controller('streamCtrl', ['$scope', 'config', '$location', 'Stream', 'Sound', 'SoundUtilService', 'SoundSocial', '$routeParams', 'UserService', 'WooicePlayer', 'WooiceWaver', 'storage',
+        function ($scope, config, $location, Stream, Sound, SoundUtilService, SoundSocial, $routeParams, UserService, WooicePlayer, WooiceWaver, storage) {
         $scope.userService = UserService;
         $scope.routeParams = $routeParams;
 
@@ -221,7 +221,7 @@ angular.module('stream.controllers', []).
 
                 $scope.$apply();
 
-                var toLoadList = [];
+                var soundsNotCached = [];
                 $.each($scope.sounds, function (index, oneSound) {
                     var soundWave = WooiceWaver.loadFromCache({
                         id: oneSound.id
@@ -236,15 +236,36 @@ angular.module('stream.controllers', []).
                         });
                     }
                     else {
-                        toLoadList.push(oneSound.id);
+                        soundsNotCached.push(oneSound.id);
                     }
                 });
 
-                if (toLoadList && toLoadList.length > 0) {
-                    var newDatas = Sound.loadData({}, toLoadList, function () {
+                var soundsNotStored = [];
+                $.each(soundsNotCached, function(index, soundId){
+                     var sound =  storage.get(soundId + "_wave");
+                    if (sound)
+                    {
+                        WooiceWaver.render(sound);
+                    }
+                    else
+                    {
+                        soundsNotStored.push(soundId);
+                    }
+                });
+
+                if (soundsNotStored && soundsNotStored.length > 0) {
+                    var newDatas = Sound.loadData({}, soundsNotStored, function () {
                         $.each(newDatas, function (index, oneData) {
                             //render wave
                             WooiceWaver.render( {
+                                id: oneData.soundId,
+                                waveData: oneData.wave[0],
+                                duration: oneData.duration * 1000,
+                                color: UserService.getColor(),
+                                commentable: oneData.commentMode !== 'closed'
+                            });
+
+                            storage.set(oneData.soundId + "_wave", {
                                 id: oneData.soundId,
                                 waveData: oneData.wave[0],
                                 duration: oneData.duration * 1000,

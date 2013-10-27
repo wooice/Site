@@ -2,9 +2,8 @@
 
 angular.module('sound.controllers', [])
     .controller('soundDetailCtrl', ['$scope', '$window', 'config', '$routeParams', 'Sound', 'SoundUtilService', 'Storage', 'SoundSocial', 'SoundSocialList', 'UserService',
-        '$location', '$anchorScroll', 'SoundSocialProSocial', 'SoundProSocial', 'UserSocial', 'Tag', 'WooicePlayer', 'WooiceWaver',
-        function ($scope, $window, config, $routeParams, Sound, SoundUtilService, Storage, SoundSocial, SoundSocialList, UserService, $location, $anchorScroll,
-                  SoundSocialProSocial, SoundProSocial, UserSocial, Tag, WooicePlayer, WooiceWaver) {
+        '$location', '$anchorScroll', 'SoundSocialProSocial', 'SoundProSocial', 'UserSocial', 'Tag', 'WooicePlayer', 'WooiceWaver', 'storage',
+        function ($scope, $window, config, $routeParams, Sound, SoundUtilService, Storage, SoundSocial, SoundSocialList, UserService, $location, $anchorScroll, SoundSocialProSocial, SoundProSocial, UserSocial, Tag, WooicePlayer, WooiceWaver, storage) {
             $scope.userService = UserService;
             $scope.config = config;
             $scope.mode = "default";
@@ -94,7 +93,7 @@ angular.module('sound.controllers', [])
                 }
             };
 
-            $scope.download = function() {
+            $scope.download = function () {
                 var sound = SoundSocial.play({sound: $scope.sound.id}, null, function (count) {
                     var downloadUrl = sound.url + "&download/" + $scope.sound.alias + ".mp3";
 
@@ -264,7 +263,7 @@ angular.module('sound.controllers', [])
             $scope.isUploadingPoster = false;
 
             $scope.localLoad = function () {
-                var sound = WooicePlayer.loadFromCache( {
+                var sound = WooicePlayer.loadFromCache({
                     alias: $routeParams.soundId
                 });
 
@@ -526,16 +525,13 @@ angular.module('sound.controllers', [])
                         if (!comment.owner.profile.avatorUrl) {
                             comment.owner.profile.avatorUrl = "img/default_avatar.png";
                         }
-                        else
-                        {
+                        else {
                             var avatorUrl = $.cookie(comment.owner.profile.alias + '_avator_small_url');
 
-                            if (avatorUrl)
-                            {
+                            if (avatorUrl) {
                                 comment.owner.profile.avatorUrl = avatorUrl;
                             }
-                            else
-                            {
+                            else {
                                 $.cookie(comment.owner.profile.alias + '_avator_small_url', comment.owner.profile.avatorUrl, {expires: config.imageAccessExpires});
                             }
                         }
@@ -576,16 +572,13 @@ angular.module('sound.controllers', [])
                             if (!comment.owner.profile.avatorUrl) {
                                 comment.owner.profile.avatorUrl = "img/default_avatar.png";
                             }
-                            else
-                            {
+                            else {
                                 var avatorUrl = $.cookie(comment.owner.profile.alias + '_avator_small_url');
 
-                                if (avatorUrl)
-                                {
+                                if (avatorUrl) {
                                     comment.owner.profile.avatorUrl = avatorUrl;
                                 }
-                                else
-                                {
+                                else {
                                     $.cookie(comment.owner.profile.alias + '_avator_small_url', comment.owner.profile.avatorUrl, {expires: config.imageAccessExpires});
                                 }
                             }
@@ -601,15 +594,14 @@ angular.module('sound.controllers', [])
                 });
             }
 
-            function loadSoundData(){
+            function loadSoundData() {
                 var soundWave = WooiceWaver.loadFromCache(
                     {
                         id: $scope.sound.id
                     }
                 );
 
-                if (soundWave)
-                {
+                if (soundWave) {
                     WooiceWaver.render(
                         {
                             id: $scope.sound.id,
@@ -619,31 +611,43 @@ angular.module('sound.controllers', [])
                         }
                     );
                 }
-                else
-                {
-                    var toLoadList = [];
-                    toLoadList.push($scope.sound.id);
-                    var newDatas = Sound.loadData({}, toLoadList, function(){
-                        $.each(newDatas, function(index, oneData){
-                            //render wave
-                            WooiceWaver.render(
-                                {
+                else {
+                    var sound = storage.get($scope.sound.id + "_wave");
+                    if (sound) {
+                        WooiceWaver.render(sound);
+                    }
+                    else {
+                        var toLoadList = [];
+                        toLoadList.push($scope.sound.id);
+                        var newDatas = Sound.loadData({}, toLoadList, function () {
+                            $.each(newDatas, function (index, oneData) {
+                                //render wave
+                                WooiceWaver.render(
+                                    {
+                                        id: oneData.soundId,
+                                        waveData: oneData.wave[0],
+                                        duration: oneData.duration * 1000,
+                                        color: UserService.getColor(),
+                                        commentable: oneData.commentMode !== 'closed'
+                                    }
+                                );
+
+                                storage.set(oneData.soundId + "_wave", {
                                     id: oneData.soundId,
                                     waveData: oneData.wave[0],
                                     duration: oneData.duration * 1000,
                                     color: UserService.getColor(),
                                     commentable: oneData.commentMode !== 'closed'
-                                }
-                            );
+                                });
+                            });
                         });
-                    });
+                    }
                 }
                 loadCommentsInSound();
             }
 
             $scope.$parent.$on("$includeContentLoaded", function (event) {
-                if (event.currentScope.$id != event.targetScope.$id)
-                {
+                if (event.currentScope.$id != event.targetScope.$id) {
                     return;
                 }
                 if (!$scope.localLoad()) {

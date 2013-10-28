@@ -68,6 +68,7 @@
                             <input type="hidden" id="sound_comment_point_{{sound.id}}" value="-1">
                         </form>
                     </div>
+                    <span>
                     <a href="#" class="button button-small button-rounded  button-flat action-button"
                        onclick="return false;" ng-click="toggleLike(sound.id)"><i class="icon-heart"></i></i>
                         <span ng-show="sound.soundUserPrefer.like=='0'">赞之</span></a>
@@ -92,6 +93,7 @@
                        ng-show="sound.downloadable"
                        onclick="return false;" ng-click="download()"><i
                             class="icon-trash"></i></i> 下载</a>
+                    </span>
 
                     <div class="pull-right" style="margin-top: 8px">
                                 <span ng-show="sound.owner.alias == userService.getCurUserAlias()">

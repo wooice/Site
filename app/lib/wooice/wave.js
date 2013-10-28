@@ -34,7 +34,7 @@ angular.module('wooice.waver', []).
                 }
                 else
                 {
-                    sound = $.extend(newSound);
+                    sound = newSound;
                     var waveForm = new $.waveForm({
                         id: sound.id,
                         soundId: sound.id,

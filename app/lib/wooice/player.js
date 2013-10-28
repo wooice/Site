@@ -55,9 +55,8 @@ angular.module('wooice.player', []).
                         },
                         onplay: function () {
                             if (soundData.currentSound != this.id) {
-                                var pre = soundData.currentSound;
+                                soundManager.pause(soundData.currentSound);
                                 soundData.currentSound = this.id;
-                                soundManager.pause(pre);
                                 $('#sound_player_button_' + soundData.currentSound).removeClass('icon-pause');
                             }
 
@@ -100,11 +99,9 @@ angular.module('wooice.player', []).
                         },
                         onresume: function () {
                             if (soundData.currentSound != this.id) {
-                                var pre = soundData.currentSound;
+                                soundManager.pause(soundData.currentSound);
                                 soundData.currentSound = this.id;
-                                soundManager.pause(pre);
                                 $('#sound_player_button_' + soundData.currentSound).removeClass('icon-pause');
-                                $('#sound_player_button_global').removeClass('icon-pause');
                             }
 
                             soundManager._writeDebug('Resuming sound: ' + this.id);

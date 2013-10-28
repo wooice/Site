@@ -84,7 +84,7 @@
                                                                            value='<iframe width="100%" height="188" scrolling="no" frameborder="no" src="{{config.site.url}}#/player/{{sound.alias}}"></iframe>'>
                     </div>
                     <a href="#" class="button button-small button-rounded button-flat action-button"
-                       ng-show="sound.owner.alias == UserService.getCurUserAlias()"
+                       ng-show="sound.owner.alias == userService.getCurUserAlias()"
                        onclick="return false;" ng-click="delete()"><i
                             class="icon-trash"></i></i> 删除</a>
 
@@ -94,7 +94,7 @@
                             class="icon-trash"></i></i> 下载</a>
 
                     <div class="pull-right" style="margin-top: 8px">
-                                <span ng-show="sound.owner.alias == UserService.getCurUserAlias()">
+                                <span ng-show="sound.owner.alias == userService.getCurUserAlias()">
                                     <i class="icon-lock"
                                        ng-show="sound.status == 'private'">私有 |</i>
                                     <i class="icon-unlock-alt"

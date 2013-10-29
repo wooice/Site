@@ -49,7 +49,7 @@
 }
 
 .sound_player_body {
-    height: 45%
+    height: 40%
 }
 
 .sound_player_footer{
@@ -140,10 +140,10 @@ icon-step-backward.sound_player_button{
 .navbar .nav .active > a, .navbar .nav .active > a:hover {color:white;}
 
 .sound_item {
-    height: 180px;
+    height: 160px;
     margin-bottom: 25px;
     padding-top: 10px;
-    padding-bottom:  20px;
+    padding-bottom:  10px;
 }
 
 .sound_single_item {

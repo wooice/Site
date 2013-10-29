@@ -37,6 +37,7 @@ angular.module('user.services', ['ngCookies']).
         var sproRoles = ["spro"];
         var guestRoles = ["guest"];
         var color = {upper: '#00B2EE', lower: '#A4D3EE', deeper: '#008AEE'};
+        var playMode = 0;
 
         return {
             setupUser: function (user) {
@@ -121,6 +122,21 @@ angular.module('user.services', ['ngCookies']).
                     currentUser.userAlias = '';
                     $cookies.userAlias =  '';
                 }
+            },
+            getPlayMode: function(){
+                if ($cookies.playMode)
+                {
+                    return parseInt($cookies.playMode);
+                }
+                else
+                {
+                    return playMode;
+                }
+            },
+            setPlayMode: function(newPlayMode)
+            {
+                playMode = newPlayMode;
+                $cookies.playMode = "" + newPlayMode;
             }
         };
     }])

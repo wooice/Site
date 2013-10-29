@@ -1,5 +1,5 @@
 angular.module('wooice.waver', []).
-    factory('WooiceWaver', [ 'config', function (config) {
+    factory('WooiceWaver', [ 'config','storage', function (config, storage) {
         function init() {
             var soundData = {};
             //init sound list, which will cache waves
@@ -10,11 +10,22 @@ angular.module('wooice.waver', []).
         }
         var soundData = init();
 
-        return {
-            cleanUp: function (sound) {
-                soundData.soundList = [];
-            },
+        window.onbeforeunload = function (event) {
+            // when user leave the page, record the current status of the wave.
+            for (var oneSound in soundData.soundList) {
+                oneSound = soundData.soundList[oneSound];
+                if (oneSound && oneSound.waveForm.getSoundPosition() && oneSound.waveForm.getSoundPosition() > 0) {
+                    storage.set(oneSound.id + "_wave", {
+                        id: oneSound.id,
+                        waveData: oneSound.waveData,
+                        duration: oneSound.duration,
+                        position: oneSound.waveForm.getSoundPosition()
+                    });
+                }
+            }
+        }
 
+        return {
             render: function (newSound) {
                 if (!soundData.soundList[newSound.id]) {
                     soundData.soundList[newSound.id] = sound;
@@ -25,9 +36,10 @@ angular.module('wooice.waver', []).
                 canvas.height = $('#sound_wave_' + newSound.id).height();
                 var sound = null;
 
-                if (newSound.hasCache)
+                if (soundData.soundList[newSound.id])
                 {
                     sound = soundData.soundList[newSound.id];
+                    sound.waveForm.updateWaveData(newSound.waveData);
                     sound.waveForm.updateCanvas(canvas);
                     sound.waveForm.updateCommentable(newSound.commentable);
                     sound.waveForm.updateColor(newSound.color);
@@ -40,7 +52,7 @@ angular.module('wooice.waver', []).
                         soundId: sound.id,
                         canvas: canvas,
                         waveData: sound.waveData,
-                        soundPosition: 0,
+                        soundPosition: sound.position,
                         soundDuration: sound.duration,
                         soundBytesloaded: 0,
                         soundBytesTotal: 0,
@@ -52,10 +64,6 @@ angular.module('wooice.waver', []).
                 }
 
                 sound.waveForm.redraw();
-            },
-
-            loadFromCache: function (sound) {
-                return soundData.soundList[sound.id];
             },
 
             move: function (sound) {

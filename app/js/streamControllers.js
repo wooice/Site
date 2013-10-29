@@ -125,6 +125,8 @@ angular.module('stream.controllers', []).
                         id: this.sound.id
                     });
 
+                    storage.remove(this.sound.id + "_wave");
+
                     var toDelete = 0;
                     $.each($scope.sounds, $.proxy(function (index, oneSound) {
                         if (this.sound.id == oneSound.id) {
@@ -134,6 +136,7 @@ angular.module('stream.controllers', []).
                     }, this));
                     $scope.sounds.splice(toDelete, 1);
                     $scope.$apply();
+
                     $.globalMessenger().post({
                         message: "声音" + this.sound.alias + "删除成功。",
                         hideAfter: 15,
@@ -221,35 +224,18 @@ angular.module('stream.controllers', []).
 
                 $scope.$apply();
 
-                var soundsNotCached = [];
-                $.each($scope.sounds, function (index, oneSound) {
-                    var soundWave = WooiceWaver.loadFromCache({
-                        id: oneSound.id
-                    });
-
-                    if (soundWave) {
-                        WooiceWaver.render({
-                            id: oneSound.id,
-                            hasCache: true,
-                            color: UserService.getColor(),
-                            commentable: oneSound.commentMode !== 'closed'
-                        });
-                    }
-                    else {
-                        soundsNotCached.push(oneSound.id);
-                    }
-                });
-
                 var soundsNotStored = [];
-                $.each(soundsNotCached, function(index, soundId){
-                     var sound =  storage.get(soundId + "_wave");
+                $.each($scope.sounds, function(index, oneSound){
+                     var sound =  storage.get(oneSound.id + "_wave");
                     if (sound)
                     {
+                        sound.color = UserService.getColor();
+                        sound.commentable = oneSound.commentMode !== 'closed';
                         WooiceWaver.render(sound);
                     }
                     else
                     {
-                        soundsNotStored.push(soundId);
+                        soundsNotStored.push(oneSound.id);
                     }
                 });
 
@@ -262,15 +248,15 @@ angular.module('stream.controllers', []).
                                 waveData: oneData.wave[0],
                                 duration: oneData.duration * 1000,
                                 color: UserService.getColor(),
-                                commentable: oneData.commentMode !== 'closed'
+                                commentable: oneData.commentMode !== 'closed',
+                                position: 0
                             });
 
                             storage.set(oneData.soundId + "_wave", {
                                 id: oneData.soundId,
                                 waveData: oneData.wave[0],
                                 duration: oneData.duration * 1000,
-                                color: UserService.getColor(),
-                                commentable: oneData.commentMode !== 'closed'
+                                position: 0
                             });
                         });
                     });

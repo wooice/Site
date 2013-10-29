@@ -1,5 +1,8 @@
+'use strict';
+
 angular.module('wooice.player', []).
-    factory('WooicePlayer', [ 'config', 'WooiceWaver', 'SoundSocial',function (config, WooiceWaver, SoundSocial) {
+    factory('WooicePlayer', ['config', 'WooiceWaver', 'SoundSocial','UserService',
+        function (config, WooiceWaver, SoundSocial, UserService) {
 
         function init() {
             var settings;
@@ -21,6 +24,49 @@ angular.module('wooice.player', []).
             return soundData;
         }
         var soundData = init();
+
+        soundData.getNextSoundId = function(id)
+        {
+            var length = 0, pre = null, cur = null, soundKey = null;
+            for (var oneSound in soundData.soundList) {
+                if (cur && !soundKey) {
+                    soundKey = oneSound;
+                }
+                if (id === oneSound) {
+                    cur = oneSound;
+                }
+                pre = oneSound;
+                length++;
+            }
+            if (length == 0) {
+                return;
+            }
+            if (cur === null || pre === cur) {
+                soundKey = null;
+                for (var oneSound in soundData.soundList) {
+                    if (!soundKey) {
+                        return oneSound;
+                    }
+                }
+            }
+            return soundKey;
+        }
+
+        soundData.getRandomSoundId = function()
+        {
+            var length = 0;
+            for (var oneSound in soundData.soundList) {
+                length ++;
+            }
+            var random = Math.floor(Math.random() * length);
+            var index = 0;
+            for (var oneSound in soundData.soundList) {
+                if (index++ == random)
+                {
+                     return  oneSound;
+                }
+            }
+        }
 
         soundData.setup = function(sound){
             soundManager.setup({
@@ -117,10 +163,31 @@ angular.module('wooice.player', []).
                             $('#sound_player_button_global').addClass('icon-pause');
                         },
                         onfinish: function () {
-                            soundData.currentSound = null;
                             WooiceWaver.stop({
                                 id: this.id
                             });
+
+                            soundData.currentSound = null;
+                            $('#sound_player_button_' + this.id).removeClass('icon-pause');
+                            $('#sound_player_button_global').removeClass('icon-pause');
+
+                            switch(UserService.getPlayMode())
+                            {
+                                case 0:
+                                    soundManager.play(soundData.getNextSoundId(this.id));
+                                   break;
+                                case 1:
+                                    soundManager.play(this.id);
+                                    break
+                                case 2:
+                                    soundManager.play(soundData.getRandomSoundId());
+                                    break;
+                                case 3:
+                                    break;
+                                default:
+                                    soundManager.play(soundData.getNextSoundId(this.id));
+                                    break;
+                            }
                         }
                     });
 
@@ -135,6 +202,7 @@ angular.module('wooice.player', []).
 
                 onfinish: function () {
                     soundManager._writeDebug('Sound play finished. ' + this.id);
+
                 }
             });
         };
@@ -281,30 +349,7 @@ angular.module('wooice.player', []).
             playSibling: function (sibling) {
                 var sound = null;
                 if (sibling == 'next') {
-                    var length = 0, pre = null, cur = null, soundKey = null;
-                    for (var oneSound in soundData.soundList) {
-                        if (cur && !soundKey) {
-                            soundKey = oneSound;
-                        }
-                        if (soundData.currentSound === oneSound) {
-                            cur = oneSound;
-                        }
-                        pre = oneSound;
-                        length++;
-                    }
-                    if (length == 0) {
-                        return;
-                    }
-                    if (cur === null || pre === cur) {
-                        soundKey = null;
-                        for (var oneSound in soundData.soundList) {
-                            if (!soundKey) {
-                                soundKey = oneSound;
-                                break;
-                            }
-                        }
-                    }
-                    sound = soundData.soundList[soundKey];
+                    sound = soundData.soundList[soundData.getNextSoundId(soundData.currentSound)];
                 }
                 else {
                     var length = 0, soundKey = null, found = false;

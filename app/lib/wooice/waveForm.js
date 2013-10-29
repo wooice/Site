@@ -5,6 +5,7 @@
         var waveWidth = parseInt(canvas.width, 10);
         var waveHeight = parseInt(canvas.height, 10);
         var waveData = interpolateArray(options.waveData, waveWidth);
+        options.waveData = null;
 
         var defaultUpperColor = '#4f4f4f';
         var defaultLowerColor = '#9E9E9E';
@@ -39,6 +40,10 @@
             redrawWave();
         }
 
+        this.updateWaveData = function (waveData) {
+            options.waveData =  waveData;
+        }
+
         this.updateCanvas = function (newCanvas) {
             canvas = newCanvas;
             context = canvas.getContext("2d");
@@ -47,6 +52,7 @@
             waveHeight = parseInt(canvas.height, 10);
             waveData = interpolateArray(options.waveData, waveWidth);
             attachCanvasEvents();
+            options.waveData = null;
         }
 
         this.updateCommentable = function (newValue) {
@@ -62,6 +68,10 @@
         this.setSoundPosition = function (position) {
             soundPosition = position;
             currentPlayingPosition = Math.ceil(waveData.length * (soundPosition / soundDuration));
+        }
+
+        this.getSoundPosition = function () {
+             return soundPosition;
         }
 
         this.setSoundBytesloaded = function (bytesloaded) {
@@ -132,8 +142,8 @@
         }
 
         function onMouseMove(evt) {
-            var layerX = evt.layerX;
-            var layerY = evt.layerY;
+            var layerX = evt.offsetX ? evt.offsetX : evt.layerX;
+            var layerY = evt.offsetY ? evt.offsetY : evt.layerY;
             var widthPerLine = waveWidth / waveData.length;
             var index = Math.floor(layerX);
             var preUpperPosition = pointUpperPosition;
@@ -183,12 +193,12 @@
                 });
             }
             else {
-                var layerX = evt.layerX;
+                var layerX = evt.offsetX ? evt.offsetX : evt.layerX;
                 var index = Math.floor(layerX);
-                var layerY = evt.layerY;
+                var layerY = evt.offsetY ? evt.offsetY : evt.layerY;
 
                 if (layerY > waveHeight * mainLinePerctg * (1 - waveData[index]) && layerY <= waveHeight * mainLinePerctg) {
-                    var from = soundDuration * (evt.layerX / waveWidth);
+                    var from = soundDuration * (layerX / waveWidth);
                     $(window).trigger('onJump', {
                         id: soundId,
                         from: from

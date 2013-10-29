@@ -6,6 +6,10 @@ angular.module('header.controllers', [])
     .controller('headerCtrl', ['$scope', '$location', '$routeParams', 'User', 'UserService','WooicePlayer', function ($scope, $location, $routeParams, User, UserService, WooicePlayer) {
         $scope.q = $routeParams.q;
         $scope.userAlias = UserService.getCurUserAlias();
+
+        $scope.playMode = UserService.getPlayMode();
+        $scope.playModes = ['顺序播放', '单曲循环', '随机播放', '播完即止'];
+
         $scope.logout = function () {
             User.logout({}, function () {
                 UserService.setupUser(null);
@@ -41,6 +45,11 @@ angular.module('header.controllers', [])
         $scope.playNext = function (id) {
             WooicePlayer.playSibling('next');
         };
+
+        $scope.changePlayStyle = function() {
+            $scope.playMode = ++$scope.playMode %  $scope.playModes.length;
+            UserService.setPlayMode($scope.playMode);
+        }
 
         $('#search_box').bind('keyup', function (event) {
             if (event.keyCode == 13) {

@@ -595,54 +595,39 @@ angular.module('sound.controllers', [])
             }
 
             function loadSoundData() {
-                var soundWave = WooiceWaver.loadFromCache(
-                    {
-                        id: $scope.sound.id
-                    }
-                );
-
-                if (soundWave) {
-                    WooiceWaver.render(
-                        {
-                            id: $scope.sound.id,
-                            hasCache: true,
-                            color: UserService.getColor(),
-                            commentable: $scope.sound.commentMode !== 'closed'
-                        }
-                    );
+                var sound = storage.get($scope.sound.id + "_wave");
+                if (sound) {
+                    sound.color = UserService.getColor();
+                    sound.commentable = $scope.sound.commentMode !== 'closed';
+                    WooiceWaver.render(sound);
                 }
                 else {
-                    var sound = storage.get($scope.sound.id + "_wave");
-                    if (sound) {
-                        WooiceWaver.render(sound);
-                    }
-                    else {
-                        var toLoadList = [];
-                        toLoadList.push($scope.sound.id);
-                        var newDatas = Sound.loadData({}, toLoadList, function () {
-                            $.each(newDatas, function (index, oneData) {
-                                //render wave
-                                WooiceWaver.render(
-                                    {
-                                        id: oneData.soundId,
-                                        waveData: oneData.wave[0],
-                                        duration: oneData.duration * 1000,
-                                        color: UserService.getColor(),
-                                        commentable: oneData.commentMode !== 'closed'
-                                    }
-                                );
-
-                                storage.set(oneData.soundId + "_wave", {
+                    var toLoadList = [];
+                    toLoadList.push($scope.sound.id);
+                    var newDatas = Sound.loadData({}, toLoadList, function () {
+                        $.each(newDatas, function (index, oneData) {
+                            //render wave
+                            WooiceWaver.render(
+                                {
                                     id: oneData.soundId,
                                     waveData: oneData.wave[0],
                                     duration: oneData.duration * 1000,
                                     color: UserService.getColor(),
-                                    commentable: oneData.commentMode !== 'closed'
-                                });
+                                    commentable: oneData.commentMode !== 'closed',
+                                    position: 0
+                                }
+                            );
+
+                            storage.set(oneData.soundId + "_wave", {
+                                id: oneData.soundId,
+                                waveData: oneData.wave[0],
+                                duration: oneData.duration * 1000,
+                                position: 0
                             });
                         });
-                    }
+                    });
                 }
+
                 loadCommentsInSound();
             }
 

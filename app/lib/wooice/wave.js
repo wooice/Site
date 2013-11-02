@@ -10,22 +10,22 @@ angular.module('wooice.waver', []).
         }
         var soundData = init();
 
-        window.onbeforeunload = function (event) {
-            // when user leave the page, record the current status of the wave.
-            for (var oneSound in soundData.soundList) {
-                oneSound = soundData.soundList[oneSound];
-                if (oneSound && oneSound.waveForm.getSoundPosition() && oneSound.waveForm.getSoundPosition() > 0) {
-                    storage.set(oneSound.id + "_wave", {
-                        id: oneSound.id,
-                        waveData: oneSound.waveData,
-                        duration: oneSound.duration,
-                        position: oneSound.waveForm.getSoundPosition()
-                    });
-                }
-            }
-        }
-
         return {
+            recordWaveStatus: function(){
+                // when user leave the page, record the current status of the wave.
+                for (var oneSound in soundData.soundList) {
+                    oneSound = soundData.soundList[oneSound];
+                    if (oneSound && oneSound.waveForm.getSoundPosition() && oneSound.waveForm.getSoundPosition() > 0) {
+                        storage.set(oneSound.id + "_wave", {
+                            id: oneSound.id,
+                            waveData: oneSound.waveData,
+                            duration: oneSound.duration,
+                            position: oneSound.waveForm.getSoundPosition()
+                        });
+                    }
+                }
+            },
+
             render: function (newSound) {
                 if (!soundData.soundList[newSound.id]) {
                     soundData.soundList[newSound.id] = sound;
@@ -43,6 +43,7 @@ angular.module('wooice.waver', []).
                     sound.waveForm.updateCanvas(canvas);
                     sound.waveForm.updateCommentable(newSound.commentable);
                     sound.waveForm.updateColor(newSound.color);
+                    newSound.waveData = null;
                 }
                 else
                 {
@@ -107,4 +108,4 @@ angular.module('wooice.waver', []).
                 });
             }
     }
-    }]);
+}]);

@@ -43,7 +43,7 @@
                             <div class="pull-right">
                                 <ul class="tags">
                                     <li ng-repeat="tag in sound.tags | filter: {curated:true}" style="display: inline">
-                                        <a href="#/stream/tags/{{tag.label}}">
+                                        <a href="#/stream/tags/{{tag.label}}" ng-show="$index<3">
                                             <span ng-show="tag.curated">{{tag.label}}</span>
                                             <span ng-show="!tag.curated">{{tag.label}}</span>
                                         </a>
@@ -156,4 +156,8 @@
             暂无声音推荐
         </div>
     </div>
+
+    <p id="back_top">
+        <a ><span></span></a>
+    </p>
 </div>

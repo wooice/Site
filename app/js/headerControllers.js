@@ -3,7 +3,8 @@
 /* Controllers */
 
 angular.module('header.controllers', [])
-    .controller('headerCtrl', ['$scope', '$location', '$routeParams', 'User', 'UserService','WooicePlayer', function ($scope, $location, $routeParams, User, UserService, WooicePlayer) {
+    .controller('headerCtrl', ['$scope', '$location', '$routeParams', 'User', 'UserService','WooicePlayer','Feedback',
+    function ($scope, $location, $routeParams, User, UserService, WooicePlayer, Feedback) {
         $scope.q = $routeParams.q;
         $scope.userAlias = UserService.getCurUserAlias();
 
@@ -23,6 +24,21 @@ angular.module('header.controllers', [])
                 $location.path('/guest/login');
             })
         };
+
+        $scope.feedback = {};
+        $scope.feedback.function = null;
+        $scope.feedback_content = null;
+        $scope.sendFeedback = function (){
+            $scope.feedback.content = $scope.feedback_content;
+            Feedback.create({}, $scope.feedback, function(){
+                $('#feedback').modal('hide');
+                $.globalMessenger().post({
+                    message: "感谢您的反馈！",
+                    hideAfter: 10,
+                    showCloseButton: true
+                });
+            });
+        }
 
         var curSound = WooicePlayer.getCurSound();
         if (curSound)
@@ -58,5 +74,4 @@ angular.module('header.controllers', [])
                 });
             }
         });
-
     }]);

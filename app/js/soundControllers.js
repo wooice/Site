@@ -56,10 +56,8 @@ angular.module('sound.controllers', [])
             $scope.newTag = "";
 
             $scope.togglePause = function (id) {
-                var sound = $scope.sound;
-
                 WooicePlayer.toggle({
-                    id: sound.id
+                    id: id
                 });
             };
 
@@ -177,6 +175,20 @@ angular.module('sound.controllers', [])
                 }
                 return false;
             };
+
+            $scope.reportSound = function () {
+                this.sound.reported = true;
+                var result = SoundSocial.report({sound: this.sound.id}, {}, function () {
+                    if (result.invalid) {
+                        $location.url('/stream');
+                        $.globalMessenger().post({
+                            message: "声音" + this.sound.alias + "被大量举报，暂时无法继续访问。",
+                            hideAfter: 15,
+                            showCloseButton: true
+                        });
+                    }
+                });
+            }
 
             $scope.reply = function () {
                 this.comment.showReply = !this.comment.showReply;
@@ -310,7 +322,6 @@ angular.module('sound.controllers', [])
                 else {
                     return false;
                 }
-
             }
 
             $scope.loadSound = function () {
@@ -360,7 +371,6 @@ angular.module('sound.controllers', [])
                         });
                     });
                 });
-
             }
 
             $scope.reloadTarget = function (force) {
@@ -600,6 +610,12 @@ angular.module('sound.controllers', [])
                     sound.color = UserService.getColor();
                     sound.commentable = $scope.sound.commentMode !== 'closed';
                     WooiceWaver.render(sound);
+
+                    var soundPlayStatus = storage.get($scope.sound.id + "_player");
+                    if (soundPlayStatus && soundPlayStatus.playing)
+                    {
+                        WooicePlayer.play({id: $scope.sound.id});
+                    }
                 }
                 else {
                     var toLoadList = [];
@@ -624,6 +640,7 @@ angular.module('sound.controllers', [])
                                 duration: oneData.duration * 1000,
                                 position: 0
                             });
+                            oneData.wave = null;
                         });
                     });
                 }

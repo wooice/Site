@@ -18,7 +18,8 @@ angular.module('sound.services', ['ngResource'])
             update: {method: 'POST', params: {}, isArray: false },
             getSoundToUpload: {method: 'GET', params: {}, isArray: false},
             hasNew: {method: 'GET', params: {sound: 'hasNew'}, isArray: false},
-            hasNewCreated: {method: 'GET', params: {sound: 'hasNewCreated'}, isArray: false}
+            hasNewCreated: {method: 'GET', params: {sound: 'hasNewCreated'}, isArray: false},
+            loadHistory:{method: 'GET', params:{sound: 'streams', action: 'history'}, isArray: true}
         });
     }
     ])
@@ -71,6 +72,7 @@ angular.module('sound.services', ['ngResource'])
             unrepost: {method: 'DELETE', params: {action: 'repost'}, isArray: false},
             comment: {method: 'PUT', params: {action: 'comment'}, isArray: false},
             uncomment: {method: 'DELETE', params: {action: 'comment'}, isArray: false},
+            report: {method: 'PUT', params: {action: 'report'}, isArray: false},
             recommandSounds: {method: 'GET', params: {action:'recommand', sound: 'sounds', pageNum:1, pageSize: 5}, isArray: true}
         });
     }
@@ -107,6 +109,14 @@ angular.module('storage.services', []).
         });
     }])
 
+angular.module('feedback.services', []).
+    factory('Feedback', ['$resource', 'config', function ($resource, config) {
+        return $resource(config.service.url + '/feedback/:action', {}, {
+            create: {method: 'PUT', params: { action: 'create'}, isArray: false},
+            list: {method: 'GET', params: { action: 'list'}, isArray: true}
+        });
+    }])
+
 angular.module('util.services', []).
     factory('Util', ['$http', 'config', '$cookies','Storage', function ($http, config, $cookies, Storage) {
 
@@ -120,5 +130,6 @@ angular.module('util.services', []).
             }
         };
     }])
+
 ;
 

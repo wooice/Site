@@ -1,10 +1,10 @@
 'use strict';
 
 /* App Module */
-angular.module('wooice', ['ngRoute', 'wooice.directives', 'wooice.config','wooice.player', 'wooice.waver', 'angularLocalStorage',
-        'auth.services', 'guest.services', 'profile.services', 'sound.services', 'tag.services', 'storage.services', 'user.services', 'sound.pro.services', 'util.services',
-        'auth.controllers', 'guest.controllers', 'profile.controllers', 'stream.controllers', 'common.stream.controllers', 'user.stream.controllers', 'footer.controllers', 'header.controllers', 'interest.controllers', 'message.services',
-        'sound.controllers', 'sound.social.controllers', 'player.controllers', 'upload.controllers']).
+angular.module('wooice', ['ngRoute', 'wooice.directives', 'wooice.config','wooice.player', 'wooice.waver', 'angularLocalStorage', 'feedback.services',
+        'auth.services', 'guest.services', 'profile.services', 'sound.services', 'tag.services', 'storage.services', 'user.services', 'sound.pro.services', 'util.services',  'admin.services',
+        'auth.controllers', 'guest.controllers', 'profile.controllers', 'stream.controllers', 'common.stream.controllers', 'user.stream.controllers', 'footer.controllers', 'header.controllers',
+        'interest.controllers', 'message.services', 'sound.controllers', 'sound.social.controllers', 'player.controllers', 'upload.controllers', 'admin.controllers', 'infringe.controllers']).
 
     config(['$routeProvider', '$httpProvider','$locationProvider', function ($routeProvider, $httpProvider, $locationProvider) {
         $routeProvider.
@@ -16,6 +16,7 @@ angular.module('wooice', ['ngRoute', 'wooice.directives', 'wooice.config','wooic
             when('/iframe', {templateUrl: 'partials/iframe.html', controller: ''}).
             when('/infringement', {templateUrl: 'partials/infringement.html', controller: 'infringeCtrl'}).
             when('/profile', {templateUrl: 'partials/userProfile.html', controller: 'userProfileCtrl'}).
+            when('/admin', {templateUrl: 'partials/adminHome.html', controller: 'userProfileCtrl'}).
             when('/upload', {templateUrl: 'partials/upload.html', controller: 'soundUploadCtrl'}).
             when('/interest', {templateUrl: 'partials/interest.html', controller: 'interestCtrl'}).
             when('/guest/login', {templateUrl: 'partials/guest/login.html', controller: 'loginCtrl'}).

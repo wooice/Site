@@ -230,8 +230,14 @@ angular.module('stream.controllers', []).
                     if (sound)
                     {
                         sound.color = UserService.getColor();
-                        sound.commentable = oneSound.commentMode !== 'closed';
+                        sound.commentable = oneSound.comment.mode !== 'closed';
                         WooiceWaver.render(sound);
+
+                        var soundPlayStatus = storage.get(oneSound.id + "_player");
+                        if (soundPlayStatus && soundPlayStatus.playing)
+                        {
+                            WooicePlayer.play({id: oneSound.id});
+                        }
                     }
                     else
                     {
@@ -243,12 +249,12 @@ angular.module('stream.controllers', []).
                     var newDatas = Sound.loadData({}, soundsNotStored, function () {
                         $.each(newDatas, function (index, oneData) {
                             //render wave
-                            WooiceWaver.render( {
+                            WooiceWaver.render({
                                 id: oneData.soundId,
                                 waveData: oneData.wave[0],
                                 duration: oneData.duration * 1000,
                                 color: UserService.getColor(),
-                                commentable: oneData.commentMode !== 'closed',
+                                commentable: oneData.comment.mode !== 'closed',
                                 position: 0
                             });
 
@@ -258,6 +264,8 @@ angular.module('stream.controllers', []).
                                 duration: oneData.duration * 1000,
                                 position: 0
                             });
+
+                            oneData.wave = null;
                         });
                     });
                 }
@@ -314,6 +322,28 @@ angular.module('stream.controllers', []).
             clearInterval(soundsReLoad);
             $(window).off("scroll", scrollHandler);
         });
+
+            function toTopBar(toTopEle, mainBody)
+            {
+                this.backToTop = toTopEle;
+                this.mainBody = mainBody;
+                this.load = function()
+                {
+                    this.backToTop.fadeIn();
+                    this.mainBody.bind('scroll', $.proxy(function(event){
+                        this.mainBody.scrollTop > 100 ? this.backToTop.fadeIn() : this.backToTop.fadeIn();
+                    }, this));
+                    this.backToTop.bind('click', function(event){
+                        if (event)
+                        {
+                            event.stop();
+                        }
+                        $("html, body").animate({scrollTop: 0}, 1000);
+                    });
+                }
+            }
+
+            new toTopBar($('#back_top'), $('#sound_streams')).load();
     }])
 ;
 

@@ -2,7 +2,7 @@
 <div role="main" class="container-fluid">
 
     <div class="row-fluid">
-        <div class="span2" >
+        <div class="span2">
             <div style="padding-top: 20px;padding-left: 25px">
                 <img ng-src="{{user.profile.avatorUrl}}" width="200px" height="200px">
 
@@ -50,6 +50,17 @@
                                 ng-src="img/logo/{{site.name}}.png"
                                 class="external_logo"/></a> </i>
                     </span>
+                </div>
+
+                <!-- history  -->
+                <div data-ng-controller="userHistoryCtrl">
+                    <div ng-show="curAlias == userService.getCurUserAlias() && histories.length>0">
+                        <legend>您的播放记录</legend>
+                    <span ng-repeat="history in histories">
+                        <a href="{{history.url}}"><img   style="width: 60px;height: 60px"
+                                ng-src="history.poster"/>{{history.alias}}</a>
+                    </span>
+                    </div>
                 </div>
             </div>
         </div>

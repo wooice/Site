@@ -24,6 +24,7 @@ angular.module('wooice.config', []).constant(
         likesPerPage: 9,
         repostsPerPage:9,
         playsPerPage: 9,
-        visitsPerPage: 9
+        visitsPerPage: 9,
+        infringesPerPage: 9
 	}
 );

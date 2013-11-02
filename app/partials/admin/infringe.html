@@ -1,0 +1,42 @@
+<div id = "infringes">
+      <div ng-repeat="infringe in infringes">
+         举报人 <a href="#/stream/{{infringe.informer.user.profile.alias}}">{{infringe.informer.user.profile.alias}}</a>
+         举报音乐   {{infringe.links}}
+         <div>
+             <label>举报人版权关系</label>
+             <span ng-show="infringe.ownerRight = 'owner'"> 我是版权的拥有者 - 我拥有并且绝对控制侵权内容的版权</span>
+             <span ng-show="infringe.ownerRight = 'agent'"> 我是授权的代理 - 我授权代表侵权内容的所有者 </span>
+             <span ng-show="infringe.ownerRight = 'other'"> 我不是侵权内容的直接关系人，但希望举报侵权行为 </span>
+         </div>
+          <div>
+              <label>侵权内容</label>
+              <span ng-show="infringe.rightIssue = 'work'"> 文字（歌词）， 谱曲</span>
+              <span ng-show="infringe.rightIssue = 'record'"> 录制 </span>
+              <span ng-show="infringe.rightIssue = 'other'"> 其他版权问题 </span>
+              <label>侵权细节</label>
+              {{infringe.detail}}
+              <label>ISWC编码</label>
+              {{infringe.iswc}}
+          </div>
+          <div>
+              <label>I举报人信息</label>
+              <div class="row-fluid">
+                  <div class="span6">
+                      <label>姓</label>    {{infringe.informer.xing}}
+                      <label>公司</label>    {{infringe.informer.company}}
+                      <label>街</label>    {{infringe.informer.street}}
+                      <label>邮编</label>    {{infringe.informer.postalCode}}
+                      <label>手机</label>    {{infringe.informer.mobile}}
+                  </div>
+                  <div class="span6">
+                      <label>名</label>    {{infringe.informer.ming}}
+                      <label>版权拥有者</label>    {{infringe.informer.rightsHolder}}
+                      <label>城市</label>    {{infringe.informer.city}}
+                      <label>国家</label>    {{infringe.informer.country}}
+                      <label>邮箱</label>    {{infringe.informer.email}}
+                      <label>固定电话</label>    {{infringe.informer.phone}}
+                  </div>
+              </div>
+          </div>
+      </div>
+</div>

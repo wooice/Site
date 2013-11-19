@@ -199,7 +199,7 @@ angular.module('stream.controllers', []).
                 });
             }
 
-            var soundsData = Stream.stream({filter: $routeParams.filter, value: $routeParams.value}, postData, function () {
+            var soundsData = Stream.stream({filter: $routeParams.filter, value: $routeParams.value, pageNum: $scope.pageNum}, postData, function () {
                 $.each(soundsData, function (index, soundRecord) {
                     if (!soundRecord) {
                         return;
@@ -226,11 +226,11 @@ angular.module('stream.controllers', []).
 
                 var soundsNotStored = [];
                 $.each($scope.sounds, function(index, oneSound){
-                     var sound =  storage.get(oneSound.id + "_wave");
+                    var sound =  storage.get(oneSound.id + "_wave");
                     if (sound)
                     {
                         sound.color = UserService.getColor();
-                        sound.commentable = oneSound.comment.mode !== 'closed';
+                        sound.commentable = (oneSound.comment.mode !== 'closed');
                         WooiceWaver.render(sound);
 
                         var soundPlayStatus = storage.get(oneSound.id + "_player");
@@ -254,7 +254,7 @@ angular.module('stream.controllers', []).
                                 waveData: oneData.wave[0],
                                 duration: oneData.duration * 1000,
                                 color: UserService.getColor(),
-                                commentable: oneData.comment.mode !== 'closed',
+                                commentable: oneData.commentMode !== 'closed',
                                 position: 0
                             });
 
@@ -270,7 +270,7 @@ angular.module('stream.controllers', []).
                     });
                 }
 
-                if (soundsData.length >= config.soundsPerPage) {
+                if ($scope.sounds.length >= config.soundsPerPage) {
                     $scope.pageNum++;
                 }
 
@@ -306,6 +306,8 @@ angular.module('stream.controllers', []).
                         }
                     });
                 });
+
+                $scope.$apply();
             });
         };
 
@@ -329,14 +331,14 @@ angular.module('stream.controllers', []).
                 this.mainBody = mainBody;
                 this.load = function()
                 {
-                    this.backToTop.fadeIn();
-                    this.mainBody.bind('scroll', $.proxy(function(event){
-                        this.mainBody.scrollTop > 100 ? this.backToTop.fadeIn() : this.backToTop.fadeIn();
+                    this.backToTop.fadeOut();
+                    $(window).bind('scroll', $.proxy(function(event){
+                        $(window).scrollTop()  > 100 ? this.backToTop.fadeIn() : this.backToTop.fadeOut();
                     }, this));
                     this.backToTop.bind('click', function(event){
                         if (event)
                         {
-                            event.stop();
+                            event.preventDefault();
                         }
                         $("html, body").animate({scrollTop: 0}, 1000);
                     });

@@ -137,8 +137,8 @@ angular.module('profile.controllers', [])
     }])
 
     .controller('externalProfileCtrl', ['$scope', '$routeParams','User','UserService', 'UserProfile', function ($scope, $routeParams, User, UserService, UserProfile) {
-        var user = User.get({userAlias: UserService.getCurUserAlias()},function(){
-            $scope.user = user;
+        var userExternal = User.getExternal({userAlias: UserService.getCurUserAlias()},function(){
+            $scope.userExternal = userExternal;
         });
 
         $scope.saveProfile = function(){

@@ -11,7 +11,7 @@
             </span>
         </div>
     <table style="width: 100%">
-        <tr ng-repeat="site in user.external.sites">
+        <tr ng-repeat="site in userExternal.sites">
             <td><img src="img/logo/{{site.name}}.png" class="external_logo"/></td>
             <td>
                 <input class="input-block-level" name="{{site.displayName}}" type="url" placeholder="{{site.displayName}}" ng-model="site.url">

@@ -15,7 +15,7 @@
         <ul class="tags" style="padding-top: 10px">
             <li ng-repeat="tag in sound.tags">
                 <a href="#/stream/tags/{{tag.label}}">
-                    <span ng-show="tag.curated">{{tag.label}}</span>
+                    <span ng-show="tag.curated"><i class="icon-certificate" style="color: #A4D3EE" title="Wooice标签"></i> {{tag.label}}</span>
                     <span ng-show="!tag.curated">{{tag.label}}</span>
                 </a>
                 <span style="padding-left: 3px;cursor:pointer;" ng-click="dettachTag()"

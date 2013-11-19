@@ -1,12 +1,11 @@
 'use strict';
 
-/* App Module */
-angular.module('wooice', ['ngRoute', 'wooice.directives', 'wooice.config','wooice.player', 'wooice.waver', 'angularLocalStorage', 'feedback.services',
-        'auth.services', 'guest.services', 'profile.services', 'sound.services', 'tag.services', 'storage.services', 'user.services', 'sound.pro.services', 'util.services',  'admin.services',
+angular.module('wooice', ['ngRoute', 'ui.bootstrap', 'wooice.directives', 'wooice.config', 'wooice.player', 'wooice.waver', 'angularLocalStorage', 'feedback.services',
+        'auth.services', 'guest.services', 'profile.services', 'sound.services', 'tag.services', 'storage.services', 'user.services', 'sound.pro.services', 'util.services', 'admin.services',
         'auth.controllers', 'guest.controllers', 'profile.controllers', 'stream.controllers', 'common.stream.controllers', 'user.stream.controllers', 'footer.controllers', 'header.controllers',
         'interest.controllers', 'message.services', 'sound.controllers', 'sound.social.controllers', 'player.controllers', 'upload.controllers', 'admin.controllers', 'infringe.controllers']).
 
-    config(['$routeProvider', '$httpProvider','$locationProvider', function ($routeProvider, $httpProvider, $locationProvider) {
+    config(['$routeProvider', '$httpProvider',function ($routeProvider, $httpProvider) {
         $routeProvider.
             when('/stream', {templateUrl: 'partials/commonStream.html', controller: ''}).
             when('/stream/:value', {templateUrl: 'partials/userStream.html', controller: 'userBasicController'}).
@@ -19,6 +18,7 @@ angular.module('wooice', ['ngRoute', 'wooice.directives', 'wooice.config','wooic
             when('/admin', {templateUrl: 'partials/adminHome.html', controller: 'userProfileCtrl'}).
             when('/upload', {templateUrl: 'partials/upload.html', controller: 'soundUploadCtrl'}).
             when('/interest', {templateUrl: 'partials/interest.html', controller: 'interestCtrl'}).
+            when('/copyright', {templateUrl: 'partials/copyright.html', controller: ''}).
             when('/guest/login', {templateUrl: 'partials/guest/login.html', controller: 'loginCtrl'}).
             when('/guest/register', {templateUrl: 'partials/guest/register.html', controller: 'registerCtrl'}).
             when('/guest/forgetPass', {templateUrl: 'partials/guest/forgetPass.html', controller: 'forgetPassCtrl'}).
@@ -36,7 +36,7 @@ angular.module('wooice', ['ngRoute', 'wooice.directives', 'wooice.config','wooic
             var error = function (response) {
                 switch (response.status) {
                     case 401:
-                        $location.url('/guest/login');
+                        $location.url('/guest/login?relogin=true');
                         return $q.reject(response);
                     case 403:
                         $location.url('/forbidden');
@@ -57,7 +57,17 @@ angular.module('wooice', ['ngRoute', 'wooice.directives', 'wooice.config','wooic
 //        $locationProvider.html5Mode(true);
         $httpProvider.responseInterceptors.push(httpErrors);
     }])
-    .run(function ($rootScope, config, $location, $anchorScroll, $routeParams, Auth, UserService) {
+    .run(function ($rootScope, config, $location, $anchorScroll, $routeParams, Auth, UserService, Guest) {
+        if ($routeParams.relogin == 'true' && $.cookie('token'))
+        {
+            var user = {userId: UserService.getCurUserAlias(), token: $.cookie('token')};;
+            UserService.tokenLogin({}, user, function(){
+                $location.url('/stream');
+            }, function(){
+                $location.url('/guest/login');
+            });
+        }
+
         $rootScope.config = config;
 
         var routesThatDontRequireAuth = ['/guest', '/auth'];
@@ -96,26 +106,23 @@ angular.module('wooice', ['ngRoute', 'wooice.directives', 'wooice.config','wooic
                     $location.path('/forbidden');
                     return;
                 }
-                if (!routeGuest($location.url()) && UserService.validateRoleGuest())
-                {
+                if (!routeGuest($location.url()) && UserService.validateRoleGuest()) {
                     $location.path('/guest/login');
                     return;
                 }
             }
             else {
-                if (UserService.validateRoleAdmin())
-                {
+                if (UserService.validateRoleAdmin()) {
                     $location.path('/admin');
-                    return ;
+                    return;
                 }
-                if (UserService.validateRoleGuest())
-                {
+                if (UserService.validateRoleGuest()) {
                     $location.path('/guest/login');
                 }
-                else
-                {
+                else {
                     $location.path('/stream');
                 }
             }
         });
+
     });

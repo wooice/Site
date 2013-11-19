@@ -5,7 +5,7 @@
 angular.module('sound.services', ['ngResource'])
     .factory('Stream', ['$resource', 'config', function ($resource, config) {
         return $resource(config.service.url + '/sound/streams/:filter/:value', {}, {
-            stream: {method: 'POST', params: { pageNum: 0, soundsPerPage: config.soundsPerPage}, isArray: true}
+            stream: {method: 'POST', params: { pageNum: 1, soundsPerPage: config.soundsPerPage}, isArray: true}
         });
     }
     ])
@@ -55,8 +55,7 @@ angular.module('sound.services', ['ngResource'])
                     priority: sound.profile.priority,
                     duration: sound.profile.duration,
                     played: false,
-                    downloadable: sound.profile.downloadable,
-                    url: sound.profile.url
+                    downloadable: sound.profile.downloadable
                 };
 
                 return  newSound;

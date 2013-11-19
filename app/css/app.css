@@ -334,8 +334,8 @@ input.ng-dirty.ng-valid {
 /* back to top icon*/
 #back_top {
     position: fixed;
-    bottom: 150px;
-    right: 70px;
+    bottom: 50px;
+    right: 100px;
 }
 
 #back_top a {
@@ -365,7 +365,7 @@ input.ng-dirty.ng-valid {
     filter: alpha(opacity=60);
 
     margin-bottom: 7px;
-    background: #FFFFFF url(../images/solr/up-arrow.png) no-repeat center center;
+    background: #FFFFFF url(../img/up-arrow.png) no-repeat center center;
 
     /* rounded corners */
     -webkit-border-radius: 15px;

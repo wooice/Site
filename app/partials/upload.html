@@ -58,7 +58,7 @@
                     <img ng-src="{{defaultSound.posterUrl}}" id="poster_img" height="200" width="200">
                   <span style="margin-top: -60px;margin-left: 50px" ng-show="!defaultSound.uplodingPoster"
                         class="button button-small button-rounded button-flat action-button fileinput-button">
-                    <span>上传海报</span>
+                    <span tooltip="上传成功后请点击'保存声音信息'按钮确认保存海报">上传海报</span>
                     <input id="poster_upload" type="file" name="file">
                   </span>
 
@@ -90,14 +90,15 @@
                                 <div id="tags_div" ng-repeat="tag in defaultSound.tags" style="float: left">
                                     <div class="btn-group green" style="padding: 5px;padding-right: 15px;"
                                          id="tag_{{tag}">
-                                        <label><i class="icon-tag "> {{tag}}</i>  <i class="icon-remove"
+                                        <label><i ng-show="tag.curated" class='icon-certificate'></i><i class="icon-tag "> {{tag}}</i>  <i class="icon-remove"
                                                                                           ng-click="removeTag(tag)"></i>
                                         </label>
                                     </div>
                                 </div>
                             </div>
 
-                            <input type="text" id="tags" name="tags" class="input-small" placeholder="请打一个标签">
+                            <input type="text" id="tags" name="tags" class="input-small" placeholder="请打一个标签"
+                                   tooltip="丰富的标签会让您的声音更容易被发现">
                         </div>
 
                         <div style="width: 100%;padding: 5px">
@@ -115,17 +116,17 @@
                                 <label style="color:rgb(51, 51, 51)">版权信息</label>
                                 <button type="button" class="btn" ng-click="defaultSound.recordType = 'resing'">翻唱</button>
                                 <button type="button" class="btn active" ng-click="defaultSound.recordType = 'original'"
-                                      tooltip="上传3首原创音乐即可获得永久会员资格"  >原创</button>
+                                      tooltip="上传5首原创音乐即可获得会员资格" >原创</button>
                             </div>
 
                             <div style="padding-top: 15px">
                                 <div ng-show="defaultSound.recordType && defaultSound.recordType == 'resing'">
                                     <div style="color: gray;font-size: 10px">
-                                        上传翻唱作品前请确保您没有侵犯原作者的音乐版权。<a href="">了解更多版权信息。</a>
+                                        上传翻唱作品前请确保您没有侵犯原作者的音乐版权。<a href="#/copyright" target="_blank">了解更多版权信息。</a>
                                     </div>
                                 </div>
                                 <div ng-show="defaultSound.recordType && defaultSound.recordType == 'original'">
-                                    <label tooltip="请填写音著协注册的版权注册号码，将用于版权的验证">版权注册编码(ISWC编码)</label>
+                                    <label>版权注册编码(ISWC编码)</label>
                                     <div class="text-warning"
                                          ng-show="upload_form.rightNumber.$dirty && upload_form.rightNumber.$invalid">
                                         <small class="text-warning"
@@ -133,11 +134,12 @@
                                             请输入正确的版权编号
                                         </small>
                                     </div>
-                                    <input type="text" name="rightNumber" ng-model="defaultSound.soundRight.rightNumber"  ng-pattern="/^\d{16}$/">
+                                    <input type="text" name="rightNumber" ng-model="defaultSound.soundRight.rightNumber"  ng-pattern="/^\d{16}$/"
+                                           tooltip="请填写音著协注册的版权注册编码，该编码将用于版权验证" >
                                     <div style="color: gray;font-size: 10px">
                                         * 为了更好的保护您和他人的音乐版权，请提供由中国音乐著作权协会认证的版权信息。
                                         如果您尚未注册版权，请登录<a  href="http://morp.mcsc.com.cn/www_new/mainPage.php" target="_blank">音著协版权服务中心</a>注册版权，获得合法的版权保护。
-                                        <a href="">了解更多版权信息。</a>
+                                        <a href="#/copyright" target="_blank">了解更多版权信息。</a>
                                     </div>
                                 </div>
                             </div>

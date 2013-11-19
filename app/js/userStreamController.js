@@ -59,12 +59,11 @@ angular.module('user.stream.controllers', [])
     }])
     .controller('userHistoryCtrl', ['$scope', 'config', '$routeParams', 'Sound', 'SoundUtilService', 'UserService', function ($scope, config, $routeParams, Sound, SoundUtilService, UserService) {
         $scope.userService = UserService;
-        $scope.histories = [];
         var histories = Sound.loadHistory({pageNum: 1, soundsPerPage: 6}, function(){
+            $scope.histories = [];
             $.each(histories, function(index, history){
-                history = SoundUtilService.buildSound(history);
+                $scope.histories.push(SoundUtilService.buildSound(history));
             });
-            $scope.histories = histories;
         });
     }])
     .controller('userSocialController', ['$scope', 'config', '$routeParams', 'UserSocial', 'User', function ($scope, config, $routeParams, UserSocial, User) {

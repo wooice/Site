@@ -20,7 +20,7 @@
              </span>
     </div>
 
-    <form name="the_form" class="form-horizontal" >
+    <form name="the_form" class="form-horizontal">
 
         <div class="span7">
             <div style="padding-bottom: 10px" ng-show="message">
@@ -56,9 +56,10 @@
                             <label>性别</label>
 
                             <div style="padding-bottom: 12px">
-                                <span style="padding-right: 5px"><i class="icon-male" title="男生"> </i><input type="radio"
-                                                                                                            ng-model="user.profile.gender"
-                                                                                                            value="man"></span>
+                                <span style="padding-right: 5px"><i class="icon-male" title="男生"> </i><input
+                                        type="radio"
+                                        ng-model="user.profile.gender"
+                                        value="man"></span>
                                  <span style="padding-right: 5px"><i class="icon-female" title="女生"> </i><input
                                          type="radio" ng-model="user.profile.gender"
                                          value="women"></span>
@@ -83,39 +84,37 @@
                               placeholder="介绍你自己..."></textarea>
                 </div>
             </div>
-        </div>
 
-        <legend>颜色偏好</legend>
-        <div>
-            <ul style="list-style-type: none;padding-left: 13%">
-                <li data-ng-repeat="color in colors"
-                    style="width: 55px;height:20px;list-style-type: none;display: table-cell;padding-right:15px">
-                    <label ng-click="chooiceColor()">
+
+            <div style="padding-top: 15px">
+                <label>颜色偏好</label>
+                <ul style="list-style-type: none;padding-left: 4%">
+                    <li data-ng-repeat="color in colors"
+                        style="width: 55px;height:20px;list-style-type: none;display: table-cell;padding-right:15px">
+                        <label ng-click="chooiceColor()">
               <span style="background-color: {{color.upper}} !important;height: 25px;display: block">
               </span>
               <span style="background-color: {{color.lower}} !important;height: 25px;display: block">
               </span>
-                    </label>
-                </li>
-            </ul>
-            <div class="span1" style="width: 7%">
-                当前颜色
-            </div>
-            <div class="span8">
+                        </label>
+                    </li>
+                </ul>
+                <div class="span12">
                     <span style="background-color: {{user.profile.color.upper}} !important;height: 10px;display: block">
                     </span>
                     <span style="background-color: {{user.profile.color.lower}} !important;height: 10px;display: block">
                     </span>
-            </div>
+                </div>
 
-            <div class="pull-right" style="padding-top: 15px">
-                <button id="save_button" href="#"
-                        class="button button-small button-rounded button-flat-action action-button"
-                        ng-disabled="the_form.$invalid"
-                        onclick="return false;" ng-click="saveProfile()">
-                    <span>保存信息</span>
-                </button>
             </div>
+        </div>
+        <div class="pull-right" style="padding-top: 15px">
+            <button id="save_button" href="#"
+                    class="button button-small button-rounded button-flat-action action-button"
+                    ng-disabled="the_form.$invalid"
+                    onclick="return false;" ng-click="saveProfile()">
+                <span>保存信息</span>
+            </button>
         </div>
 
     </form>

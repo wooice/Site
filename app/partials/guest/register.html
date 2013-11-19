@@ -4,6 +4,9 @@
         <legend>欢迎注册</legend>
         <form name="the_form" class="form-horizontal" style="padding-top: 20px">
             <div class="control-group">
+                <b ng-show="!success">注册失败，请稍后再试</b>
+            </div>
+            <div class="control-group">
                 <label class="control-label" for="inputAlias">邮箱</label>
                 <div class="controls">
                     <div class="text-warning"
@@ -25,7 +28,7 @@
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label" for="inputEmail">用户名</label>
+                <label class="control-label" for="inputEmail" tooltip="用户名将用于版权验证，请填写您在创业音乐作品中的常用名" >用户名</label>
                 <div class="controls">
                     <div class="text-warning"
                          ng-show="the_form.alias.$dirty && the_form.alias.$invalid">
@@ -34,7 +37,7 @@
                             用户名已被使用，请重新选择
                         </small>
                     </div>
-                    <input type="text" id="inputEmail" name="alias"  placeholder="用户名" ng-model="userAlias" alias-unique="alias" required >
+                    <input type="text" id="inputEmail" name="alias"  placeholder="用户名" ng-model="userAlias" alias-unique="alias" required>
                 </div>
             </div>
             <div class="control-group">

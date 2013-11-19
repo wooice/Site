@@ -26,11 +26,11 @@ angular.module('message.services', ['ngCookies']).
         }
 
         return {
-            setupTimer: function(){
+            setupMessager: function(){
                 timer = setInterval(loadMessages, 60 * 1000);
             },
 
-            destroyTimer: function(){
+            destroyMessager: function(){
                 clearInterval(timer);
             }
         }

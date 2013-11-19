@@ -5,7 +5,7 @@
         var waveWidth = parseInt(canvas.width, 10);
         var waveHeight = parseInt(canvas.height, 10);
         var waveData = interpolateArray(options.waveData, waveWidth);
-        options.waveData = null;
+        delete options.waveData;
 
         var defaultUpperColor = '#4f4f4f';
         var defaultLowerColor = '#9E9E9E';
@@ -17,7 +17,8 @@
         var playedUpperDeeper = '#008AEE';
         var playedUpperPoint = '#0077EE';
         var context = canvas.getContext("2d");
-        var soundDuration = options.soundDuration;
+        //todo: minus 2000 for a storage api bug
+        var soundDuration = options.soundDuration - 2000;
         var soundPosition = options.soundPosition;
         var soundBytesloaded = options.soundBytesloaded;
         var soundBytesTotal = options.soundBytesTotal;
@@ -31,28 +32,39 @@
         var commentable = options.commentable;
 
         if (options.color) {
-            playedUpperColor = options.color.upper;
-            playedLowerColor = options.color.lower;
-            playedUpperDeeper = options.color.deeper;
+            playedUpperColor = options.color.upper?options.color.upper:'#00B2EE';
+            playedLowerColor = options.color.lower?options.color.lower:'#A4D3EE';
+            playedUpperDeeper = options.color.deeper?options.color.deeper:'#008AEE';
+        }
+
+        this.cleanWaveData = function() {
+            delete waveData;
+        }
+
+        this.recoverWaveData = function(storage) {
+            var storedSound = storage.get(soundId + "_wave");
+            var canvas = document.getElementById("sound_wave_canvas_" + soundId);
+            canvas.width = $('#sound_wave_' + soundId).width();
+            canvas.height = $('#sound_wave_' + soundId).height();
+           this.updateCanvas(canvas, storedSound.waveData);
+           delete storedSound;
         }
 
         this.redraw = function () {
             redrawWave();
         }
 
-        this.updateWaveData = function (waveData) {
-            options.waveData =  waveData;
-        }
-
-        this.updateCanvas = function (newCanvas) {
-            canvas = newCanvas;
-            context = canvas.getContext("2d");
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            waveWidth = parseInt(canvas.width, 10);
-            waveHeight = parseInt(canvas.height, 10);
-            waveData = interpolateArray(options.waveData, waveWidth);
+        this.updateCanvas = function (newCanvas, newWaveData) {
+            if (newCanvas)
+            {
+                canvas = newCanvas;
+                context = canvas.getContext("2d");
+                waveWidth = parseInt(canvas.width, 10);
+                waveHeight = parseInt(canvas.height, 10);
+            }
+            waveData = interpolateArray(newWaveData, waveWidth);
             attachCanvasEvents();
-            options.waveData = null;
+            delete newWaveData;
         }
 
         this.updateCommentable = function (newValue) {
@@ -120,6 +132,7 @@
                 i++;
             }
             newData[fitCount - 1] = data[data.length - 1];
+            delete data;
             return newData;
         }
 

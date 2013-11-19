@@ -6,7 +6,14 @@ angular.module('upload.controllers', [
     .controller('soundUploadCtrl', [
         '$scope', 'Sound', 'Tag', 'User', 'config', 'Storage', 'UserService',
         function ($scope, Sound, Tag, User, config, Storage, UserService) {
+            $scope.commentModes = [
+                {name: '所有人可見', id: 'public'},
+                {name: '自己可見', id: 'private'},
+                {name: '关闭評論', id: 'closed'}
+            ];
+
             reset();
+
             $scope.uploadUrl = "http://up.qiniu.com";
             $scope.defaultSound.minutesToUpload = 120;
             $scope.defaultSound.secondsToUpload = 0;
@@ -23,13 +30,6 @@ angular.module('upload.controllers', [
                 }
             }
 
-
-            $scope.commentModes = [
-                {name: '所有人可見', id: 'public'},
-                {name: '自己可見', id: 'private'},
-                {name: '关闭評論', id: 'closed'}
-            ];
-            $scope.defaultSound.commentMode = $scope.commentModes[0];
 
             $scope.save = function () {
                 if ($scope.defaultSound.name && $scope.defaultSound.tags.length > 0) {
@@ -243,13 +243,12 @@ angular.module('upload.controllers', [
             $scope.jqXHR = $('.upload_button').fileupload({
                 url: $scope.uploadUrl,
                 dataType: 'json',
-                acceptFileTypes: /(\.|\/)(mp3|wav)$/i,
 
                 add: function (e, data) {
-                    if (!(/\.(mp3|wav|flac|ogg)$/i).test(data.files[0].name)) {
+                    if (!(/\.(mp3|wma|flac|ogg)$/i).test(data.files[0].name)) {
                         $scope.$apply(function () {
                             $scope.defaultSound.uploadMsgClass = "text-error";
-                            $scope.defaultSound.uploadMsg = '对不起,您上传的文件格式不被本站接受，请上传以下音频文件中的一种：mp3,wav,flac,ogg';
+                            $scope.defaultSound.uploadMsg = '对不起,您上传的文件格式不被本站接受，请上传以下音频文件中的一种：mp3,wma,flac,ogg';
                         });
                         return;
                     }
@@ -461,6 +460,8 @@ angular.module('upload.controllers', [
                 $scope.defaultSound.uplodingPoster = false;
                 $scope.defaultSound.imgUploadMsgClass = "";
                 $scope.defaultSound.imgUploadMsg = '';
+
+                $scope.defaultSound.commentMode = $scope.commentModes[0];
             }
         }
     ])

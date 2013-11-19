@@ -3,8 +3,8 @@
 /* Controllers */
 
 angular.module('header.controllers', [])
-    .controller('headerCtrl', ['$scope', '$location', '$routeParams', 'User', 'UserService','WooicePlayer','Feedback',
-    function ($scope, $location, $routeParams, User, UserService, WooicePlayer, Feedback) {
+    .controller('headerCtrl', ['$scope', '$location', '$routeParams', 'User', 'UserService','WooicePlayer','Feedback', 'MessageService',
+    function ($scope, $location, $routeParams, User, UserService, WooicePlayer, Feedback, MessageService) {
         $scope.q = $routeParams.q;
         $scope.userAlias = UserService.getCurUserAlias();
 
@@ -14,6 +14,7 @@ angular.module('header.controllers', [])
         $scope.logout = function () {
             User.logout({}, function () {
                 UserService.setupUser(null);
+                MessageService.destroyMessager();
                 $.globalMessenger().post({
                     message: "感谢您的使用",
                     hideAfter: 10,

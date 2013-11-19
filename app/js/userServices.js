@@ -96,7 +96,7 @@ angular.module('user.services', ['ngCookies']).
                 }
             },
             getColor: function(){
-                if ($cookies.color)
+                if ($cookies.color && JSON.parse($cookies.color))
                 {
                     return JSON.parse($cookies.color);
                 }

@@ -14,7 +14,7 @@
                 </div>
 
                 <!-- basic social info-->
-                <div style="padding-bottom: 25px">
+                <div style="padding-bottom: 25px;padding-left: 15%">
                     <div style="padding-bottom: 10px">
                         <i class="icon-music icon-large" title="{{user.userSocial.sounds}} sounds"
                            style="font-size: 18px"><span style="padding-left:10px; padding-right: 10px"
@@ -26,7 +26,7 @@
                     </div>
                     <div>
                         <i class="icon-user icon-large" title="following {{user.userSocial.following}}"
-                           style="font-size: 18px"><span style="padding-left:10px; padding-right: 10px"
+                           style="font-size: 18px;"><span style="padding-left:10px; padding-right: 10px"
                                                          title="following {{user.userSocial.following}}">{{user.userSocial.following}}</span></i>|
                         <i class="icon-group icon-large" title="{{user.userSocial.followed}} followers"
                            style="padding-left:10px;font-size: 18px;"><span
@@ -37,7 +37,7 @@
 
                 <!-- social action-->
                 <div style="padding-bottom: 25px" ng-class="{true: 'hide', false: ''}[user.isCurrent]">
-                    <a href="#" class="button button-rounded button-flat-primary button-small" onclick="return false;"
+                    <a href="#" class="button button-rounded button-flat-primary button-small" onclick="return false;" style="width: 80%"
                        ng-click="follow(user.profile.alias)">{{user.userPrefer.followingString}}</a>
                     <a href="#" class="button button-rounded button-flat-highlight button-small hide"
                        onclick="return false;">Share</a>
@@ -53,12 +53,12 @@
                 </div>
 
                 <!-- history  -->
-                <div data-ng-controller="userHistoryCtrl">
+                <div data-ng-controller="userHistoryCtrl" style="padding-top: 10px">
                     <div ng-show="curAlias == userService.getCurUserAlias() && histories.length>0">
-                        <legend>您的播放记录</legend>
+                        <legend style="font-size: 14px">您的播放记录</legend>
                     <span ng-repeat="history in histories">
-                        <a href="{{history.url}}"><img   style="width: 60px;height: 60px"
-                                ng-src="history.poster"/>{{history.alias}}</a>
+                        <a href="{{history.title.route}}" title="{{history.alias}}" style="padding: 3px"><img   style="width: 55px;height: 55px"
+                                ng-src="{{history.poster}}"/></a>
                     </span>
                     </div>
                 </div>
@@ -77,13 +77,11 @@
                 </legend>
                 <div ng-show="following.length > 0" ng-repeat="user in following"
                      style="float:left; padding-right: 8px">
-                    <div style="text-align:center;">
-                        <a href="#" onclick="return false;">
+                    <div style="text-align:center;" ng-show="$index < 3">
+                        <a href="{{user.route}}" title="{{user.profile.alias}}">
                             <img style="width: 60px;height: 60px" ng-src="{{user.profile.avatorUrl}}">
                         </a>
-                        </a>
                         <div>
-                            <a href='{{user.route}}'>{{user.profile.alias}}</a>
                         </div>
                     </div>
                 </div>
@@ -97,14 +95,11 @@
                     关注他的人({{user.userSocial.followed}})
                 </legend>
                 <div ng-show="followed.length > 0" ng-repeat="user in followed" style="float:left; padding-right: 8px">
-                    <div style="text-align:center;">
-                        <a href="#" onclick="return false;">
+                    <div style="text-align:center;" ng-show="$index < 3">
+                        <a href="{{user.route}}" title="{{user.profile.alias}}">
                             <img style="width: 60px;height: 60px" ng-src="{{user.profile.avatorUrl}}">
                         </a>
                         </a>
-                        <div>
-                            <a href='{{user.route}}'>{{user.profile.alias}}</a>
-                        </div>
                     </div>
                 </div>
                 <div ng-show="followed.length == 0" style="padding-left: 10px">

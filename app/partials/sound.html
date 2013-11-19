@@ -40,8 +40,8 @@
                         <a class='sound_owner ' href="{{sound.owner.route}}" ng-show="mode == 'player'" target="_blank">{{sound.owner.alias}}</a>
 
                         <div class="pull-right" style="font-size: 10px"  ng-show="mode == 'default'">
-                            <a href="#/infringement?alias={{sound.alias}}" tooltip="版权侵权举报"><i class="icon-ban-circle"></i> 侵权举报</a><br>
-                            <a href="#" onclick="return false;" tooltip="低俗，反动等内容举报" ng-click="reportSound()" style="text-decoration: none">
+                            <a href="#/infringement?alias={{sound.alias}}" tooltip="举报版权侵权"><i class="icon-ban-circle"></i> 侵权举报</a><br>
+                            <a href="#" onclick="return false;" tooltip="举报低俗，反动等内容" ng-click="reportSound()" style="text-decoration: none">
                                 <i class="icon-thumbs-down-alt" ng-show="!sound.reported"></i>
                                 <i class="icon-thumbs-down" ng-show="sound.reported"></i>
                                 内容举报</a>

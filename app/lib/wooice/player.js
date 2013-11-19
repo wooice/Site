@@ -129,10 +129,6 @@ angular.module('wooice.player', []).
 
                                 soundManager._writeDebug('Starting sound: ' + this.id);
 
-                                WooiceWaver.play({
-                                    id: this.id
-                                });
-
                                 $('#cur_sound').attr('href', soundData.soundList[soundData.currentSound].title.route);
                                 $('#cur_sound').text(soundData.soundList[soundData.currentSound].title.alias);
 
@@ -184,10 +180,6 @@ angular.module('wooice.player', []).
                                 }
 
                                 soundManager._writeDebug('Resuming sound: ' + this.id);
-
-                                WooiceWaver.play({
-                                    id: this.id
-                                });
 
                                 $('#cur_sound').attr('href', soundData.soundList[soundData.currentSound].title.route);
                                 $('#cur_sound').text(soundData.soundList[soundData.currentSound].title.alias);

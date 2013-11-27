@@ -5,14 +5,24 @@
 angular.module('wooice.config', []).constant(
 	'config',
 	{
-		site : {
-			url : 'http://localhost:8080/Site/app/index.html'
-		},
 
-		service : {
-			url : 'http://localhost\\:8080/commonService',
-            url_noescp : 'http://localhost:8080/commonService'
-		},
+//		site : {
+//			url : 'http://wowoice.com:8080/Site/app/index.html'
+//		},
+//
+//		service : {
+//			url : 'http:///wowoice.com\\:8080/Services',
+//            url_noescp : 'http:///wowoice.com:8080/Services'
+//		},
+
+        site : {
+            url : 'http://www.wowoice.com'
+        },
+
+        service : {
+            url : 'http://www.wowoice.com/Services',
+            url_noescp : 'http://www.wowoice.com/Services'
+        },
 
         userStreamPath: 'index.html#/stream/',
 

@@ -25,7 +25,7 @@ angular.module('user.stream.controllers', [])
                 }
                 else
                 {
-                    $.cookie($scope.user.profile.alias + '_avator_large_url', $scope.user.profile.avatorUrl, {expires: config.imageAccessExpires});
+                    $.cookie($scope.user.profile.alias + '_avator_large_url', $scope.user.profile.avatorUrl, {expires: config.imageAccessExpires, path:'/images'});
                 }
             }
             if ($scope.user.userPrefer.following) {
@@ -74,15 +74,15 @@ angular.module('user.stream.controllers', [])
                 }
                 else
                 {
-                    var avatorUrl = $.cookie($scope.user.profile.alias + '_avator_small_url');
+                    var avatorUrl = $.cookie(user.profile.alias + '_avator_small_url');
 
                     if (avatorUrl)
                     {
-                        $scope.user.profile.avatorUrl = avatorUrl;
+                        user.profile.avatorUrl = avatorUrl;
                     }
                     else
                     {
-                        $.cookie($scope.user.profile.alias + '_avator_small_url', $scope.user.profile.avatorUrl, {expires: config.imageAccessExpires});
+                        $.cookie(user.profile.alias + '_avator_small_url', user.profile.avatorUrl, {expires: config.imageAccessExpires, path:'/images'});
                     }
                 }
                 user.route = config.userStreamPath + user.profile.alias;
@@ -97,15 +97,15 @@ angular.module('user.stream.controllers', [])
                 }
                 else
                 {
-                    var avatorUrl = $.cookie($scope.user.profile.alias + '_avator_small_url');
+                    var avatorUrl = $.cookie(user.profile.alias + '_avator_small_url');
 
                     if (avatorUrl)
                     {
-                        $scope.user.profile.avatorUrl = avatorUrl;
+                        user.profile.avatorUrl = avatorUrl;
                     }
                     else
                     {
-                        $.cookie($scope.user.profile.alias + '_avator_small_url', $scope.user.profile.avatorUrl, {expires: config.imageAccessExpires});
+                        $.cookie(user.profile.alias + '_avator_small_url', user.profile.avatorUrl, {expires: config.imageAccessExpires, path:'/images'});
                     }
                 }
                 user.route = config.userStreamPath + user.profile.alias;

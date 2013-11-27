@@ -3,7 +3,7 @@
 angular.module('wooice', ['ngRoute', 'ui.bootstrap', 'wooice.directives', 'wooice.config', 'wooice.player', 'wooice.waver', 'angularLocalStorage', 'feedback.services',
         'auth.services', 'guest.services', 'profile.services', 'sound.services', 'tag.services', 'storage.services', 'user.services', 'sound.pro.services', 'util.services', 'admin.services',
         'auth.controllers', 'guest.controllers', 'profile.controllers', 'stream.controllers', 'common.stream.controllers', 'user.stream.controllers', 'footer.controllers', 'header.controllers',
-        'interest.controllers', 'message.services', 'sound.controllers', 'sound.social.controllers', 'player.controllers', 'upload.controllers', 'admin.controllers', 'infringe.controllers']).
+        'interest.controllers', 'message.services', 'sound.controllers', 'sound.social.controllers', 'player.controllers', 'upload.controllers', 'admin.controllers', 'infringe.controllers', 'templates']). //, 'templates'
 
     config(['$routeProvider', '$httpProvider',function ($routeProvider, $httpProvider) {
         $routeProvider.
@@ -58,16 +58,6 @@ angular.module('wooice', ['ngRoute', 'ui.bootstrap', 'wooice.directives', 'wooic
         $httpProvider.responseInterceptors.push(httpErrors);
     }])
     .run(function ($rootScope, config, $location, $anchorScroll, $routeParams, Auth, UserService, Guest) {
-        if ($routeParams.relogin == 'true' && $.cookie('token'))
-        {
-            var user = {userId: UserService.getCurUserAlias(), token: $.cookie('token')};;
-            UserService.tokenLogin({}, user, function(){
-                $location.url('/stream');
-            }, function(){
-                $location.url('/guest/login');
-            });
-        }
-
         $rootScope.config = config;
 
         var routesThatDontRequireAuth = ['/guest', '/auth'];

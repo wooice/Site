@@ -26,7 +26,7 @@ angular.module('user.services', ['ngCookies']).
         });
     }]).
     factory('UserService', ['User', '$cookies', function (User, $cookies) {
-        var currentUser = {userAlias: '', role: 'guest'};
+        var currentUser = {userAlias: '', role: 'guest', loginType: 'wowoice'};
         if ($cookies.role)
         {
             currentUser.role = $cookies.role;
@@ -47,6 +47,11 @@ angular.module('user.services', ['ngCookies']).
                     $cookies.userAlias =  user.userAlias;
                     currentUser.role = user.role;
                     $cookies.role = user.role;
+                    if (user.type)
+                    {
+                        currentUser.loginType = user.type;
+                        $cookies.role = user.type;
+                    }
                 }
                 else
                 {
@@ -54,6 +59,16 @@ angular.module('user.services', ['ngCookies']).
                     $cookies.userAlias =   '';
                     currentUser.role = 'guest';
                     $cookies.role = "";
+                }
+            },
+            getLoginType: function() {
+                if ($cookies.loginType)
+                {
+                     return  $cookies.loginType;
+                }
+                else
+                {
+                    return currentUser.loginType;
                 }
             },
             validateRoleAdmin: function () {
@@ -107,8 +122,11 @@ angular.module('user.services', ['ngCookies']).
             },
             setColor: function(newColor)
             {
-                color = newColor;
-                $cookies.color = JSON.stringify(newColor);
+                if (newColor)
+                {
+                    color = newColor;
+                    $cookies.color = JSON.stringify(newColor);
+                }
             } ,
             setUserAlias: function(userAlias)
             {

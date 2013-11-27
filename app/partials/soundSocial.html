@@ -85,7 +85,7 @@
 <div class="tab-pane" id="comments">
     <div id="sound_comments" class="sound_comments">
         <ul class="ul-nostyle" ng-repeat="comment in comments"
-            ng-show="sound.comment.mode == 'public' || $scope.sound.owner.alias === userService.getCurUserAlias()">
+            ng-show="sound.comment.mode == 'public' || sound.owner.alias === userService.getCurUserAlias()">
             <li class="border-light-bottom-nopadding">
                 <a href="{{comment.owner.route}}" style="float:left;padding-top:15px">
                     <img src="{{comment.owner.profile.avatorUrl}}" width="40px" height="40px">

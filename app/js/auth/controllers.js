@@ -7,9 +7,23 @@ angular.module('auth.controllers', [])
         $scope.result = "";
         if ($routeParams.confirmCode) {
             Auth.doConfirm({confirmCode: $routeParams.confirmCode}, function () {
-                $scope.result = "邮件确认成功！请开始您的发现声音之旅。";
-            }, function () {
-                $scope.result = "邮件确认失败，请确认您收到的激活邮件重新尝试,或重新发送邮件";
+                $scope.result = "邮件确认成功！";
+            }, function (error) {
+                switch (error.data)
+                {
+                    case 'USER_404':
+                        $scope.result = "对不起，用户不存在。";
+                        break;
+                    case 'CONFIRMED':
+                        $scope.result = "您已经完成确认，请勿重复确认。";
+                        break;
+                    case 'TO_CONFIRM_404':
+                        $scope.result = "没有找到需要确认的请求，请确认您收到的激活邮件重新尝试,或重新发送邮件。";
+                        break;                                                     d
+                    default:
+                        $scope.result = "邮件确认失败，请确认您收到的激活邮件重新尝试,或重新发送邮件。";
+                        break;
+                }
             });
         }
         else {
@@ -68,9 +82,16 @@ angular.module('auth.controllers', [])
             User.submitPassChange({}, {}, function () {
                 $scope.messageClass = "text-success";
                 $scope.message = "提交成功，我们已发送密码修改链接到您的邮箱，请查收后修改密码。";
-            }, function () {
+            }, function (error) {
                 $scope.messageClass = "text-error";
-                $scope.message = "提交失败，请确认您是否已通过邮件确认，并再次尝试";
+                switch(error.data){
+                    case 'NO_EMAIL_BIND':
+                        $scope.message = "您还没有绑定邮箱，请先绑定邮箱作为修改权限凭证。";
+                        break;
+                    default:
+                        $scope.message = "提交失败，请确认您是否已通过邮件确认，并再次尝试。";
+                        break;
+                }
             });
         }
     }])
@@ -86,7 +107,12 @@ angular.module('auth.controllers', [])
                 $scope.message = "提交成功，我们已发送密码修改链接到您的邮箱，请查收后修改密码。";
                 $scope.show = false;
             }, function (data) {
-                $scope.messageClass = "text-error";
+                $scope.messageClass = "text-warning";
+                if (data.data == "USER_404")
+                {
+                    $scope.message = "您输入的邮箱尚未与任何WOWOICE账号绑定，请确认后重新输入";
+                    return ;
+                }
                 if (data.status == 400) {
                     $scope.message = "提交失败，请确保您输入的邮箱正确";
                 }

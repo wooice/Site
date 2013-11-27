@@ -542,7 +542,7 @@ angular.module('sound.controllers', [])
                                 comment.owner.profile.avatorUrl = avatorUrl;
                             }
                             else {
-                                $.cookie(comment.owner.profile.alias + '_avator_small_url', comment.owner.profile.avatorUrl, {expires: config.imageAccessExpires});
+                                $.cookie(comment.owner.profile.alias + '_avator_small_url', comment.owner.profile.avatorUrl, {expires: config.imageAccessExpires, path:'/sounds'});
                             }
                         }
                         $scope.commentsInsound.push(comment);
@@ -589,7 +589,7 @@ angular.module('sound.controllers', [])
                                     comment.owner.profile.avatorUrl = avatorUrl;
                                 }
                                 else {
-                                    $.cookie(comment.owner.profile.alias + '_avator_small_url', comment.owner.profile.avatorUrl, {expires: config.imageAccessExpires});
+                                    $.cookie(comment.owner.profile.alias + '_avator_small_url', comment.owner.profile.avatorUrl, {expires: config.imageAccessExpires, path:'/sounds'});
                                 }
                             }
                             $scope.comments.push(comment);
@@ -640,11 +640,11 @@ angular.module('sound.controllers', [])
                                 duration: oneData.duration * 1000,
                                 position: 0
                             });
-                            oneData.wave = null;
+                            delete oneData.wave;
                         });
                     });
                 }
-
+                delete sound.waveData;
                 loadCommentsInSound();
             }
 

@@ -145,18 +145,18 @@
                 <div class="pull-right">
                                  <span ng-show="mode == 'default' && !userService.validateRoleGuest() && sound.owner.alias == userService.getCurUserAlias()">
                                     <i class="icon-lock"
-                                       ng-show="sound.comment.mode == 'private' && sound.comment.readonly">評論僅自己可見</i>
+                                       ng-show="sound.comment.mode == 'private' && sound.comment.readonly">留言仅自己可见</i>
                                     <i class="icon-unlock-alt"
-                                       ng-show="sound.comment.mode == 'public' && sound.comment.readonly">評論所有人可見</i>
+                                       ng-show="sound.comment.mode == 'public' && sound.comment.readonly">留言所有人可见</i>
                                      <i class="icon-warning-sign"
-                                        ng-show="sound.comment.mode == 'closed' && sound.comment.readonly">關閉評論</i>
+                                        ng-show="sound.comment.mode == 'closed' && sound.comment.readonly">关闭留言</i>
                                       <select ng-model="sound.comment.mode" ng-show="!sound.comment.readonly"
                                               style="width: 110px">
-                                          <option value="private" ng-selected="sound.comment.mode == 'private'">自己可見
+                                          <option value="private" ng-selected="sound.comment.mode == 'private'">自己可见
                                           </option>
-                                          <option value="public" ng-selected="sound.comment.mode == 'public'">所有人可見
+                                          <option value="public" ng-selected="sound.comment.mode == 'public'">所有人可见
                                           </option>
-                                          <option value="closed" ng-selected="sound.comment.mode == 'closed'">關閉留言
+                                          <option value="closed" ng-selected="sound.comment.mode == 'closed'">关闭留言
                                           </option>
                                       </select>
 

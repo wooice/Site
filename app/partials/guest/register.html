@@ -1,13 +1,20 @@
 <ng-include src="'partials/guest/header.html'"></ng-include>
-<div class="container" style="padding-top:65px">
+<div class="container" style="padding-top:65px;width: 900px">
     <div>
-        <legend>欢迎注册</legend>
+        <legend>用户注册</legend>
         <form name="the_form" class="form-horizontal" style="padding-top: 20px">
             <div class="control-group">
-                <b ng-show="!success">注册失败，请稍后再试</b>
+                <div class="controls text-warning">
+                <div ng-show="failedReason=='VERIFY_CODE'">注册码填写错误</div>
+                <div ng-show="failedReason=='ALIAS_NOT_NULL'">用户名不能为空</div>
+                <div ng-show="failedReason=='PASSWORD_NOT_NULL'">密码不能为空</div>
+                <div ng-show="failedReason=='ALIAS_DUPLICATE'">用户名已被注册，请再选一个</div>
+                <div ng-show="failedReason=='EMAIL_DUPLICATE'">该邮箱已被使用</div>
+                <div ng-show="failedReason=='ERROR'">注册失败，请稍后再试</div>
+                </div>
             </div>
             <div class="control-group">
-                <label class="control-label" for="inputAlias">邮箱</label>
+                <label class="control-label" for="inputAlias"><i style="color: #F00;font-family: 'SimSun';padding-right: 4px;">*</i>邮箱</label>
                 <div class="controls">
                     <div class="text-warning"
                          ng-show="the_form.email.$dirty && the_form.email.$invalid">
@@ -24,11 +31,11 @@
                             邮箱已被使用，请重新选择
                         </small>
                     </div>
-                    <input type="email" name="email" id="inputAlias" placeholder="邮箱" ng-model="emailAddress"  email-unique="email" required>
+                    <input type="email" name="email" id="inputAlias" placeholder="请输入您常用邮箱" ng-model="emailAddress"  email-unique="email" required>
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label" for="inputEmail" tooltip="用户名将用于版权验证，请填写您在创业音乐作品中的常用名" >用户名</label>
+                <label class="control-label" for="inputEmail" tooltip="用户名将用于版权验证，请填写您在创业音乐作品中的常用名" ><i style="color: #F00;font-family: 'SimSun';padding-right: 4px;">*</i>用户名</label>
                 <div class="controls">
                     <div class="text-warning"
                          ng-show="the_form.alias.$dirty && the_form.alias.$invalid">
@@ -41,7 +48,7 @@
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label" for="inputPassword1">密码</label>
+                <label class="control-label" for="inputPassword1"><i style="color: #F00;font-family: 'SimSun';padding-right: 4px;">*</i>密码</label>
                 <div class="controls">
                     <div class="text-warning"
                          ng-show="the_form.inputPassword1.$dirty && the_form.inputPassword1.$invalid">
@@ -66,7 +73,7 @@
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label" for="inputPassword2">再输一次</label>
+                <label class="control-label" for="inputPassword2"><i style="color: #F00;font-family: 'SimSun';padding-right: 4px;">*</i>再输一次</label>
                 <div class="controls">
                     <div class="text-warning"
                          ng-show="the_form.inputPassword2.$dirty && the_form.inputPassword2.$invalid">
@@ -91,8 +98,22 @@
                 </div>
             </div>
             <div class="control-group">
+                <label class="control-label" for="verifyCode"><i style="color: #F00;font-family: 'SimSun';padding-right: 4px;">*</i>验证码</label>
                 <div class="controls">
-                    <button type="submit" ng-disabled="the_form.$invalid"  class="btn" ng-click="toRegister()">提交</button>
+                    <div class="text-warning"
+                         ng-show="the_form.verifyCode.$dirty && the_form.verifyCode.$invalid">
+                        <small class="text-warning"
+                               ng-show="the_form.verifyCode.$error.required">
+                            验证码不能为空
+                        </small>
+                    </div>
+                    <input type="text" class="input-mini" id="verifyCode"  name="verifyCode" placeholder="验证码" ng-model="verifyCode" required>
+                    <img style="padding-left: 30px" ng-src="{{config.service.url_noescp + '/auth/verify/image?refesh=' + refresh}}" ng-click="refresh=!refresh" title="看不清，换一张">
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <button type="submit" ng-disabled="the_form.$invalid"  class="btn" style="width: 216px" ng-click="toRegister()">注册</button>
                 </div>
             </div>
         </form>

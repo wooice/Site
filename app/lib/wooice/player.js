@@ -30,7 +30,7 @@ angular.module('wooice.player', []).
                 // when user leave the page, record the current status of the sound.
                 for (var oneSound in soundData.soundList) {
                     oneSound = soundManager.getSoundById(oneSound);
-                    if (oneSound && oneSound.position && oneSound.position > 0) {
+                    if (oneSound && oneSound.position != null) {
                         var playing = false;
                         if (soundData.currentSound && soundData.currentSound == oneSound.id) {
                             playing = true;
@@ -117,8 +117,15 @@ angular.module('wooice.player', []).
                                 console.log(this.id + ' loaded.');
                                 soundManager._writeDebug(this.id + ' loaded.');
 
-                                var playerStatus = storage.get(this.id + "_player");
-                                soundData.jump(playerStatus);
+                                if (null == playOption.position) {
+                                    var playerStatus = storage.get(this.id + "_player");
+                                    soundData.jump(playerStatus);
+                                }
+                                else {
+                                    if (playOption.position > 0) {
+                                        soundData.jump({id: this.id, from: playOption.position});
+                                    }
+                                }
                             },
                             onplay: function () {
                                 if (soundData.currentSound != this.id) {
@@ -194,6 +201,12 @@ angular.module('wooice.player', []).
                                 }
                             },
                             onfinish: function () {
+                                var cur = soundManager.getSoundById(this.id);
+                                cur.setPosition(0);
+                                WooiceWaver.jump({
+                                    id: this.id,
+                                    soundPosition: 0
+                                });
                                 WooiceWaver.stop({
                                     id: this.id
                                 });
@@ -210,18 +223,18 @@ angular.module('wooice.player', []).
 
                                 switch (UserService.getPlayMode()) {
                                     case 0:
-                                        soundManager.play(soundData.getNextSoundId(this.id));
+                                        soundData.play({id: soundData.getNextSoundId(this.id), position: 0});
                                         break;
                                     case 1:
-                                        soundManager.play(this.id);
+                                        soundData.play({id: this.id, position: 0});
                                         break
                                     case 2:
-                                        soundManager.play(soundData.getRandomSoundId());
+                                        soundData.play({id: soundData.getRandomSoundId(), position: 0});
                                         break;
                                     case 3:
                                         break;
                                     default:
-                                        soundManager.play(soundData.getNextSoundId(this.id));
+                                        soundData.play({id: soundData.getNextSoundId(this.id), position: 0});
                                         break;
                                 }
                             }
@@ -285,19 +298,21 @@ angular.module('wooice.player', []).
                             }
                             else {
                                 sound.url = playsCount.url;
-                                $.cookie(sound.id + '_sound_url', sound.url, {expires: config.soundAccessExpires});
+                                $.cookie(sound.id + '_sound_url', sound.url, {expires: config.soundAccessExpires, path:'/sounds'});
                             }
 
                             sound.autoPlay = true;
                             sound.lastPlayTime = new Date().getTime();
+                            if (null != input.position) {
+                                sound.position = input.position;
+                            }
                             soundData.setup(sound);
 
                             sound.inited = true;
                             $('#play_count_' + sound.id).text(playsCount.played);
                         });
                     }
-                    else
-                    {
+                    else {
                         soundManager.play(sound.id);
                     }
                 }
@@ -334,7 +349,7 @@ angular.module('wooice.player', []).
                         }
                         else {
                             sound.url = playsCount.url;
-                            $.cookie(sound.id + '_sound_url', sound.url, {expires: config.soundAccessExpires});
+                            $.cookie(sound.id + '_sound_url', sound.url, {expires: config.soundAccessExpires, path:'/sounds'});
                         }
 
                         sound.autoPlay = true;
@@ -410,7 +425,7 @@ angular.module('wooice.player', []).
                     return soundData.toggle(input);
                 },
 
-                play: function(input) {
+                play: function (input) {
                     soundData.play(input);
                 },
 
@@ -447,19 +462,7 @@ angular.module('wooice.player', []).
                     if (!sound) {
                         return;
                     }
-                    if (!sound.inited) {
-                        var playsCount = SoundSocial.play({sound: sound.id}, null, function (count) {
-                            sound.url = playsCount.url;
-                            sound.autoPlay = true;
-                            soundData.setup(sound);
-
-                            sound.inited = true;
-                            $('#play_count_' + sound.id).text(playsCount.played);
-                        });
-                    }
-                    else {
-                        soundManager.togglePause(sound.id);
-                    }
+                    soundData.play({id: sound.id, position: 0});
 
                     return sound;
                 },

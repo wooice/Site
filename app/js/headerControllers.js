@@ -11,19 +11,42 @@ angular.module('header.controllers', [])
         $scope.playMode = UserService.getPlayMode();
         $scope.playModes = ['顺序播放', '单曲循环', '随机播放', '播完即止'];
 
-        $scope.logout = function () {
-            User.logout({}, function () {
-                UserService.setupUser(null);
-                MessageService.destroyMessager();
-                $.globalMessenger().post({
-                    message: "感谢您的使用",
-                    hideAfter: 10,
-                    showCloseButton: true
-                });
+        function postLogout(){
+            UserService.setupUser(null);
+            MessageService.destroyMessager();
+            $.globalMessenger().post({
+                message: "感谢您的使用",
+                hideAfter: 10,
+                showCloseButton: true
+            });
 
-                $.removeCookie('curSound');
-                $location.path('/guest/login');
-            })
+            $.removeCookie('curSound');
+            $location.path('/guest/login');
+        }
+
+        $scope.logout = function () {
+            var type = UserService.getLoginType();
+
+             switch(type)
+             {
+                 case 'wowoice':
+                     User.logout({}, function () {
+                         postLogout();
+                     })
+                     break;
+                 case 'sina':
+                     if (WB2.checkLogin())
+                     {
+                         WB2.logout(function(){
+                             postLogout();
+                         });
+                     }
+                     else
+                     {
+                         postLogout();
+                     }
+                     break;
+             }
         };
 
         $scope.feedback = {};

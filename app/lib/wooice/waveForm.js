@@ -17,8 +17,7 @@
         var playedUpperDeeper = '#008AEE';
         var playedUpperPoint = '#0077EE';
         var context = canvas.getContext("2d");
-        //todo: minus 2000 for a storage api bug
-        var soundDuration = options.soundDuration - 2000;
+        var soundDuration = options.soundDuration;
         var soundPosition = options.soundPosition;
         var soundBytesloaded = options.soundBytesloaded;
         var soundBytesTotal = options.soundBytesTotal;

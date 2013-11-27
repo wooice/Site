@@ -3,7 +3,7 @@
     <div style="padding-bottom: 10px">
         <span class="{{messageClass}}">{{message}}</span>
     </div>
-    <form name="external">
+    <form name="external" style="padding-left: 30px">
         <div  class="text-warning" style="padding-left: 100px;padding-bottom: 10px">
             <span class="error"
                    ng-show="external.$invalid">
@@ -22,7 +22,7 @@
             <td></td>
             <td></td>
             <td>
-                <button class="button button-small button-rounded button-flat-action action-button pull-right"    ng-disabled="external.$invalid"
+                <button class="button button-small button-rounded button-flat-action action-button"    ng-disabled="external.$invalid"
                    onclick="return false;" ng-click="saveProfile()">
                     <span>保存信息</span>
                 </button>

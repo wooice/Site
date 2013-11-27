@@ -15,7 +15,7 @@ angular.module('wooice.waver', []).
                 // when user leave the page, record the current status of the wave.
                 for (var oneSound in soundData.soundList) {
                     oneSound = soundData.soundList[oneSound];
-                    if (oneSound && oneSound.waveForm.getSoundPosition() && oneSound.waveForm.getSoundPosition() > 0) {
+                    if (oneSound && oneSound.waveForm.getSoundPosition() != null) {
                         var storedSound = storage.get(oneSound.id + "_wave");
                         storedSound.position= oneSound.waveForm.getSoundPosition();
                         storage.set(oneSound.id + "_wave", storedSound);
@@ -97,15 +97,10 @@ angular.module('wooice.waver', []).
                 waveForm.play();
             },
 
-            jump: function (sound, toWavePoint) {
+            jump: function (sound) {
                 var waveForm = soundData.soundList[sound.id].waveForm;
                 waveForm.setSoundPosition(sound.soundPosition);
                 waveForm.redraw();
-
-                $(window).trigger('onJump', {
-                    id: sound.id,
-                    from: 1000 * (soundToJump * soundToJump.duration / soundToJump.waveData.length)
-                });
             }
     }
 }]);

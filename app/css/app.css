@@ -70,6 +70,7 @@
    height: 75%;
    width: 75%;
    margin:0 auto;
+   padding-top: 20px;
 }
 
 .sound_player_control{
@@ -384,4 +385,12 @@ input.ng-dirty.ng-valid {
     -moz-opacity: 1;
     opacity: 1;
     filter: alpha(opacity=100);
+}
+
+.external-logo i{
+    color:#808080;
+}
+
+.external-logo:hover i{
+    color:#262626;
 }

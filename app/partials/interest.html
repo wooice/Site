@@ -34,7 +34,7 @@
                             <ul class="tags">
                                 <li ng-repeat="curatedTag in curatedTags | filter:{category.name: cate.name}"
                                     style="float:left;padding-right: 25px;padding-bottom: 10px;">
-                                    <a   onclick="return false;" ng-click="toogleInterest()" style="background: {{curatedTag.class}};cursor:pointer;">
+                                    <a onclick="return false;" ng-click="toogleInterest()" style="background: {{curatedTag.class}};cursor:pointer;">
                                           <span > {{curatedTag.label}} </span>
                                     </a>
                                 </li>
@@ -53,8 +53,8 @@
 
     <div id="recommand" style="padding-top: 30px">
         <legend>推荐用户</legend>
-        <div ng-if="recommendUsers.length > 0">
-            <div ng-repeat="recommendUser in recommendUsers" style="float:left" ng-click="toogleFollow()">
+        <div ng-if="recommendUsers.length > 0" style="padding-left: 60px">
+            <div ng-repeat="recommendUser in recommendUsers" style="float:left;padding-left: 10px" ng-click="toogleFollow()">
                 <div style="text-align:center;padding-right: 20px">
                     <div class="user {{recommendUser.class}}">
                         <a href="#" onclick="return false;">

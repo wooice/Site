@@ -10,7 +10,8 @@ angular.module('guest.services', []).
             tokenLogin: {method: 'POST', params: {uri: "login/token"}, isArray: false},
             checkAlias: {method: 'GET', params: {action: "checkAlias"}, isArray: false},
             checkEmail: {method: 'GET', params: {action: "checkEmail"}, isArray: false},
-            reportForget: {method: 'PUT', params: {uri: "reportForget"}, isArray: false}
+            reportForget: {method: 'PUT', params: {uri: "reportForget"}, isArray: false},
+            sync: {method:'POST', params:{uri:"sync"}, isArray: false}
         });
     }])
 ;

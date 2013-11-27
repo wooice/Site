@@ -13,7 +13,6 @@
                     {{user.profile.description}}
                 </div>
 
-                <!-- basic social info-->
                 <div style="padding-bottom: 25px;padding-left: 15%">
                     <div style="padding-bottom: 10px">
                         <i class="icon-music icon-large" title="{{user.userSocial.sounds}} sounds"
@@ -57,7 +56,7 @@
                     <div ng-show="curAlias == userService.getCurUserAlias() && histories.length>0">
                         <legend style="font-size: 14px">您的播放记录</legend>
                     <span ng-repeat="history in histories">
-                        <a href="{{history.title.route}}" title="{{history.alias}}" style="padding: 3px"><img   style="width: 55px;height: 55px"
+                        <a href="{{history.title.route}}" title="{{history.alias}}" style="padding: 3px" ng-show="$index < 9"><img   style="width: 55px;height: 55px"
                                 ng-src="{{history.poster}}"/></a>
                     </span>
                     </div>

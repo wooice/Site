@@ -265,7 +265,7 @@ angular.module('stream.controllers', []).
                                 position: 0
                             });
 
-                            oneData.wave = null;
+                           delete oneData.wave;
                         });
                     });
                 }

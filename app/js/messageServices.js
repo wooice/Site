@@ -27,6 +27,7 @@ angular.module('message.services', ['ngCookies']).
 
         return {
             setupMessager: function(){
+                loadMessages();
                 timer = setInterval(loadMessages, 60 * 1000);
             },
 

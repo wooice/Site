@@ -394,3 +394,17 @@ input.ng-dirty.ng-valid {
 .external-logo:hover i{
     color:#262626;
 }
+
+.qq_login_log {
+    width: 28px;
+    height: 29px;
+    margin-bottom: -5px
+}
+
+.external-logo svg g path {
+    fill:#808080;
+}
+
+.external-logo svg:hover g path {
+    fill:#262626;
+}

@@ -45,6 +45,12 @@ angular.module('header.controllers', [])
                      {
                          postLogout();
                      }
+                 case 'qq':
+                     if (QC.Login.check())
+                     {
+                         QC.Login.logout();
+                     }
+                     postLogout();
                      break;
              }
         };

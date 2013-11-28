@@ -21,7 +21,7 @@
                 </div>
                 <div ng-if="recommendUsers.length > 0">
                     <div ng-repeat="recommendUser in recommendUsers" style="float:left" ng-click="toogleFollow()">
-                        <div style="text-align:center; padding-right: 8px; height: 90px" ng-show="$index < 4">
+                        <div style="text-align:center; padding-right: 8px; height: 90px" ng-show="$index < 3">
                             <div class="user {{recommendUser.class}}">
                                 <a href="#" onclick="return false;">
                                     <img style="width: 60px;height: 60px" ng-src="{{recommendUser.profile.avatorUrl}}">

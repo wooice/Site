@@ -44,7 +44,8 @@
                                 <ul class="tags">
                                     <li ng-repeat="tag in sound.tags | filter: {curated:true}" style="display: inline">
                                         <a href="#/stream/tags/{{tag.label}}" ng-show="$index<3">
-                                            <span ng-show="tag.curated"><i class="icon-certificate" style="color: #A4D3EE" title="Wooice标签"></i> {{tag.label}}</span>
+                                            <span ng-show="tag.curated"><i class="icon-certificate"
+                                                                           style="color: #A4D3EE" title="Wooice标签"></i> {{tag.label}}</span>
                                             <span ng-show="!tag.curated">{{tag.label}}</span>
                                         </a>
                                     </li>
@@ -76,13 +77,24 @@
                        onclick="return false;" ng-click="toggleRepost(sound.id)"><i
                             class="icon-retweet"></i></i> <span
                             ng-show="sound.soundUserPrefer.repost==0">转之</span></a>
-                    <a href="#" class="button button-small button-rounded button-flat action-button hasTooltip"   onclick="return false;"
+                    <a href="#" class="button button-small button-rounded button-flat action-button hasTooltip"
+                       onclick="return false;"
                             ><i class="icon-share"></i>分享
                     </a>
                     <div style="display: none;">
-                        <label style="font-size: 9px">链接分享</label><input  type="text" style="width: 240px;font-size: 9px" value="{{config.site.url}}#/sound/{{sound.alias}}">
-                        <label style="font-size: 9px">代码分享</label><input   type="text"  class="input-xlarge" style="width: 240px;font-size: 9px"
-                                                                           value='<iframe width="100%" height="188" scrolling="no" frameborder="no" src="{{config.site.url}}#/player/{{sound.alias}}"></iframe>'>
+                        <div>
+                            <label style="font-size: 9px">链接分享</label><input type="text"
+                                                                             style="width: 240px;font-size: 9px"
+                                                                             value="{{config.site.url}}#/sound/{{sound.alias}}">
+                            <label style="font-size: 9px">代码分享</label><input type="text" class="input-xlarge"
+                                                                             style="width: 240px;font-size: 9px"
+                                                                             value='<iframe width="100%" height="188" scrolling="no" frameborder="no" src="{{config.site.url}}#/player/{{sound.alias}}"></iframe>'>
+                        </div>
+                        <div>
+                            <a href="http://service.weibo.com/share/share.php?url={{config.site.url}}#/
+                            sound/{{sound.alias}}&type=button&count=0&language=zh_cn&appkey=fu5sr&searchPic=false&style=simple"
+                               target="_blank"    style="border: 0;width: 32px;height: 32px" title="分到新浪微博"><img src="img/logo/sina.png" style="width: 30px;height: 30px"/></a>
+                        </div>
                     </div>
                     <a href="#" class="button button-small button-rounded button-flat action-button"
                        ng-show="sound.owner.alias == userService.getCurUserAlias()"
@@ -90,8 +102,7 @@
                             class="icon-trash"></i></i> 删除</a>
 
                     <a href="#" class="button button-small button-rounded button-flat action-button"
-                       ng-show="sound.downloadable"
-                       onclick="return false;" ng-click="download()"><i
+                       ng-show="sound.downloadable"  onclick="return false;" ng-click="download()"><i
                             class="icon-trash"></i></i> 下载</a>
                     </span>
 
@@ -158,6 +169,6 @@
     </div>
 
     <p id="back_top">
-        <a ><span></span></a>
+        <a><span></span></a>
     </p>
 </div>

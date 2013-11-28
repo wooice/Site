@@ -5,6 +5,7 @@
 angular.module('stream.controllers', []).
     controller('streamCtrl', ['$scope', 'config', '$location', 'Stream', 'Sound', 'SoundUtilService', 'SoundSocial', '$routeParams', 'UserService', 'WooicePlayer', 'WooiceWaver', 'storage',
         function ($scope, config, $location, Stream, Sound, SoundUtilService, SoundSocial, $routeParams, UserService, WooicePlayer, WooiceWaver, storage) {
+        $scope.config = config;
         $scope.userService = UserService;
         $scope.routeParams = $routeParams;
 

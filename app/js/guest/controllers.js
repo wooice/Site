@@ -22,26 +22,48 @@ angular.module('guest.controllers', [])
             });
             return;
         }
-        if ($location.absUrl().indexOf("wowoice.cn") >= 0 || $location.absUrl().indexOf("http://wowoice.com") >= 0)
+//        if ($location.absUrl().indexOf("wowoice.cn") >= 0 || $location.absUrl().indexOf("http://wowoice.com") >= 0)
+//        {
+//            window.location = (config.site.url);
+//            return;
+//        }
+
+        $scope.qqLogin = function()
         {
-            window.location = (config.site.url);
-            return;
+            QC.Login.showPopup({
+                appId: "100565532",
+                redirectURI: config.site.url + "#/guest/login?action=qqLoginCallback"
+            });
+        }
+        checkQQcallback();
+
+        function checkQQcallback()
+        {
+             if ($routeParams.action == 'qqLoginCallback' && QC.Login.check())
+             {
+                     QC.Login.getMe(function(openId, accessToken){
+                         QC.api("get_user_info").
+                             success(function(ad){
+                                 var data = ad.data;
+                                 var qqUser = {};
+                                 var external = {};
+                                 external.sites = [];
+                                 external.sites[0] = {name:'qq', displayName:'腾讯QQ', url:'', uid: openId, userName: data.nickname};
+                                 qqUser.profile = {avatorUrl: data.figureurl_qq_2, gender: (data.gender=='男')?true: false};
+                                 qqUser.external = external;
+                                 var user = Guest.sync({action:'qq'}, qqUser, function(){
+                                     postLogin(user);
+                                 });
+                             }).error(function(){
+                             });
+                     });
+             }
         }
 
-        WB2.anyWhere(function (W) {
-            W.widget.connectButton({
-                id: "wb_connect_btn",
-                type: '3,2',
-                callback: {
-                    login: function (o) { //登录后的回调函数
-                        alert("login: " + o.screen_name)
-                    },
-                    logout: function () { //退出后的回调函数
-                        alert('logout');
-                    }
-                }
-            });
-        });
+        function returnRes(data)
+        {
+
+        }
 
         $scope.weiboLogin = function()
         {
@@ -64,28 +86,7 @@ angular.module('guest.controllers', [])
                                             weiboUser.external = external;
 
                                             var user = Guest.sync({action:'sina'}, weiboUser, function(){
-                                                UserService.setupUser({
-                                                    userAlias: user.profile.alias,
-                                                    role: user.userRoles[0].role,
-                                                    type: 'sina'
-                                                });
-                                                UserService.setColor(user.profile.color);
-                                                $.globalMessenger().post({
-                                                    message: user.profile.alias + "，欢迎回来！",
-                                                    hideAfter: 10,
-                                                    showCloseButton: true
-                                                });
-                                                if (user.auth)
-                                                {
-                                                    $.cookie("token", curUser.auth.authToken, {
-                                                        expires : 7//expires in 7 days
-                                                    });
-                                                }
-                                                $.cookie('show_verify', false);
-                                                MessageService.setupMessager();
-                                                if (!UserService.validateRoleGuest()) {
-                                                    $location.url('/stream');
-                                                }
+                                                postLogin(user);
                                             });
                                         }
                                     }, {
@@ -129,27 +130,7 @@ angular.module('guest.controllers', [])
                 user.verifyCode =  $scope.verifyCode;
             }
             var curUser = Guest.login({}, user, function () {
-                UserService.setupUser({
-                    userAlias: curUser.profile.alias,
-                    role: curUser.userRoles[0].role
-                });
-                UserService.setColor(curUser.profile.color);
-                $.globalMessenger().post({
-                    message: curUser.profile.alias + "，欢迎回来！",
-                    hideAfter: 10,
-                    showCloseButton: true
-                });
-                if (curUser.auth)
-                {
-                    $.cookie("token", curUser.auth.authToken, {
-                        expires : 7//expires in 7 days
-                    });
-                }
-                $.cookie('show_verify', false);
-                MessageService.setupMessager();
-                if (!UserService.validateRoleGuest()) {
-                    $location.url('/stream');
-                }
+                postLogin(curUser);
             }, function (error, data) {
                 if (error.data == 'PASSWORD_VERIFY' || error.data == 'VERIFY_CODE')
                 {
@@ -159,6 +140,30 @@ angular.module('guest.controllers', [])
                 $scope.loginMsgClass = "text-warning";
                 $scope.error = error.data;
             });
+        }
+
+        function postLogin(user) {
+            UserService.setupUser({
+                userAlias: user.profile.alias,
+                role: user.userRoles[0].role
+            });
+            UserService.setColor(user.profile.color);
+            $.globalMessenger().post({
+                message: user.profile.alias + "，欢迎回来！",
+                hideAfter: 10,
+                showCloseButton: true
+            });
+            if (user.auth)
+            {
+                $.cookie("token", curUser.auth.authToken, {
+                    expires : 7//expires in 7 days
+                });
+            }
+            $.cookie('show_verify', false);
+            MessageService.setupMessager();
+            if (!UserService.validateRoleGuest()) {
+                $location.url('/interest');
+            }
         }
     }])
 

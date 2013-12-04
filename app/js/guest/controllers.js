@@ -22,11 +22,12 @@ angular.module('guest.controllers', [])
             });
             return;
         }
-//        if ($location.absUrl().indexOf("wowoice.cn") >= 0 || $location.absUrl().indexOf("http://wowoice.com") >= 0)
-//        {
-//            window.location = (config.site.url);
-//            return;
-//        }
+
+        if ($location.absUrl().indexOf("http://wowoice.cn/") >= 0 || $location.absUrl().indexOf("http://wowoice.com/") >= 0)
+        {
+            window.location = (config.site.url);
+            return;
+        }
 
         $scope.qqLogin = function()
         {
@@ -58,11 +59,6 @@ angular.module('guest.controllers', [])
                              });
                      });
              }
-        }
-
-        function returnRes(data)
-        {
-
         }
 
         $scope.weiboLogin = function()
@@ -107,9 +103,9 @@ angular.module('guest.controllers', [])
         }
 
         if ($routeParams.relogin == 'true' && $.cookie('token'))
-        {
+            {
             var user = {userId: UserService.getCurUserAlias(), token: $.cookie('token')};;
-            UserService.tokenLogin({}, user, function(){
+                Guest.tokenLogin({}, user, function(){
                 $location.url('/stream');
             }, function(){
                 $location.url('/guest/login');
@@ -153,11 +149,19 @@ angular.module('guest.controllers', [])
                 hideAfter: 10,
                 showCloseButton: true
             });
-            if (user.auth)
+
+            if ($scope.rememberUser)
             {
-                $.cookie("token", curUser.auth.authToken, {
-                    expires : 7//expires in 7 days
-                });
+                if (user.auth)
+                {
+                    $.cookie("token", user.authToken, {
+                        expires : 7
+                    });
+                }
+            }
+            else
+            {
+                $.cookie("token", null);
             }
             $.cookie('show_verify', false);
             MessageService.setupMessager();

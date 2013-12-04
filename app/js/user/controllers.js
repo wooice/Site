@@ -118,6 +118,7 @@ angular.module('profile.controllers', [])
             done: function (e, data) {
                 var postData = {};
                 postData.avatorUrl = $scope.user.id;
+                postData.hasAvatar = true;
                 UserProfile.updateBasic({}, postData, function(){
                     $scope.posterUploadMsgClass = "text-success";
                     $scope.posterUploadMsg = '个人头像上传成功';

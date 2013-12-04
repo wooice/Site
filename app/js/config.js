@@ -5,15 +5,16 @@
 angular.module('wooice.config', []).constant(
 	'config',
 	{
-
 //		site : {
 //			url : 'http://wowoice.com:8080/Site/app/index.html'
 //		},
-//
 //		service : {
 //			url : 'http:///wowoice.com\\:8080/Services',
 //            url_noescp : 'http:///wowoice.com:8080/Services'
 //		},
+//        storage: {
+//            wave: 'http://wooice-wave-dev.u.qiniudn.com'
+//        },
 
         site : {
             url : 'http://www.wowoice.com'
@@ -23,12 +24,11 @@ angular.module('wooice.config', []).constant(
             url : 'http://www.wowoice.com/Services',
             url_noescp : 'http://www.wowoice.com/Services'
         },
+          storage: {
+             wave: 'http://wowoice-wave.u.qiniudn.com'
+          },
 
         userStreamPath: 'index.html#/stream/',
-
-        soundAccessExpires: 1,
-        imageAccessExpires: 7,
-
         soundsPerPage: 4,
         commentsPerPage: 8,
         likesPerPage: 9,

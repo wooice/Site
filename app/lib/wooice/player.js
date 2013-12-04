@@ -257,6 +257,10 @@ angular.module('wooice.player', []).
             };
 
             soundData.jump = function (sound) {
+                if (!sound)
+                {
+                     return;
+                }
                 var soundToJump = null;
                 if (soundData.currentSound && soundData.currentSound == sound.id) {
                     soundToJump = soundData.currentSound;
@@ -291,15 +295,7 @@ angular.module('wooice.player', []).
 
                     if (!sound.inited) {
                         var playsCount = SoundSocial.play({sound: sound.id}, null, function (count) {
-                            var url = $.cookie(sound.id + '_sound_url');
-
-                            if (url) {
-                                sound.url = url;
-                            }
-                            else {
-                                sound.url = playsCount.url;
-                                $.cookie(sound.id + '_sound_url', sound.url, {expires: config.soundAccessExpires, path:'/sounds'});
-                            }
+                            sound.url = playsCount.url;
 
                             sound.autoPlay = true;
                             sound.lastPlayTime = new Date().getTime();
@@ -342,15 +338,7 @@ angular.module('wooice.player', []).
                 }
                 if (!sound.inited) {
                     var playsCount = SoundSocial.play({sound: sound.id}, null, function (count) {
-                        var url = $.cookie(sound.id + '_sound_url');
-
-                        if (url) {
-                            sound.url = url;
-                        }
-                        else {
-                            sound.url = playsCount.url;
-                            $.cookie(sound.id + '_sound_url', sound.url, {expires: config.soundAccessExpires, path:'/sounds'});
-                        }
+                        sound.url = playsCount.url;
 
                         sound.autoPlay = true;
                         sound.lastPlayTime = new Date().getTime();
@@ -381,10 +369,6 @@ angular.module('wooice.player', []).
 
             return {
                 addSound: function (sound) {
-                    if (soundData.soundList[sound.id]) {
-                        return;
-                    }
-
                     sound.inited = false;
                     soundData.soundList[sound.id] = sound;
                 },

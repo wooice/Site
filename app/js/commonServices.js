@@ -1,7 +1,5 @@
 'use strict';
 
-/* Services */
-
 angular.module('sound.services', ['ngResource'])
     .factory('Stream', ['$resource', 'config', function ($resource, config) {
         return $resource(config.service.url + '/sound/streams/:filter/:value', {}, {
@@ -12,7 +10,6 @@ angular.module('sound.services', ['ngResource'])
     .factory('Sound', ['$resource', 'config', function ($resource, config) {
         return $resource(config.service.url + '/sound/:sound/:userAlias/:action', {}, {
             load: {method: 'GET', params: {sound: 'current'}, isArray: false},
-            loadData: {method: 'POST', params: { action: 'data'}, isArray: true},
             delete: {method: 'DELETE', params: {sound: 'current'}, isArray: false},
             save: {method: 'PUT', params: {}, isArray: false},
             update: {method: 'POST', params: {}, isArray: false },
@@ -23,25 +20,22 @@ angular.module('sound.services', ['ngResource'])
         });
     }
     ])
+    .factory('WaveStorage', ['$resource', 'config', function ($resource, config) {
+        return $resource(config.storage.wave + '/:remoteId', {}, {
+            get:{method: 'GET', params:{}, cache: true, isArray: false}
+        });
+    }
+    ])
     .factory('SoundUtilService', ['User', 'UserService','config', function (User, UserService, config) {
         return {
             buildSound: function (sound) {
-                var posterUrl = $.cookie(sound.id + '_poster_url');
-
-                if (posterUrl)
-                {
-                    sound.profile.poster.url = posterUrl;
-                }
-                else
-                {
-                    $.cookie(sound.id + '_poster_url', sound.profile.poster.url, {expires: config.imageAccessExpires});
-                }
 
                 var newSound = {
                     id: sound.id,
                     alias: sound.profile.alias,
                     poster: sound.profile.poster.url,
                     posterPosterId: sound.profile.posterId,
+                    remoteId: sound.profile.remoteId,
                     title: {alias: sound.profile.name, route: 'index.html#/sound/' + sound.profile.alias, readonly: true},
                     owner: {alias: sound.profile.owner.profile.alias, route: config.userStreamPath + sound.profile.owner.profile.alias},
                     description: {context: sound.profile.description, readonly: true},
@@ -55,7 +49,8 @@ angular.module('sound.services', ['ngResource'])
                     priority: sound.profile.priority,
                     duration: sound.profile.duration,
                     played: false,
-                    downloadable: sound.profile.downloadable
+                    downloadable: sound.profile.downloadable,
+                    processed: sound.profile.processed
                 };
 
                 return  newSound;

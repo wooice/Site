@@ -94,8 +94,9 @@
                             </div>
                         </div>
                     </div>
-                    <canvas id="sound_wave_canvas_{{sound.id}}">
+                    <canvas id="sound_wave_canvas_{{sound.id}}"  ng-show="sound.processed">
                     </canvas>
+                    <img ng-src="img/wave.png" ng-show="!sound.processed">
                 </div>
             </div>
             <div id="sound_player_footer_{{sound.id}}" class='sound_player_footer'>

@@ -2,11 +2,21 @@
 
 angular.module('sound.controllers', [])
     .controller('soundDetailCtrl', ['$scope', '$window', 'config', '$routeParams', 'Sound', 'SoundUtilService', 'Storage', 'SoundSocial', 'SoundSocialList', 'UserService',
-        '$location', '$anchorScroll', 'SoundSocialProSocial', 'SoundProSocial', 'UserSocial', 'Tag', 'WooicePlayer', 'WooiceWaver', 'storage',
-        function ($scope, $window, config, $routeParams, Sound, SoundUtilService, Storage, SoundSocial, SoundSocialList, UserService, $location, $anchorScroll, SoundSocialProSocial, SoundProSocial, UserSocial, Tag, WooicePlayer, WooiceWaver, storage) {
+        '$location', '$anchorScroll', 'SoundSocialProSocial', 'SoundProSocial', 'UserSocial', 'Tag', 'WooicePlayer', 'WooiceWaver', 'storage', 'WaveStorage',
+        function ($scope, $window, config, $routeParams, Sound, SoundUtilService, Storage, SoundSocial, SoundSocialList, UserService, $location, $anchorScroll, SoundSocialProSocial,
+                  SoundProSocial, UserSocial, Tag, WooicePlayer, WooiceWaver, storage, WaveStorage) {
             $scope.userService = UserService;
             $scope.config = config;
             $scope.mode = "default";
+            $scope.target = "comments";
+
+            var query = $location.search();
+            if (query.scrollTo) {
+                $scope.target = query.scrollTo;
+                $location.hash($routeParams.scrollTo);
+                $anchorScroll();
+            }
+
             if ($scope.$parent.mode) {
                 $scope.mode = $scope.$parent.mode;
             }
@@ -376,7 +386,7 @@ angular.module('sound.controllers', [])
             $scope.reloadTarget = function (force) {
                 switch ($scope.target) {
                     case 'comments':
-                        if (($scope.sound.comment.mode == 'public' || $scope.sound.comment.mode == 'closed') && $scope.sound.owner.alias !== UserService.getCurUserAlias()) {
+                        if (($scope.sound.comment.mode == 'private' || $scope.sound.comment.mode == 'closed') && $scope.sound.owner.alias !== UserService.getCurUserAlias()) {
                             return;
                         }
                         loadComments(force);
@@ -531,20 +541,6 @@ angular.module('sound.controllers', [])
                         comment.owner.route = config.userStreamPath + comment.owner.profile.alias;
                         comment.top = '70%';
                         comment.left = (comment.pointAt * canvasWidth) / ($scope.sound.duration) + "px";
-
-                        if (!comment.owner.profile.avatorUrl) {
-                            comment.owner.profile.avatorUrl = "img/default_avatar.png";
-                        }
-                        else {
-                            var avatorUrl = $.cookie(comment.owner.profile.alias + '_avator_small_url');
-
-                            if (avatorUrl) {
-                                comment.owner.profile.avatorUrl = avatorUrl;
-                            }
-                            else {
-                                $.cookie(comment.owner.profile.alias + '_avator_small_url', comment.owner.profile.avatorUrl, {expires: config.imageAccessExpires, path:'/sounds'});
-                            }
-                        }
                         $scope.commentsInsound.push(comment);
 
                         $scope.$apply();
@@ -554,7 +550,6 @@ angular.module('sound.controllers', [])
                             $("#sound_comment_in_sound_minor_" + comment.commentId).removeClass("hide");
                         });
                     });
-
                 });
             }
 
@@ -579,19 +574,6 @@ angular.module('sound.controllers', [])
                             if (comment.to) {
                                 comment.to.route = config.userStreamPath + comment.to.profile.alias;
                             }
-                            if (!comment.owner.profile.avatorUrl) {
-                                comment.owner.profile.avatorUrl = "img/default_avatar.png";
-                            }
-                            else {
-                                var avatorUrl = $.cookie(comment.owner.profile.alias + '_avator_small_url');
-
-                                if (avatorUrl) {
-                                    comment.owner.profile.avatorUrl = avatorUrl;
-                                }
-                                else {
-                                    $.cookie(comment.owner.profile.alias + '_avator_small_url', comment.owner.profile.avatorUrl, {expires: config.imageAccessExpires, path:'/sounds'});
-                                }
-                            }
                             $scope.comments.push(comment);
                             $scope.$apply();
                         }
@@ -605,53 +587,37 @@ angular.module('sound.controllers', [])
             }
 
             function loadSoundData() {
-                var sound = storage.get($scope.sound.id + "_wave");
-                if (sound) {
-                    sound.color = UserService.getColor();
-                    sound.commentable = $scope.sound.commentMode !== 'closed';
-                    WooiceWaver.render(sound);
-
-                    var soundPlayStatus = storage.get($scope.sound.id + "_player");
-                    if (soundPlayStatus && soundPlayStatus.playing)
-                    {
-                        WooicePlayer.play({id: $scope.sound.id});
-                    }
-                }
-                else {
-                    var toLoadList = [];
-                    toLoadList.push($scope.sound.id);
-                    var newDatas = Sound.loadData({}, toLoadList, function () {
-                        $.each(newDatas, function (index, oneData) {
-                            //render wave
-                            WooiceWaver.render(
-                                {
-                                    id: oneData.soundId,
-                                    waveData: oneData.wave[0],
-                                    duration: oneData.duration * 1000,
-                                    color: UserService.getColor(),
-                                    commentable: oneData.commentMode !== 'closed',
-                                    position: 0
-                                }
-                            );
-
-                            storage.set(oneData.soundId + "_wave", {
-                                id: oneData.soundId,
-                                waveData: oneData.wave[0],
-                                duration: oneData.duration * 1000,
-                                position: 0
-                            });
-                            delete oneData.wave;
-                        });
+                if ($scope.sound.processed)
+                {
+                    var waveData = WaveStorage.get({remoteId: $scope.sound.remoteId+".png"}, function(){
+                        WooiceWaver.render(
+                            {
+                                id: $scope.sound.id,
+                                waveData: waveData.waveData[0],
+                                duration: $scope.sound.duration * 1000,
+                                color: UserService.getColor(),
+                                commentable: $scope.sound.comment.mode !== 'closed'
+                            }
+                        );
                     });
+                    delete waveData.waveData;
+
+                    loadCommentsInSound();
                 }
-                delete sound.waveData;
-                loadCommentsInSound();
+
+                var soundPlayStatus = storage.get($scope.sound.id + "_player");
+                if (soundPlayStatus && soundPlayStatus.playing)
+                {
+                    WooicePlayer.play({id: $scope.sound.id});
+                }
             }
 
             $scope.$parent.$on("$includeContentLoaded", function (event) {
                 if (event.currentScope.$id != event.targetScope.$id) {
                     return;
                 }
+
+
                 if (!$scope.localLoad()) {
                     $scope.loadSound();
                 }

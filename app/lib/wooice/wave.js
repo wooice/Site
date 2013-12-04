@@ -33,6 +33,15 @@ angular.module('wooice.waver', []).
                 canvas.height = $('#sound_wave_' + newSound.id).height();
                 var sound = null;
 
+                if (!newSound.position)
+                {
+                    var playerCache = storage.get(newSound.id + "_player");
+                    if (playerCache)
+                    {
+                        newSound.position = playerCache.from;
+                    }
+                }
+
                 if (soundData.soundList[newSound.id])
                 {
                     sound = soundData.soundList[newSound.id];
@@ -55,10 +64,16 @@ angular.module('wooice.waver', []).
                         color: sound.color,
                         commentable: sound.commentable
                     });
-                    delete sound.waveData;
+
                     sound.waveForm = waveForm;
                     soundData.soundList[sound.id] = sound;
                 }
+
+                storage.set(sound.id + "_wave",
+                    {
+                        waveData: newSound.waveData,
+                        position: sound.position
+                    });
 
                 delete newSound.waveData;
                 sound.waveForm.redraw();

@@ -3,8 +3,8 @@
 /* Controllers */
 
 angular.module('stream.controllers', []).
-    controller('streamCtrl', ['$scope', 'config', '$location', 'Stream', 'Sound', 'SoundUtilService', 'SoundSocial', '$routeParams', 'UserService', 'WooicePlayer', 'WooiceWaver', 'storage',
-        function ($scope, config, $location, Stream, Sound, SoundUtilService, SoundSocial, $routeParams, UserService, WooicePlayer, WooiceWaver, storage) {
+    controller('streamCtrl', ['$scope', 'config', '$location', 'Stream', 'Sound', 'SoundUtilService', 'SoundSocial', '$routeParams', 'UserService', 'WooicePlayer', 'WooiceWaver', 'storage', 'WaveStorage',
+        function ($scope, config, $location, Stream, Sound, SoundUtilService, SoundSocial, $routeParams, UserService, WooicePlayer, WooiceWaver, storage, WaveStorage) {
         $scope.config = config;
         $scope.userService = UserService;
         $scope.routeParams = $routeParams;
@@ -138,6 +138,9 @@ angular.module('stream.controllers', []).
                     $scope.sounds.splice(toDelete, 1);
                     $scope.$apply();
 
+                    storage.remove(this.sound.id + "_player", null);
+                    storage.remove(this.sound.id + "_wave", null);
+
                     $.globalMessenger().post({
                         message: "声音" + this.sound.alias + "删除成功。",
                         hideAfter: 15,
@@ -207,7 +210,7 @@ angular.module('stream.controllers', []).
                     }
                     var hasSound = false;
                     $.each($scope.sounds, function (index, oneSound) {
-                        if (oneSound.alias === soundRecord.profile.alias) {
+                        if (oneSound.id === soundRecord.id) {
                             hasSound = true;
                         }
                     });
@@ -225,51 +228,16 @@ angular.module('stream.controllers', []).
 
                 $scope.$apply();
 
-                var soundsNotStored = [];
-                $.each($scope.sounds, function(index, oneSound){
-                    var sound =  storage.get(oneSound.id + "_wave");
-                    if (sound)
-                    {
-                        sound.color = UserService.getColor();
-                        sound.commentable = (oneSound.comment.mode !== 'closed');
-                        WooiceWaver.render(sound);
+                loadWave($scope.sounds, 0);
 
-                        var soundPlayStatus = storage.get(oneSound.id + "_player");
-                        if (soundPlayStatus && soundPlayStatus.playing)
-                        {
-                            WooicePlayer.play({id: oneSound.id});
-                        }
-                    }
-                    else
+                $.each($scope.sounds, function (index, oneSound) {
+                    var soundPlayStatus = storage.get(oneSound.id + "_player");
+                    if (soundPlayStatus && soundPlayStatus.playing)
                     {
-                        soundsNotStored.push(oneSound.id);
+                        WooicePlayer.play({id: oneSound.id});
                     }
                 });
 
-                if (soundsNotStored && soundsNotStored.length > 0) {
-                    var newDatas = Sound.loadData({}, soundsNotStored, function () {
-                        $.each(newDatas, function (index, oneData) {
-                            //render wave
-                            WooiceWaver.render({
-                                id: oneData.soundId,
-                                waveData: oneData.wave[0],
-                                duration: oneData.duration * 1000,
-                                color: UserService.getColor(),
-                                commentable: oneData.commentMode !== 'closed',
-                                position: 0
-                            });
-
-                            storage.set(oneData.soundId + "_wave", {
-                                id: oneData.soundId,
-                                waveData: oneData.wave[0],
-                                duration: oneData.duration * 1000,
-                                position: 0
-                            });
-
-                           delete oneData.wave;
-                        });
-                    });
-                }
 
                 if ($scope.sounds.length >= config.soundsPerPage) {
                     $scope.pageNum++;
@@ -307,10 +275,38 @@ angular.module('stream.controllers', []).
                         }
                     });
                 });
-
-                $scope.$apply();
             });
         };
+
+        function loadWave(sounds, index)
+        {
+            if (index >= sounds.length)
+            {
+                return;
+            }
+            var oneSound = sounds[index];
+            if (oneSound.processed)
+            {
+                var waveData = WaveStorage.get({remoteId: oneSound.remoteId+".png"}, function(){
+                    WooiceWaver.render(
+                        {
+                            id: oneSound.id,
+                            waveData: waveData.waveData[0],
+                            duration: oneSound.duration * 1000,
+                            color: UserService.getColor(),
+                            commentable: oneSound.comment.mode !== 'closed'
+                        }
+                    );
+                    delete waveData.waveData;
+
+                    loadWave(sounds, index+1);
+                });
+            }
+            else
+            {
+                loadWave(sounds, index+1);
+            }
+        }
 
         $scope.loadStream();
 

@@ -21,8 +21,8 @@ angular.module('user.services', ['ngCookies']).
             unfollow: {method: 'DELETE', params: { action: 'follow', toUserAlias: 'current'}, isArray: false},
             getRecommandByTags: {method: "POST", params:{action: 'recommand', toUserAlias: 'users'}, isArray: true },
             getRecommand: {method: "POST", params:{action: 'recommand', toUserAlias: 'user'}, isArray: true },
-            getFollowed: {method: "GET", params:{action: 'followed', pageSize: 5}, isArray: true },
-            getFollowing: {method: "GET", params:{action: 'following', pageSize: 5}, isArray: true }
+            getFollowed: {method: "GET", params:{action: 'followed', pageSize: 3}, isArray: true },
+            getFollowing: {method: "GET", params:{action: 'following', pageSize: 3}, isArray: true }
         });
     }]).
     factory('UserService', ['User', '$cookies', function (User, $cookies) {

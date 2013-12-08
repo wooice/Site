@@ -479,7 +479,7 @@ angular.module('upload.controllers', [
                 $scope.defaultSound.profileSaved = false;
                 $scope.defaultSound.dataSaved = false;
                 $scope.defaultSound.downloadable = false;
-                $scope.defaultSound.recordType = 'original';
+                $scope.defaultSound.recordType = 'resing';
                 $scope.defaultSound.posterUrl = "img/voice.jpg";
 
                 $scope.defaultSound.profileMsgClass = "";

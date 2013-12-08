@@ -29,7 +29,6 @@ angular.module('sound.services', ['ngResource'])
     .factory('SoundUtilService', ['User', 'UserService','config', function (User, UserService, config) {
         return {
             buildSound: function (sound) {
-
                 var newSound = {
                     id: sound.id,
                     alias: sound.profile.alias,

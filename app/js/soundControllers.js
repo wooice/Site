@@ -118,6 +118,12 @@ angular.module('sound.controllers', [])
             };
 
             $scope.comment = function () {
+                if (UserService.validateRoleGuest())
+                {
+                    $('#sound_commentbox_input_' + $scope.sound.id).val('');
+                    $('#sound_commentbox_input_' + $scope.sound.id).attr("placeholder", "对不起，请登陆后留言。。");
+                    return;
+                }
                 $scope.newComment.pointAt = $('#sound_comment_point_' + $scope.sound.id).val();
                 $scope.newComment.toUserAlias = $('#sound_comment_to_' + $scope.sound.id).val();
                 var result = SoundSocial.comment({sound: $scope.sound.id}, $scope.newComment, function (count) {
@@ -128,6 +134,17 @@ angular.module('sound.controllers', [])
 
                     $scope.refreshTarget("comments");
                     loadCommentsInSound();
+                }, function(error){
+                    if (error.data == 'INVALID_COMMENT')
+                    {
+                        $('#sound_commentbox_input_' + $scope.sound.id).val('');
+                        $('#sound_commentbox_input_' + $scope.sound.id).attr("placeholder", "对不起，您的评论含有敏感词，请慎重输入");
+                    }
+                    else
+                    {
+                        $('#sound_commentbox_input_' + $scope.sound.id).val('');
+                        $('#sound_commentbox_input_' + $scope.sound.id).attr("placeholder", "对不起，您的评论输入失败，请稍后再试");
+                    }
                 });
             };
 
@@ -215,7 +232,19 @@ angular.module('sound.controllers', [])
                     $('#sound_comment_reply_input_' + this.$index).attr("placeholder", "感谢您的回复!");
 
                     $scope.refreshTarget("comments");
-                }, this));
+                }, this), function(error)
+                {
+                    if (error.data == 'INVALID_COMMENT')
+                    {
+                        $('#sound_commentbox_input_' + $scope.sound.id).val('');
+                        $('#sound_commentbox_input_' + $scope.sound.id).attr("placeholder", "对不起，您的评论含有敏感词，请慎重输入");
+                    }
+                    else
+                    {
+                        $('#sound_commentbox_input_' + $scope.sound.id).val('');
+                        $('#sound_commentbox_input_' + $scope.sound.id).attr("placeholder", "对不起，您的评论输入失败，请稍后再试");
+                    }
+                });
             };
 
             $scope.replyInSound = function () {

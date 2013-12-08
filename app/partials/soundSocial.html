@@ -107,7 +107,7 @@
 
                         <div class="pull-right">
                             <a href="#" onclick="return false;" ng-click="reply()" title="回复本条评论"
-                               ng-show="sound.comment.mode !== 'closed'"
+                               ng-show="sound.comment.mode !== 'closed' && !userService.validateRoleGuest()"
                                style="text-decoration:none;padding-right: 8px"><i
                                     ng-show="!comment.showReply"
                                     class="icon-reply"></i>

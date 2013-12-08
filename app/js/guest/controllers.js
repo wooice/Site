@@ -152,12 +152,9 @@ angular.module('guest.controllers', [])
 
             if ($scope.rememberUser)
             {
-                if (user.auth)
-                {
-                    $.cookie("token", user.authToken, {
-                        expires : 7
-                    });
-                }
+                $.cookie("token", user.authToken, {
+                    expires : 7
+                });
             }
             else
             {

@@ -41,7 +41,8 @@
 
                         <div class="pull-right" style="font-size: 10px"  ng-show="mode == 'default'">
                             <a href="#/infringement?alias={{sound.alias}}" tooltip="举报版权侵权"><i class="icon-ban-circle"></i> 侵权举报</a><br>
-                            <a href="#" onclick="return false;" tooltip="举报低俗，反动等内容" ng-click="reportSound()" style="text-decoration: none">
+                            <a href="#" onclick="return false;" tooltip="举报低俗，反动等内容" ng-click="reportSound()" style="text-decoration: none"
+                                    ng-show="!userService.validateRoleGuest()">
                                 <i class="icon-thumbs-down-alt" ng-show="!sound.reported"></i>
                                 <i class="icon-thumbs-down" ng-show="sound.reported"></i>
                                 内容举报</a>
@@ -135,7 +136,7 @@
                     <div>
                         <a href="http://service.weibo.com/share/share.php?url={{config.site.url}}#/
                             sound/{{sound.alias}}&type=button&count=0&language=zh_cn&appkey=fu5sr&searchPic=false&style=simple"
-                           target="_blank"    style="border: 0;width: 32px;height: 32px" title="分到新浪微博"><img src="img/logo/sina.png" style="width: 30px;height: 30px"/></a>
+                           target="_blank"    style="border: 0;width: 32px;height: 32px" title="分享到新浪微博"><img src="img/logo/sina.png" style="width: 30px;height: 30px"/></a>
                     </div>
                 </div>
                 <a href="#" class="button button-small button-rounded button-flat action-button"

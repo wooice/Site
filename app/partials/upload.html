@@ -127,17 +127,6 @@
 
                     <div style="padding-top: 15px">
                         <div class="btn-group" data-toggle="buttons-radio">
-                            <label style="color:rgb(51, 51, 51)">版权信息</label>
-                            <button type="button" class="btn" ng-click="defaultSound.recordType = 'resing'">
-                                翻唱
-                            </button>
-                            <button type="button" class="btn active"
-                                    ng-click="defaultSound.recordType = 'original'"
-                                    tooltip="上传5首原创音乐即可获得会员资格">原创
-                            </button>
-                        </div>
-
-                        <div class="btn-group" data-toggle="buttons-radio" style="padding-left:30px;">
                             <label style="color:rgb(51, 51, 51)">隐私</label>
                             <button type="button" class="btn" ng-click="defaultSound.status = 'private'">私有
                             </button>
@@ -154,37 +143,52 @@
                             </select>
                         </div>
 
-                        <div class="btn-group" data-toggle="buttons-radio"
-                             style="padding-left:30px;"
-                             ng-show="defaultSound.recordType == 'original'">
-                            <label style="color:rgb(51, 51, 51)">允许下载</label>
-                            <button type="button" class="btn" ng-click="defaultSound.downloadable = true">
-                                是
+                        <div class="btn-group" data-toggle="buttons-radio"  style="padding-left:30px;">
+                            <label style="color:rgb(51, 51, 51)">声音类型</label>
+                            <button type="button" class="btn active" ng-click="defaultSound.recordType = 'resing'">
+                                翻唱
                             </button>
-                            <button type="button" class="btn active"
-                                    ng-click="defaultSound.downloadable = false">否
+                            <button type="button" class="btn"
+                                    ng-click="defaultSound.recordType = 'original'"
+                                    tooltip="上传5首原创音乐即可获得会员资格">原创
                             </button>
                         </div>
 
-                        <div ng-show="defaultSound.recordType && defaultSound.recordType == 'resing'">
-                            <div style="color: gray;font-size: 10px">
-                                上传翻唱作品前请确保您没有侵犯原作者的音乐版权。<a href="#/copyright" target="_blank">了解更多版权信息。</a>
-                            </div>
+                        <div class="btn-group" data-toggle="buttons-radio"  style="padding-left:80px;" ng-show="defaultSound.recordType == 'original'">
+                            <label ng-click="showMore=!showMore" style="color: gray"><b >更多选项</b>
+                                <i ng-show="!showMore" class="icon-chevron-right"></i>
+                                <i ng-show="showMore" class="icon-chevron-down"></i>
+                            </label>
                         </div>
-                        <div ng-show="defaultSound.recordType && defaultSound.recordType == 'original'"
+
+                        <div ng-show="defaultSound.recordType && defaultSound.recordType == 'original' && showMore"
                              style="padding-top: 10px">
-                            <label>版权注册编码(ISWC编码)</label>
+                            <div class="btn-group" data-toggle="buttons-radio" style="padding-top: 5px">
+                                <label>版权注册编码(ISWC编码)</label>
 
-                            <div class="text-warning"
-                                 ng-show="upload_form.rightNumber.$dirty && upload_form.rightNumber.$invalid">
-                                <small class="text-warning"
-                                       ng-show="upload_form.rightNumber.$error.pattern">
-                                    请输入正确的版权编号
-                                </small>
+                                <div class="text-warning"
+                                     ng-show="upload_form.rightNumber.$dirty && upload_form.rightNumber.$invalid">
+                                    <small class="text-warning"
+                                           ng-show="upload_form.rightNumber.$error.pattern">
+                                        请输入正确的版权编号
+                                    </small>
+                                </div>
+
+                                <input type="text" name="rightNumber"
+                                       ng-model="defaultSound.soundRight.rightNumber" ng-pattern="/^\d{16}$/"
+                                       tooltip="已注册的作品可填写注册编码，该编码将用于版权验证">
                             </div>
-                            <input type="text" name="rightNumber"
-                                   ng-model="defaultSound.soundRight.rightNumber" ng-pattern="/^\d{16}$/"
-                                   tooltip="已注册的作品可填写注册编码，该编码将用于版权验证">
+
+                            <div class="btn-group" data-toggle="buttons-radio"
+                                 style="padding-left:50px;">
+                                <label style="color:rgb(51, 51, 51)">允许下载</label>
+                                <button type="button" class="btn" ng-click="defaultSound.downloadable = true">
+                                    是
+                                </button>
+                                <button type="button" class="btn active"
+                                        ng-click="defaultSound.downloadable = false">否
+                                </button>
+                            </div>
 
                             <div style="padding-bottom: 10px" class="alert alert-info">
                                 <button type="button" class="close" data-dismiss="alert">×</button>
@@ -200,9 +204,8 @@
                 </div>
 
 
-                <div style="padding-right: 35px">
+                <div style="padding-top: 15px">
                     <span style="color: #808080;font-size: 10px" class="pull-left">注：带有<span style="color: red">*</span>标注为必须填写内容</span>
-
                     <div class="pull-right">
                         <button id="save_button" href="#"
                                 ng-disabled="upload_form.$invalid || defaultSound.tags.length == 0 || defaultSound.uplodingPoster"

@@ -3,7 +3,7 @@
 angular.module('wooice', ['ngRoute', 'ui.bootstrap', 'wooice.directives', 'wooice.config', 'wooice.player', 'wooice.waver', 'angularLocalStorage', 'feedback.services',
         'auth.services', 'guest.services', 'profile.services', 'sound.services', 'tag.services', 'storage.services', 'user.services', 'sound.pro.services', 'util.services', 'admin.services',
         'auth.controllers', 'guest.controllers', 'profile.controllers', 'stream.controllers', 'common.stream.controllers', 'user.stream.controllers', 'footer.controllers', 'header.controllers',
-        'interest.controllers', 'message.services', 'sound.controllers', 'sound.social.controllers', 'player.controllers', 'upload.controllers', 'admin.controllers', 'infringe.controllers', 'templates']). //, 'templates'
+        'interest.controllers', 'message.services', 'sound.controllers', 'sound.social.controllers', 'player.controllers', 'upload.controllers', 'admin.controllers', 'infringe.controllers']). //, 'templates'
 
     config(['$routeProvider', '$httpProvider',function ($routeProvider, $httpProvider) {
         $routeProvider.
@@ -60,7 +60,7 @@ angular.module('wooice', ['ngRoute', 'ui.bootstrap', 'wooice.directives', 'wooic
     .run(function ($rootScope, config, $location, $anchorScroll, $routeParams, Auth, UserService, Guest) {
         $rootScope.config = config;
 
-        var routesThatDontRequireAuth = ['/guest', '/auth'];
+        var routesThatDontRequireAuth = ['/guest', '/auth', '/sound'];
         var routesThatForAdmins = ['/admin'];
         var routesNoCheck = ["/forbidden", "/not_found", "/player", "/iframe"];
 

@@ -99,11 +99,14 @@ angular.module('wooice.waver', []).
             },
 
             stop: function (sound) {
-                var waveForm = soundData.soundList[sound.id].waveForm;
-                if (waveForm)
+                if (soundData.soundList[sound.id])
                 {
-                    waveForm.cleanWaveData();
-                    waveForm.stop();
+                    var waveForm = soundData.soundList[sound.id].waveForm;
+                    if (waveForm)
+                    {
+                        waveForm.cleanWaveData();
+                        waveForm.stop();
+                    }
                 }
             },
 

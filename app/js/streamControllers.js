@@ -21,21 +21,23 @@ angular.module('stream.controllers', []).
             });
         }
 
-        var soundsReLoad = null;
-        if ($routeParams.value) {
-            soundsReLoad = setInterval(checkNewCreated, 60 * 1000);
-        }
-        else {
-            if (!$routeParams.q && !$routeParams.tag) {
-                soundsReLoad = setInterval(checkNewSound, 60 * 1000);
+        if (! UserService.validateRoleGuest())
+        {
+            var soundsReLoad = null;
+            if ($routeParams.value) {
+                soundsReLoad = setInterval(checkNewCreated, 60 * 1000);
             }
-        }
-
-        $scope.$on('$destroy', function (e) {
-            if (soundsReLoad) {
-                clearInterval(soundsReLoad);
+            else {
+                if (!$routeParams.q && !$routeParams.tag) {
+                    soundsReLoad = setInterval(checkNewSound, 60 * 1000);
+                }
             }
-        });
+            $scope.$on('$destroy', function (e) {
+                if (soundsReLoad) {
+                    clearInterval(soundsReLoad);
+                }
+            });
+        }
 
         var rewriteF5 = function (e) {
             if (e.which === 116) {
@@ -112,6 +114,18 @@ angular.module('stream.controllers', []).
                 $('#sound_commentbox_input_' + this.sound.id).val('');
                 $('#sound_comment_point_' + this.sound.id).val(-1);
                 $('#sound_commentbox_input_' + this.sound.id).attr("placeholder", "感谢您的留言!");
+            }, function(error)
+            {
+                if (error.data == 'INVALID_COMMENT')
+                {
+                    $('#sound_commentbox_input_' + $scope.sound.id).val('');
+                    $('#sound_commentbox_input_' + $scope.sound.id).attr("placeholder", "对不起，您的评论含有敏感词，请慎重输入");
+                }
+                else
+                {
+                    $('#sound_commentbox_input_' + $scope.sound.id).val('');
+                    $('#sound_commentbox_input_' + $scope.sound.id).attr("placeholder", "对不起，您的评论输入失败，请稍后再试");
+                }
             });
         }
 

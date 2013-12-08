@@ -1,4 +1,3 @@
-'use strict';
 
 angular.module('sound.social.controllers', [])
     .controller('soundSocialCtrl', ['$scope', '$window', 'config', '$routeParams', 'Sound', 'SoundUtilService', 'Storage', 'SoundSocial', 'SoundSocialList', 'UserService', '$location', '$anchorScroll', 'SoundSocialProSocial', 'SoundProSocial', 'UserSocial', 'Tag',

@@ -36,7 +36,15 @@ angular.module('wooice', ['ngRoute', 'ui.bootstrap', 'wooice.directives', 'wooic
             var error = function (response) {
                 switch (response.status) {
                     case 401:
-                        $location.url('/guest/login?relogin=true');
+                        if ($.cookie("rememberUser"))
+                        {
+                            $location.url('/guest/login?relogin=true');
+                        }
+                        else
+                        {
+                            $location.url('/guest/login');
+                        }
+
                         return $q.reject(response);
                     case 403:
                         $location.url('/forbidden');

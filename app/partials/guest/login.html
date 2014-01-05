@@ -72,8 +72,7 @@
                         <div class="control-group">
                             <div class="controls" style="margin-left: 40px">
                                 <div style="color: gray; font-size: 12px">
-                                <span><input type="checkbox" ng-model="rememberUser"
-                                             ng-true-value=true ng-false-value=false>  保持登录状态</span>
+                                <span><input type="checkbox" ng-model="rememberUser">  保持登录状态</span>
                                     <a href="#/guest/forgetPass"
                                        style="padding-left: 50px">忘记密码</a>
                                 </div>
@@ -102,9 +101,10 @@
                                        onclick="return false;" class="external-logo">
                                         <i class="icon-weibo icon-2x"></i>
                                     </a>
-                                    <a href="#" title="腾讯QQ账号登陆" style="text-decoration:none;padding-left: 10px;" ng-click="qqLogin()"
+                                    <a href="#" title="腾讯QQ账号登陆" style="text-decoration:none;padding-left: 10px;"
+                                       ng-click="qqLogin()"
                                        onclick="return false;" class="external-logo">
-                                        <img  src="img/qq.svg"  class="qq_login_log" style="display: none" svg />
+                                        <img src="img/qq.svg" class="qq_login_log" style="display: none" svg/>
                                     </a>
                                     <a href="" title="人人账号登陆" style="text-decoration:none;padding-left: 15px"
                                        class="external-logo hide"><i
@@ -119,15 +119,42 @@
             <div style="background-color:#F7F7F8;background-attachment: scroll;background-clip: border-box;background-image: url(img/footer_top_bg.jpg) ;
             background-position:top center; background-repeat:no-repeat;background-origin: padding-box;">
                 <p style="font-size: 12px;color: gray;padding-left: 30%;background-clip:border-box;background-size:auto;padding-bottom: 20px;padding-top: 15px;">
-                    Copyright © 2013 WOWOICE <span style="padding-left: 30px">沪ICP备13042199号-2</span></p>
+                    Copyright © 2013 WOWOICE <span style="padding-left: 30px">沪ICP备13042199号-2</span>
+                    <span style="padding-left: 30px"><a href="#comms" onclick="return false;"
+                                                        data-toggle="modal">联系我们</a></span>
+                </p>
             </div>
         </div>
+    </div>
+
+    <div id="comms" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <form style="margin-bottom: 0px">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <b style="font-size: 21px">联系我们</b>
+            </div>
+
+            <div class="modal-body" style="padding-left: 80px">
+                <div>
+                    <label><i class="icon-envelope"></i> <span style="padding-left: 15px"><a
+                            href="mailto:communications@wowoice.com">communications@wowoice.com</a></span></label>
+                </div>
+                <div>
+                    <label><i class="icon-weibo"></i><span style="padding-left: 18px"><a href="http://weibo.com/wowoice"
+                                                                                         target="_blank">wowoice</a></span></label>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+            </div>
+        </form>
     </div>
 
     <div id="blocker" class="modal hide fade" data-backdrop="static" data-keyboard="false">
         <form name="blocker" style="margin-bottom: 0px">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <b id="myModalLabel" style="font-size: 21px">温馨提示</b>
             </div>
             <div class="modal-body" style="padding-left: 40px">

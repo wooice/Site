@@ -7,12 +7,16 @@ angular.module('header.controllers', [])
     function ($scope, $location, $routeParams, User, UserService, WooicePlayer, Feedback, MessageService) {
         $scope.q = $routeParams.q;
         $scope.userAlias = UserService.getCurUserAlias();
-
         $scope.playMode = UserService.getPlayMode();
         $scope.playModes = ['顺序播放', '单曲循环', '随机播放', '播完即止'];
 
         function postLogout(){
-            UserService.setupUser(null);
+            var token = $.cookie("token");
+            if (!token)
+            {
+                UserService.setupUser(null);
+            }
+
             MessageService.destroyMessager();
             $.globalMessenger().post({
                 message: "感谢您的使用",

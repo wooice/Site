@@ -118,6 +118,10 @@ angular.module('guest.controllers', [])
         $scope.verifyCode = "";
         $scope.showVerify = $.cookie('show_verify');
         $scope.error;
+        if ($.cookie("rememberUser"))
+        {
+            $scope.rememberUser = true;
+        }
 
         $scope.toLogin = function () {
             var user = {userId: $scope.userId, password: md5($scope.password), rememberUser:$scope.rememberUser};
@@ -155,10 +159,14 @@ angular.module('guest.controllers', [])
                 $.cookie("token", user.authToken, {
                     expires : 7
                 });
+                $.cookie("rememberUser", true, {
+                    expires : 7
+                });
             }
             else
             {
-                $.cookie("token", null);
+                $.removeCookie("token");
+                $.removeCookie("rememberUser");
             }
             $.cookie('show_verify', false);
             MessageService.setupMessager();

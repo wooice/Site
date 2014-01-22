@@ -5,7 +5,7 @@ angular.module('sound.social.controllers', [])
 
             $scope.$parent.$on('$includeContentLoaded', function (event) {
                 $("#" + $scope.target + "_li").addClass("active");
-                $("#" + $scope.target).addClass("active");
+                $("#" + $scope.target).addClass("in active");
 
                 $("#tags").typeahead({
                     remote: {

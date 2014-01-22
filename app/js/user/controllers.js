@@ -22,6 +22,7 @@ angular.module('profile.controllers', [])
         $scope.colors.push({upper: '#cc3300', lower: '#db704c', deeper: '#a32800'});
         $scope.colors.push({upper: '#006b75', lower: '#4c979e', deeper: '#00555d'});
         $scope.colors.push({upper: '#003300', lower: '#4c704c', deeper: '#002800'});
+        $scope.colors.push({upper: 'random', lower: 'random', deeper: 'random'});
 
         var user = User.get({userAlias: UserService.getCurUserAlias()},function(){
            if(!user.profile.avatorUrl)
@@ -143,7 +144,7 @@ angular.module('profile.controllers', [])
         });
 
         $scope.saveProfile = function(){
-            UserProfile.updateExternal({}, $scope.user.external, function(){
+            UserProfile.updateExternal({}, $scope.userExternal, function(){
                 $scope.messageClass = "text-success";
                 $scope.message = "站外信息保存成功";
             },function(){

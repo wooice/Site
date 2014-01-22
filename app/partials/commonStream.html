@@ -1,57 +1,57 @@
 <ng-include src="'partials/header.html'"></ng-include>
 
-<div role="main" class="container-fluid">
+<div role="main">
 
-    <div class="row-fluid">
+    <div class="row">
 
-        <div class="span9">
+        <div class="col-md-9 col-xs-12">
             <ng-include src="'partials/stream.html'"></ng-include>
         </div>
 
-        <div class="span3" ng-controller="recommandUserCtrl">
+        <div class="col-md-3 hidden-xs" ng-controller="recommandUserCtrl">
             <div class="affix" style="width: 20%">
-                <div style="padding-bottom: 15px;height:150px">
-                <legend style="font-size: 18px">为您推荐的用户
-                    <i style="cursor:pointer" ng-show="recommendUsers.length > 0"
-                       class='button button-small button-pill button-flat'
-                       ng-click="save()">关注选定用户</i>
-                </legend>
-                <div class="{{msgClass}}" style="padding-bottom: 10px">
-                    {{msg}}
-                </div>
-                <div ng-if="recommendUsers.length > 0">
-                    <div ng-repeat="recommendUser in recommendUsers" style="float:left" ng-click="toogleFollow()">
-                        <div style="text-align:center; padding-right: 8px; height: 90px" ng-show="$index < 3">
-                            <div class="user {{recommendUser.class}}">
-                                <a href="#" onclick="return false;">
-                                    <img style="width: 60px;height: 60px" ng-src="{{recommendUser.profile.avatorUrl}}">
-                                </a>
-                            </div>
-                            </a>
-                            <div>
-                                <a href='{{recommendUser.route}}'>{{recommendUser.profile.alias}}</a>
+                <div style="padding-top: 15px;height:150px">
+                    <legend style="font-size: 18px;margin-bottom:10px">为您推荐的用户
+                        <span>
+                            <i style="cursor:pointer" ng-show="recommendUsers.length > 0"
+                               class='button button-small button-pill button-flat'
+                               ng-click="save()">关注选定用户</i>
+                         </span>
+                    </legend>
+
+                    <div class="{{msgClass}}" style="padding-bottom: 10px">
+                        {{msg}}
+                    </div>
+                    <div ng-if="recommendUsers.length > 0" class="row">
+                        <div ng-repeat="recommendUser in recommendUsers" class="col-xs-3" ng-click="toogleFollow()">
+                            <div ng-show="$index < 4">
+                                <div class="user {{recommendUser.class}}">
+                                    <a href="#" onclick="return false;">
+                                        <img ng-src="{{recommendUser.profile.avatorUrl}}" class="img-responsive">
+                                    </a>
+                                </div>
+                                <div>
+                                    <a href='{{recommendUser.route}}'>{{recommendUser.profile.alias}}</a>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <div ng-if="recommendUsers.length == 0" style="padding-left: 15px">
+                        暂无用户推荐
+                    </div>
                 </div>
 
-                <div ng-if="recommendUsers.length == 0" style="padding-left: 15px">
-                    暂无用户推荐
-                </div>
-                </div>
+                <div style="padding-top: 35px;height:150px">
+                    <legend style="font-size: 18px">为您推荐的声音 </legend>
 
-                <div style="padding-bottom: 15px;height:150px">
-                    <legend style="font-size: 18px">为您推荐的声音
-                    </legend>
-                    <div ng-if="recommendSounds.length > 0">
-                        <div ng-repeat="recommendSound in recommendSounds" style="float:left" ng-click="toogleFollow()">
-                            <div style="text-align:center; padding-right: 8px; height: 90px" ng-show="$index < 5">
+                    <div ng-if="recommendSounds.length > 0"  class="row">
+                        <div ng-repeat="recommendSound in recommendSounds"  class="col-xs-3">
+                            <div ng-show="$index < 4">
                                 <div>
                                     <a href='{{recommendSound.route}}'>
-                                        <img style="width: 60px;height: 60px" ng-src="{{recommendSound.profile.poster.url}}">
+                                        <img ng-src="{{recommendSound.profile.poster.url}}" class="img-responsive">
                                     </a>
                                 </div>
-                                </a>
                                 <div>
                                     <a href='{{recommendSound.route}}'>{{recommendSound.profile.alias}}</a>
                                 </div>

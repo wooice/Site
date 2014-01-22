@@ -1,9 +1,9 @@
 <ng-include src="'partials/header.html'"></ng-include>
 
-<div class="row-fluid">
-<div class="span3">
+<div class="row">
+<div class="col-md-3">
 </div>
-<div class="span6" style="padding-top: 10px">
+<div class="col-md-6" style="padding-top: 10px">
 <form name="upload_form" style="padding-top: 10px">
 
 <div id="upload_error" class="{{defaultSound.uploadMsgClass}}" style="padding-left: 20px">
@@ -30,43 +30,43 @@
     </div>
 </div>
 <div style="width: 80%">
-    <div id="progresspart" class="row-fluid hide" style="padding-left: 15px">
+<div id="progresspart" class="row" style="display:none;padding-left: 15px">
 
-        <div id="progress" class="progress {{defaultSound.uploadStatus}}">
-            <div class="bar"></div>
-        </div>
+    <div id="progress" class="progress {{defaultSound.uploadStatus}}">
+        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
 
-        <div class=" pull-right">
+    <div class=" pull-right">
           <span ng-show="!defaultSound.isSoundUploading" href="#"
                 class="button button-small button-rounded button-flat-highlight action-button fileinput-button">
                 <i class="icon-plus icon-white"></i>
                 <span>更换音频</span>
                 <input id="sound_change_upload" type="file" name="file" class="upload_button">
          </span>
-            <a href="#" ng-show="defaultSound.isSoundUploading" id="cancel_button"
-               class="button button-small button-rounded button-flat-highlight">
-                <i class="icon-ban-circle icon-white"></i>
-                <span>取消上传</span>
-            </a>
-        </div>
+        <a href="#" ng-show="defaultSound.isSoundUploading" id="cancel_button"
+           class="button button-small button-rounded button-flat-highlight">
+            <i class="icon-ban-circle icon-white"></i>
+            <span>取消上传</span>
+        </a>
     </div>
-    <br>
+</div>
+<br>
 
-    <div id="sound_info" class="row-fluid hide" style="padding-left:20px">
-        <div style="padding-bottom: 10px" class="alert alert-info">
-            <button type="button" class="close" data-dismiss="alert">×</button>
-            <span style="color: gray;font-size: 10px;">WOWOICE接受您上传的原创及翻唱（演奏等）作品，上传时请确保音频信息中作者名与您填写的ID或姓名相同，否则无法完成上传。<a
+<div id="sound_info" class="row" style="display:none;padding-left:20px">
+    <div style="padding-bottom: 10px" class="alert alert-info">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+            <span style="color: gray;font-size: 10px;">上传时请注意：WOWOICE接受您上传的原创及翻唱（演奏等）作品，上传时请确保音频信息中作者名与您填写的ID或姓名相同，否则无法完成上传。<a
                     href="#/copyright" target="_blank">了解更多版权信息。</a></span>
-        </div>
-        <div>
-            <div class="row-fluid">
-                <div class="span5" style="padding-left: 20px">
-                    <div class="{{defaultSound.imgUploadMsgClass}}">
-                        <i ng-show="defaultSound.uplodingPoster"
-                           class="icon-spinner icon-spin icon-large"></i>{{defaultSound.imgUploadMsg}}
-                    </div>
-                    <img ng-src="{{defaultSound.posterUrl}}" id="poster_img" height="200" width="200">
-                  <span style="margin-top: -60px;margin-left: 50px" ng-show="!defaultSound.uplodingPoster"
+    </div>
+    <div>
+        <div class="row">
+            <div class="col-md-5" style="padding-left: 20px">
+                <div class="{{defaultSound.imgUploadMsgClass}}">
+                    <i ng-show="defaultSound.uplodingPoster"
+                       class="icon-spinner icon-spin icon-large"></i>{{defaultSound.imgUploadMsg}}
+                </div>
+                <img ng-src="{{defaultSound.posterUrl}}" id="poster_img" class="img-responsive">
+                  <span style="margin-top: -60px;margin-left: 85px" ng-show="!defaultSound.uplodingPoster"
                         class="button button-small button-rounded button-flat action-button fileinput-button">
                     <span tooltip="上传成功后请点击'保存声音信息'按钮确认保存海报">上传海报</span>
                     <input id="poster_upload" type="file" name="file">
@@ -78,23 +78,23 @@
                       <i class="icon-ban-circle icon-white"></i>
                       <span>取消上传</span>
                   </span>
-                </div>
-                <div class="span7">
-                    <div style="padding-left: 30px">
-                        <div id="profile_info" class="{{defaultSound.profileMsgClass}}">
-                            {{ defaultSound.profileMsg}}
-                        </div>
-                        <div style="width: 100%;padding: 5px">
-                            <label style="color:rgb(51, 51, 51)"><span style="color: red">*</span>声音名称</label>
-                            <input type="text" id="name" name="name" placeholder="请输入这段声音的名称"
-                                   ng-model="defaultSound.name" required
-                                   class="input-large">
-                        </div>
+            </div>
+            <div class="col-md-7">
+                <div style="padding-left: 30px">
+                    <div id="profile_info" class="{{defaultSound.profileMsgClass}}">
+                        {{ defaultSound.profileMsg}}
+                    </div>
+                    <div style="width: 100%;padding: 5px">
+                        <label style="color:rgb(51, 51, 51)"><span style="color: red">*</span>声音名称</label>
+                        <input type="text" id="name" name="name" placeholder="请输入这段声音的名称"
+                               ng-model="defaultSound.name" required
+                               class="form-control">
+                    </div>
 
-                        <div style="width: 100%;padding: 5px;padding-bottom: 15px">
-                            <label style="color:rgb(51, 51, 51)"><span style="color: red">*</span>声音标签</label>
+                    <div style="width: 100%;padding: 5px;padding-bottom: 15px">
+                        <label style="color:rgb(51, 51, 51)">声音标签</label>
 
-                            <div style="width: 100%">
+                        <div>
                                 <span id="tags_div" ng-repeat="tag in defaultSound.tags">
                                     <span class="btn-group green" style="padding: 5px;padding-right: 15px;"
                                           id="tag_{{tag}">
@@ -105,65 +105,82 @@
                                         </span>
                                     </span>
                                 </span>
-                            </div>
+                        </div>
 
-                            <div>
-                                <input type="text" id="tags" name="tags" class="input-large" placeholder="添加一个标签"
-                                       tooltip="丰富的标签会让声音更被更多人发现">
-                                <button class="button button-rounded button-flat-primary button-tiny"
-                                        ng-click="addNewTag()">添加
-                                </button>
-                            </div>
+                        <div>
+                            <input type="text" id="tags" name="tags" class="form-control" placeholder="添加一个标签"
+                                   tooltip="丰富的标签会让声音更被更多人发现">
+                            <button class="button button-rounded button-flat-primary button-small"
+                                    ng-click="addNewTag()">添加
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div>
+        </div>
+        <div>
 
-                <div style="width: 100%;padding: 5px">
-                    <label style="color:rgb(51, 51, 51)">声音描述</label>
-                    <textarea id="description" name="description" placeholder="请介绍这段声音"
-                              ng-model="defaultSound.description" class="input-xxlarge"></textarea>
+            <div style="width: 100%;padding: 5px">
+                <label style="color:rgb(51, 51, 51)">声音描述</label>
+                <textarea id="description" name="description" placeholder="请介绍这段声音"
+                          ng-model="defaultSound.description" class="form-control"></textarea>
 
-                    <div style="padding-top: 15px">
-                        <div class="btn-group" data-toggle="buttons-radio">
-                            <label style="color:rgb(51, 51, 51)">隐私</label>
-                            <button type="button" class="btn" ng-click="defaultSound.status = 'private'">私有
-                            </button>
-                            <button type="button" class="btn active"
-                                    ng-click="defaultSound.status = 'public'">
-                                公开
-                            </button>
+                <div style="padding-top: 15px">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label style="color:rgb(51, 51, 51)">隐私</label> <br>
+
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary" ng-model="defaultSound.status"
+                                        btn-radio="'private'">私有
+                                </button>
+                                <button type="button" class="btn btn-primary active" btn-radio="'public'"
+                                        ng-model="defaultSound.status">
+                                    公开
+                                </button>
+                            </div>
                         </div>
 
-                        <div class="btn-group" style="padding-left:30px;padding-top: 8px">
-                            <label style="color:rgb(51, 51, 51)">评论模式</label>
-                            <select ng-model="defaultSound.commentMode"
-                                    ng-options="cm.name for cm in commentModes" style="width: 120px">
-                            </select>
+                        <div class="col-md-3">
+                            <label style="color:rgb(51, 51, 51)">评论模式</label><br>
+
+                            <div class="btn-group" style="padding-top: 8px">
+                                <select ng-model="defaultSound.commentMode"
+                                        ng-options="cm.name for cm in commentModes" style="width: 120px">
+                                </select>
+                            </div>
                         </div>
 
-                        <div class="btn-group" data-toggle="buttons-radio"  style="padding-left:30px;">
+                        <div class="col-md-3" style="padding-left: 20px">
                             <label style="color:rgb(51, 51, 51)">声音类型</label>
-                            <button type="button" class="btn active" ng-click="defaultSound.recordType = 'resing'">
-                                翻唱
-                            </button>
-                            <button type="button" class="btn"
-                                    ng-click="defaultSound.recordType = 'original'"
-                                    tooltip="上传5首原创音乐即可获得会员资格">原创
-                            </button>
+                            <br>
+
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary active" ng-model="defaultSound.recordType"
+                                        btn-radio="'resing'">
+                                    翻唱
+                                </button>
+                                <button type="button" class="btn btn-primary" btn-radio="'original'"
+                                        ng-model="defaultSound.recordType"
+                                        tooltip="上传5首原创音乐即可获得会员资格">原创
+                                </button>
+                            </div>
                         </div>
 
-                        <div class="btn-group" data-toggle="buttons-radio"  style="padding-left:80px;" ng-show="defaultSound.recordType == 'original'">
-                            <label ng-click="showMore=!showMore" style="color: gray"><b >更多选项</b>
+                        <div class="col-md-3 btn-group" data-toggle="buttons-radio" style="padding: 15px"
+                             ng-show="defaultSound.recordType == 'original'">
+                            <label ng-click="showMore=!showMore" style="color: gray;margin-top: 20px"><b>更多选项</b>
                                 <i ng-show="!showMore" class="icon-chevron-right"></i>
                                 <i ng-show="showMore" class="icon-chevron-down"></i>
                             </label>
                         </div>
+                    </div>
 
-                        <div ng-show="defaultSound.recordType && defaultSound.recordType == 'original' && showMore"
-                             style="padding-top: 10px">
-                            <div class="btn-group" data-toggle="buttons-radio" style="padding-top: 5px">
+                    <div ng-show="defaultSound.recordType && defaultSound.recordType == 'original' && showMore"
+                         style="padding-left: 15px">
+                        <hr>
+                        <div class="row" style="padding-bottom: 10px">
+                            <div class="btn-group col-md-6" data-toggle="buttons-radio" style="padding-top: 5px">
                                 <label>版权注册编码(ISWC编码)</label>
 
                                 <div class="text-warning"
@@ -174,53 +191,60 @@
                                     </small>
                                 </div>
 
-                                <input type="text" name="rightNumber"
+                                <input type="text" name="rightNumber" class="form-control"
                                        ng-model="defaultSound.soundRight.rightNumber" ng-pattern="/^\d{16}$/"
                                        tooltip="已注册的作品可填写注册编码，该编码将用于版权验证">
                             </div>
 
-                            <div class="btn-group" data-toggle="buttons-radio"
-                                 style="padding-left:50px;">
+                            <div class="col-md-6" style="padding-left:50px;">
                                 <label style="color:rgb(51, 51, 51)">允许下载</label>
-                                <button type="button" class="btn" ng-click="defaultSound.downloadable = true">
-                                    是
-                                </button>
-                                <button type="button" class="btn active"
-                                        ng-click="defaultSound.downloadable = false">否
-                                </button>
-                            </div>
+                                <br>
 
-                            <div style="padding-bottom: 10px" class="alert alert-info">
-                                <button type="button" class="close" data-dismiss="alert">×</button>
-            <span style="color: gray;font-size: 9px;">
-                    为了更好的保护您和他人的音乐版权，WOWOICE建议（非强制）您提供由中国音乐著作权协会认证的版权信息。
-                                如果您尚未注册版权，可通过<a href="http://morp.mcsc.com.cn/www_new/mainPage.php"
-                                                target="_blank">音著协版权服务中心</a>注册版权，获得合法的版权保护。
-                                <a href="#/copyright" target="_blank">了解更多版权信息。</a>
-            </span>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-primary" btn-radio="true"
+                                            ng-model="defaultSound.downloadable">
+                                        是
+                                    </button>
+                                    <button type="button" class="btn btn-primary active" btn-radio="false"
+                                            ng-model="defaultSound.downloadable">否
+                                    </button>
+                                </div>
                             </div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                                    <span style="color: gray;font-size: 9px;">
+                                            为了更好的保护您和他人的音乐版权，WOWOICE建议（非强制）您提供由中国音乐著作权协会认证的版权信息。
+                                                        如果您尚未注册版权，可通过<a
+                                            href="http://morp.mcsc.com.cn/www_new/mainPage.php"
+                                            target="_blank">音著协版权服务中心</a>注册版权，获得合法的版权保护。
+                                                        <a href="#/copyright" target="_blank">了解更多版权信息。</a>
+                                    </span>
                         </div>
                     </div>
                 </div>
+            </div>
 
 
-                <div style="padding-top: 15px">
-                    <span style="color: #808080;font-size: 10px" class="pull-left">注：带有<span style="color: red">*</span>标注为必须填写内容</span>
-                    <div class="pull-right">
-                        <button id="save_button" href="#"
-                                ng-disabled="upload_form.$invalid || defaultSound.tags.length == 0 || defaultSound.uplodingPoster"
-                                class="button button-small button-rounded button-flat-action action-button"
-                                onclick="return false;" ng-click="save()">保存声音信息
-                        </button>
-                    </div>
+            <div style="padding-top: 15px">
+                <span style="color: #808080;font-size: 10px" class="pull-left">注：带有<span style="color: red">*</span>标注为必须填写内容</span>
+
+                <div class="pull-right">
+                    <button id="save_button" href="#"
+                            ng-disabled="upload_form.$invalid || defaultSound.uplodingPoster"
+                            class="btn btn-default"
+                            onclick="return false;" ng-click="save()">保存声音信息
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 </div>
+</div>
 </form>
 </div>
-<div class="span3">
+<div class="col-md-3">
 </div>
 
 </div>

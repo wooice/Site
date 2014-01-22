@@ -58,7 +58,7 @@ angular.module('upload.controllers', [
             }
 
             $scope.save = function () {
-                if ($scope.defaultSound.name && $scope.defaultSound.tags.length > 0) {
+                if ($scope.defaultSound.name) {
                     $scope.defaultSound.profileError = '';
 
                     if ($scope.defaultSound.alias) {
@@ -332,8 +332,9 @@ angular.module('upload.controllers', [
                     });
                 },
                 progress: function (e, data) {
+                    $scope.defaultSound.uploadStatus = "progress-bar-info";
                     var progress = parseInt(data.loaded / data.total * 100, 10);
-                    $('#progress .bar').css(
+                    $('#progress .progress-bar').css(
                         'width',
                         progress + '%'
                     );
@@ -356,10 +357,10 @@ angular.module('upload.controllers', [
                     postData.fileName = $scope.defaultSound.fileName;
                     postData.originName = $scope.defaultSound.name;
                     Storage.upload({}, postData, function () {
-                        $scope.defaultSound.uploadStatus = 'bar-success';
+                        $scope.defaultSound.uploadStatus = 'progress-bar-success';
                         $scope.defaultSound.uploadMsgClass = "text-success";
                         $scope.defaultSound.uploadMsg = '上传完成，请填写信息介绍这段声音。 ';
-                        $('#progress .bar').addClass('bar-success');
+                        $('#progress .progress-bar').addClass('progress-bar-success');
                         $scope.defaultSound.dataSaved = true;
 
                         if ($scope.defaultSound.profileSaved) {

@@ -4,6 +4,8 @@ module.exports = function (grunt) {
 
     // Project configuration.
     grunt.config.init({
+        buildEnv : grunt.option('buildEnv') || 'prod',
+        buildNumber : grunt.option('buildNumber') || '0',
         pkg: grunt.file.readJSON('package.json'),
         config: grunt.file.readJSON('grunt.json'),
         changelog: {
@@ -43,8 +45,20 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: 'tmp/',
-                        src: ['index.html', 'js/scripts.min.js', 'img/**', 'css/styles.min.css', 'lib/font-awesome/font/**'],
-                        dest: 'dist/'
+                        src: ['index.html', 'js/scripts.min.js', 'img/**', 'css/styles.min.css', 'lib/font-awesome/font/**', 'lib/soundmanager/swf/soundmanager2_debug.swf'],
+                        dest: 'dist/',
+                        rename: function(desc, src){
+                            return desc + src.replace('min.', 'min.<%= buildNumber %>.')
+                        }
+                    },
+                    {
+                        expand: true,
+                        cwd: 'tmp/',
+                        src: ['config.<%= buildEnv %>.json'],
+                        dest: 'dist/',
+                        rename: function(dest,src){
+                            return dest + 'config.json';
+                        }
                     }
                 ]
             }
@@ -63,6 +77,9 @@ module.exports = function (grunt) {
             dist: {
                 src: 'tmp/index.html',
                 dest: 'tmp/'
+            },
+            options: {
+                buildNumber: '<%= buildNumber %>'
             }
         },
         jshint: {
@@ -88,8 +105,8 @@ module.exports = function (grunt) {
                 actions: [
                     {
                         name: 'templates',
-                        search: /vdm\',\s\[/,
-                        replace: 'vdm\', [\'templates\',',
+                        search: /wooice\',\s\[/,
+                        replace: 'wooice\', [\'templates\',',
                         flags: 'gmi'
                     }
                 ]

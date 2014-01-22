@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('wooice.player', []).
-    factory('WooicePlayer', ['config', 'storage', 'WooiceWaver', 'SoundSocial', 'UserService',
-        function (config, storage, WooiceWaver, SoundSocial, UserService) {
+    factory('WooicePlayer', ['config',"$rootScope", 'storage', 'CurSoundList', 'PlayList', 'WooiceWaver', 'SoundSocial', 'UserService',
+            function ( config, $rootScope, storage, CurSoundList, PlayList, WooiceWaver, SoundSocial, UserService) {
 
             function init() {
                 var settings;
@@ -16,75 +16,18 @@ angular.module('wooice.player', []).
                     }
                 );
                 soundData.settings = settings;
-                //init sound's id list, which will cache sounds
-                soundData.soundList = [];
-                //current sound id.
-                soundData.currentSound = null;
 
                 return soundData;
             }
-
+            var currentSound = {};
             var soundData = init();
 
-            window.onbeforeunload = function (event) {
-                // when user leave the page, record the current status of the sound.
-                for (var oneSound in soundData.soundList) {
-                    oneSound = soundManager.getSoundById(oneSound);
-                    if (oneSound && oneSound.position != null) {
-                        var playing = false;
-                        if (soundData.currentSound && soundData.currentSound == oneSound.id) {
-                            playing = true;
-                        }
-                        storage.set(oneSound.id + "_player", {
-                            id: oneSound.id,
-                            from: oneSound.position,
-                            playing: playing
-                        });
-                    }
-                }
-
-                //record wave status
-                WooiceWaver.recordWaveStatus();
+            soundData.getNextSound = function (id) {
+                return PlayList.getNextSound(id);
             }
 
-            soundData.getNextSoundId = function (id) {
-                var length = 0, pre = null, cur = null, soundKey = null;
-                for (var oneSound in soundData.soundList) {
-                    if (cur && !soundKey) {
-                        soundKey = oneSound;
-                    }
-                    if (id === oneSound) {
-                        cur = oneSound;
-                    }
-                    pre = oneSound;
-                    length++;
-                }
-                if (length == 0) {
-                    return;
-                }
-                if (cur === null || pre === cur) {
-                    soundKey = null;
-                    for (var oneSound in soundData.soundList) {
-                        if (!soundKey) {
-                            return oneSound;
-                        }
-                    }
-                }
-                return soundKey;
-            }
-
-            soundData.getRandomSoundId = function () {
-                var length = 0;
-                for (var oneSound in soundData.soundList) {
-                    length++;
-                }
-                var random = Math.floor(Math.random() * length);
-                var index = 0;
-                for (var oneSound in soundData.soundList) {
-                    if (index++ == random) {
-                        return  oneSound;
-                    }
-                }
+            soundData.getRandomSound = function () {
+                return PlayList.getRandomSound();
             }
 
             soundData.setup = function (sound) {
@@ -128,19 +71,17 @@ angular.module('wooice.player', []).
                                 }
                             },
                             onplay: function () {
-                                if (soundData.currentSound != this.id) {
-                                    soundManager.pause(soundData.currentSound);
-                                    soundData.currentSound = this.id;
-                                    $('#sound_player_button_' + soundData.currentSound).removeClass('icon-pause');
+                                if (currentSound.id && currentSound.id != this.id)
+                                {
+                                    currentSound.isPlaying = false;
+                                    soundManager.pause(currentSound.id);
                                 }
-
+                                currentSound = PlayList.getSound(sound.id);
+                                $rootScope.$apply(function(){
+                                    currentSound.isPlaying = true;
+                                });
+                                currentSound.isPlaying = true;
                                 soundManager._writeDebug('Starting sound: ' + this.id);
-
-                                $('#cur_sound').attr('href', soundData.soundList[soundData.currentSound].title.route);
-                                $('#cur_sound').text(soundData.soundList[soundData.currentSound].title.alias);
-
-                                $('#sound_player_button_' + this.id).addClass('icon-pause');
-                                $('#sound_player_button_global').addClass('icon-pause');
 
                                 var playerStatus = storage.get(this.id + "_player");
                                 if (playerStatus) {
@@ -168,11 +109,7 @@ angular.module('wooice.player', []).
                                     id: this.id
                                 });
 
-                                soundData.currentSound = null;
-
-                                $('#sound_player_button_' + this.id).removeClass('icon-pause');
-                                $('#sound_player_button_global').removeClass('icon-pause');
-
+                                PlayList.getSound(this.id).isPlaying = false;
                                 var playerStatus = storage.get(this.id + "_player");
                                 if (playerStatus) {
                                     playerStatus.playing = false;
@@ -180,19 +117,14 @@ angular.module('wooice.player', []).
                                 }
                             },
                             onresume: function () {
-                                if (soundData.currentSound != this.id) {
-                                    soundManager.pause(soundData.currentSound);
-                                    soundData.currentSound = this.id;
-                                    $('#sound_player_button_' + soundData.currentSound).removeClass('icon-pause');
+                                if (currentSound.id && currentSound.id != this.id) {
+                                    currentSound.isPlaying = false;
+                                    soundManager.pause(currentSound.id);
                                 }
+                                currentSound = PlayList.getSound(this.id);
+                                currentSound.isPlaying = true;
 
                                 soundManager._writeDebug('Resuming sound: ' + this.id);
-
-                                $('#cur_sound').attr('href', soundData.soundList[soundData.currentSound].title.route);
-                                $('#cur_sound').text(soundData.soundList[soundData.currentSound].title.alias);
-
-                                $('#sound_player_button_' + this.id).addClass('icon-pause');
-                                $('#sound_player_button_global').addClass('icon-pause');
 
                                 var playerStatus = storage.get(this.id + "_player");
                                 if (playerStatus) {
@@ -211,9 +143,9 @@ angular.module('wooice.player', []).
                                     id: this.id
                                 });
 
-                                soundData.currentSound = null;
-                                $('#sound_player_button_' + this.id).removeClass('icon-pause');
-                                $('#sound_player_button_global').removeClass('icon-pause');
+                                $rootScope.$apply($.proxy(function(){
+                                    PlayList.getSound(this.id).isPlaying = false;
+                                }, this));
 
                                 var playerStatus = storage.get(this.id + "_player");
                                 if (playerStatus) {
@@ -223,20 +155,25 @@ angular.module('wooice.player', []).
 
                                 switch (UserService.getPlayMode()) {
                                     case 0:
-                                        soundData.play({id: soundData.getNextSoundId(this.id), position: 0});
+                                        var sound = PlayList.getNextSound(this.id);
                                         break;
                                     case 1:
-                                        soundData.play({id: this.id, position: 0});
+                                        var sound = PlayList.getSound(this.id);
                                         break
                                     case 2:
-                                        soundData.play({id: soundData.getRandomSoundId(), position: 0});
+                                        var sound = PlayList.getRandomSound();
                                         break;
                                     case 3:
                                         break;
                                     default:
-                                        soundData.play({id: soundData.getNextSoundId(this.id), position: 0});
+                                        var sound = PlayList.getNextSound(this.id);
                                         break;
                                 }
+                                $rootScope.$apply($.proxy(function(){
+                                    sound.isPlaying = true;
+                                }, this));
+                                sound.position = 0;
+                                soundData.play(sound);
                             }
                         });
 
@@ -262,8 +199,8 @@ angular.module('wooice.player', []).
                      return;
                 }
                 var soundToJump = null;
-                if (soundData.currentSound && soundData.currentSound == sound.id) {
-                    soundToJump = soundData.currentSound;
+                if (currentSound.id && currentSound.id == sound.id) {
+                    soundToJump = currentSound.id;
                 }
                 else {
                     soundToJump = sound.id;
@@ -291,77 +228,77 @@ angular.module('wooice.player', []).
 
             soundData.play = function (input) {
                 if (input && input.id) {
-                    var sound = soundData.soundList[input.id];
-
-                    if (!sound.inited) {
+                    if (!soundManager.getSoundById(input.id)) {
+                        var sound = input;
                         var playsCount = SoundSocial.play({sound: sound.id}, null, function (count) {
-                            sound.url = playsCount.url;
+                            PlayList.addSound(sound);
 
+                            sound.url = playsCount.url;
                             sound.autoPlay = true;
-                            sound.lastPlayTime = new Date().getTime();
-                            if (null != input.position) {
-                                sound.position = input.position;
-                            }
                             soundData.setup(sound);
 
-                            sound.inited = true;
                             $('#play_count_' + sound.id).text(playsCount.played);
                         });
                     }
                     else {
-                        soundManager.play(sound.id);
+                        var soundToPlay = soundManager.getSoundById(input.id);
+                        soundToPlay.play();
+                        if (input.position)
+                        {
+                            soundToPlay.setPosition(input.position);
+                        }
                     }
                 }
             }
 
             soundData.toggle = function (input) {
                 if (input && input.id) {
-                    var sound = soundData.soundList[input.id];
+                    var sound = input;
                 }
                 else {
-                    if (soundData.currentSound) {
-                        var sound = soundData.soundList[soundData.currentSound];
-                    }
-                    else {
-                        var sound = null;
-                        for (var oneSound in soundData.soundList) {
-                            if (!sound) {
-                                sound = soundData.soundList[oneSound];
-                                break;
-                            }
-                        }
-                    }
+                    var sound = (currentSound.id)? currentSound: PlayList.getFirstSound();
                 }
 
-                if (!sound) {
+                if (!sound)
+                {
+                    return ;
+                }
+
+                if (!soundManager.getSoundById(sound.id)) {
+                    soundData.play(sound);
                     return;
                 }
-                if (!sound.inited) {
-                    var playsCount = SoundSocial.play({sound: sound.id}, null, function (count) {
-                        sound.url = playsCount.url;
-
-                        sound.autoPlay = true;
-                        sound.lastPlayTime = new Date().getTime();
-                        soundData.setup(sound);
-
-                        sound.inited = true;
-                        $('#play_count_' + sound.id).text(playsCount.played);
-                    });
-                }
-                else {
-                    soundManager.togglePause(sound.id);
-                }
+                soundManager.togglePause(sound.id);
 
                 return sound;
             }
 
             function setupListeners() {
-                $(window).bind('onJump', $.proxy(function (event, sound) {
+                $(window).bind('onJump', $.proxy(function (event, oneSound) {
+                    var sound = CurSoundList.getSound(oneSound.id);
+                    if (!sound)
+                    {
+                        PlayList.getSound(oneSound.id);
+                    }
+
+                    sound.from = oneSound.from;
                     soundData.jump(sound);
+                    $rootScope.$apply(function(){
+                        currentSound.isPlaying = currentSound.isPlaying;
+                    });
                 }, this));
 
-                $(window).bind('onToggle', $.proxy(function (event, sound) {
+                $(window).bind('onToggle', $.proxy(function (event, oneSound) {
+                    var sound = CurSoundList.getSound(oneSound.id);
+                    if (!sound)
+                    {
+                        PlayList.getSound(oneSound.id);
+                    }
+
                     soundData.toggle(sound);
+                    $rootScope.$apply(function(){
+                        currentSound.isPlaying = currentSound.isPlaying;
+                    });
                 }, this));
             }
 
@@ -369,36 +306,27 @@ angular.module('wooice.player', []).
 
             return {
                 addSound: function (sound) {
-                    sound.inited = false;
-                    soundData.soundList[sound.id] = sound;
+                    PlayList.addSound(sound);
                 },
 
                 updateAlias: function (sound) {
-                    var target = soundData.soundList[sound.id];
+                    var target = PlayList.getSound(input.id);
                     if (target) {
-                        if (sound.id == soundData.currentSound) {
-                            $('#cur_sound').attr('href', soundData.soundList[soundData.currentSound].title.route);
-                            $('#cur_sound').text(soundData.soundList[soundData.currentSound].title.alias);
+                        if (sound.id == currentSound.id) {
                         }
                     }
                 },
 
                 loadFromCache: function (sound) {
-                    for (var oneSound in soundData.soundList) {
-                        if (sound.alias == soundData.soundList[oneSound].alias) {
-                            return soundData.soundList[oneSound];
-                        }
-                    }
-
-                    return null;
+                    return PlayList.getSoundByAlias(sound.alias);
                 },
 
                 getCurSound: function () {
-                    return soundData.soundList[soundData.currentSound];
+                    return currentSound;
                 },
 
-                setup: function (sound) {
-                    soundData.setup(sound);
+                getSoundFromPlayer: function (id) {
+                    return soundManager.getSoundById(id);
                 },
 
                 jump: function (sound) {
@@ -416,37 +344,17 @@ angular.module('wooice.player', []).
                 playSibling: function (sibling) {
                     var sound = null;
                     if (sibling == 'next') {
-                        sound = soundData.soundList[soundData.getNextSoundId(soundData.currentSound)];
+                        sound = PlayList.getNextSound(currentSound.id);
                     }
                     else {
-                        var length = 0, soundKey = null, found = false;
-                        for (var oneSound in soundData.soundList) {
-                            if (soundData.currentSound === oneSound) {
-                                found = true;
-                            }
-                            if (!found) {
-                                soundKey = oneSound;
-                            }
-                            length++;
-                        }
-                        if (length == 0) {
-                            return;
-                        }
-                        else {
-                            if (null == soundKey) {
-                                for (var oneSound in soundData.soundList) {
-                                    soundKey = oneSound;
-                                }
-                            }
-                        }
-
-                        sound = soundData.soundList[soundKey];
+                        sound = PlayList.getPreSound(currentSound.id);
                     }
 
                     if (!sound) {
                         return;
                     }
-                    soundData.play({id: sound.id, position: 0});
+                    sound.position = 0;
+                    soundData.play(sound);
 
                     return sound;
                 },

@@ -1,32 +1,30 @@
-<div class="row-fluid" style="padding-top: 10px" data-ng-controller="soundSocialCtrl">
-<div class="span2">
+<div class="row" style="padding-top: 10px;margin: 0px" data-ng-controller="soundSocialCtrl">
+<div class="col-md-2" style="padding: 0px">
 </div>
-<div class="span8">
+<div class="col-md-8" style="padding: 0px">
 <div class="sound_tags">
     <div style="padding-bottom: 5px">
         <i class="icon-tags"></i> 声音标签
         <div class="pull-right">
             <form style="margin-bottom:0px; padding-top: 10px" ng-show="sound.owner.alias === userService.getCurUserAlias()">
-                <input id="tags" type="text" ng-model="newTag"  class="input-small" placeholder="添加新的标签" style="height: 16px;font-size: 12px">
+                <input id="tags" type="text" ng-model="newTag"  class="form-control input-sm" placeholder="添加新的标签" >
             </form>
         </div>
     </div>
-    <div style="height: 60px;padding-bottom: 10px"  class="border-light-top">
-        <ul class="tags" style="padding-top: 10px">
-            <li ng-repeat="tag in sound.tags">
+    <div style="padding-bottom: 15px;padding-top: 15px"  class="border-light-top">
+        <div class="tags">
+            <span ng-repeat="tag in sound.tags" style="padding-bottom: 10px">
                 <a href="#/stream/tags/{{tag.label}}">
                     <span ng-show="tag.curated"><i class="icon-certificate" style="color: #A4D3EE" title="Wooice标签"></i> {{tag.label}}</span>
                     <span ng-show="!tag.curated">{{tag.label}}</span>
                 </a>
                 <span style="padding-left: 3px;cursor:pointer;" ng-click="dettachTag()"
                       ng-show="sound.owner.alias == userService.getCurUserAlias()"><i class="icon-remove"></i></span>
-            </li>
-        </ul>
-    </div>
-    <div>
-
+            </span>
+        </div>
     </div>
 </div>
+
 <div class="sound_description">
     <div style="padding-bottom: 5px">
         <i class="icon-headphones"></i> 声音描述
@@ -44,64 +42,72 @@
             {{sound.description.context}}</p>
         <span ng-if="!sound.description.context && sound.description.readonly">暂无声音描述</span>
         <textarea ng-if="!sound.description.readonly" type="text" required
-                  class="input-block-level"
+                  class="form-control"
                   ng-model="sound.description.context">
         </textarea>
     </div>
 </div>
 
 <div class="tabbable" style="padding-top: 10px">
+
 <ul class="nav nav-tabs" style="margin-bottom:0px;height: 37px">
     <li id="comments_li" class="tab_li" ng-click="changeTarget('comments')"><a href="#comments"
                                                                                data-toggle="tab"
                                                                                onclick="return false;">
-        <i class="icon-comment"></i> {{sound.soundSocial.commentsCount}}条评论
+        <span class="hidden-xs"><i class="icon-comment"></i>{{sound.soundSocial.commentsCount}}条评论</span>
+        <span class="visible-xs">{{sound.soundSocial.commentsCount}}<i class="icon-comment"></i></span>
     </a></li>
     <li id="likes_li" class="tab_li" ng-click="changeTarget('likes')"><a href="#likes" data-toggle="tab"
                                                                          onclick="return false;">
-        <i class="icon-heart"></i> {{sound.soundSocial.likesCount}}人赞
+        <span class="hidden-xs"><i class="icon-heart"></i> {{sound.soundSocial.likesCount}}人赞</span>
+        <span class="visible-xs">{{sound.soundSocial.likesCount}}<i class="icon-heart"></i></span>
     </a></li>
     <li id="reposts_li" class="tab_li" ng-click="changeTarget('reposts')"><a href="#reposts" data-toggle="tab"
                                                                              onclick="return false;">
-        <i class="icon-retweet"></i> {{sound.soundSocial.reportsCount}}人转发
+        <span class="hidden-xs"><i class="icon-retweet"></i> {{sound.soundSocial.reportsCount}}人转发</span>
+        <span class="visible-xs">{{sound.soundSocial.reportsCount}}<i class="icon-retweet"></i></span>
     </a></li>
     <li id="plays_li" class="tab_li" ng-click="changeTarget('plays')"
         ng-show="userService.validateRolePro() || userService.validateRolesPro()"><a href="#plays" data-toggle="tab"
                                                                                      onclick="return false;">
-        <i class="icon-play-sign"></i> {{sound.soundSocial.playedCount}}次收听
+        <span class="hidden-xs"><i class="icon-play-sign"></i> {{sound.soundSocial.playedCount}}次收听</span>
+        <span class="visible-xs">{{sound.soundSocial.playedCount}}<i class="icon-play-sign"></i></span>
     </a></li>
-    <li id="visits_li" class="tab_li" ng-click="changeTarget('visits')" ng-show="userService.validateRolesPro()"><a
-            href="#visits" data-toggle="tab"
+    <li id="visits_li" class="tab_li" ng-click="changeTarget('visits')"><a
+            href="#visits" data-toggle="tab"   ng-show="sound.owner.alias == userService.getCurUserAlias()"
             onclick="return false;">
-        <i class="icon-eye-open"></i> {{sound.soundSocial.visitsCount}}人访问
+        <span class="hidden-xs"><i class="icon-eye-open"></i> {{sound.soundSocial.visitsCount}}人访问</span>
+        <span class="visible-xs">{{sound.soundSocial.visitsCount}}<i class="icon-eye-open"></i></span>
     </a></li>
     <li class="pull-right">
         <a href="#" title="刷新评论" onclick="return false;" ng-click="reloadTarget('true')"
-           style="text-decoration:none;"><i class="icon-refresh"></i></a>
-        </a></li>
+           style="text-decoration:none;"><i class="icon-refresh"></i></a></li>
 </ul>
 
-<div class="tab-content" style="padding-top: 1px;padding-left: 10px;padding-right: 10px">
-<div class="tab-pane" id="comments">
-    <div id="sound_comments" class="sound_comments">
-        <ul class="ul-nostyle" ng-repeat="comment in comments"
+<div class="tab-content" style="padding-left: 10px;padding-right: 10px">
+<div class="tab-pane fade" id="comments">
+    <div id="sound_comments">
+        <div style="padding-top: 10px;">
+            <ul class="ul-nostyle" ng-repeat="comment in comments" style="padding-left: 0px"
             ng-show="sound.comment.mode == 'public' || sound.owner.alias === userService.getCurUserAlias()">
-            <li class="border-light-bottom-nopadding">
-                <a href="{{comment.owner.route}}" style="float:left;padding-top:15px">
-                    <img src="{{comment.owner.profile.avatorUrl}}" width="40px" height="40px">
-                </a>
+            <li class="border-light-bottom-nopadding"class="pull-left">
+                <div style="padding-top:10px" class="pull-left">
+                    <a href="{{comment.owner.route}}" >
+                        <img src="{{comment.owner.profile.avatorUrl}}" style="width: 40px;height: 40px">
+                    </a>
+                </div>
 
                 <div class="comment_body">
                     <div style="padding-bottom: 5px">
                         <a href="{{comment.owner.route}}">
                             {{comment.owner.profile.alias}}
                         </a>
-                                            <span ng-show="comment.to">
+                        <span ng-show="comment.to">
                                                 <span style="color:#999; font-size: 12px">@</span>
                                             <a href="{{comment.to.route}}">
                                                 {{comment.to.profile.alias}}
                                             </a>
-                                            </span>
+                         </span>
                             <span style="color:#999; font-size: 12px"
                                   ng-show="comment.pointAt"> @ {{comment.pointAt}}秒  </span>
 
@@ -130,7 +136,7 @@
                     </div>
                     <div ng-show="comment.showReply">
                         <form ng-submit="replyComment()" style="margin-bottom:0px; padding-top: 10px">
-                            <input type="text" class="input-block-level" style="margin-bottom:0px"
+                            <input type="text" class="form-control input-sm" style="margin-bottom:0px"
                                    id="sound_comment_reply_input_{{$index}}"
                                    placeholder="@{{comment.owner.profile.alias}}:"
                                    ng-model="comment.reply">
@@ -139,6 +145,7 @@
                 </div>
             </li>
         </ul>
+        </div>
 
         <div ng-show="sound.comment.mode == 'public' && comments.length == 0"
              style="padding-top: 20px;padding-left: 20px;">
@@ -152,13 +159,13 @@
     </div>
 </div>
 
-<div class="tab-pane" id="likes">
+<div class="tab-pane fade" id="likes">
     <div style="padding-top: 20px;padding-left: 40px;padding-right: 10px">
         <div ng-repeat="like in likes"
-             style="float:left;padding-right: 25px">
+             style="float:left;padding-right: 25px;padding-bottom:5px">
             <div style="float: left">
                 <a href="{{like.owner.route}}"><img ng-src="{{like.owner.profile.avatorUrl}}"
-                                                    style="width: 120px"></a>
+                                                    style="width: 120px;"></a>
             </div>
             <div style="padding-left: 135px">
                 <a href="{{like.owner.route}}">{{like.owner.profile.alias}}</a><span
@@ -174,10 +181,9 @@
                                   class="ng-binding">{{like.owner.userSocial.followed}}
                                 <i class="icon-group" title="{{like.owner.userSocial.followed}}人关注"></i></span>
                 </div>
-                <div style="padding-top: 10px" ng-show="sound.owner.alias != userService.getCurUserAlias()">
-                    <a href="#" class="button button-rounded button-flat-primary button-tiny ng-binding"
-                       onclick="return false;" ng-click="follow(user.profile.alias)"
-                       style="width: 60px">
+                <div style="padding-top: 10px" ng-show="like.owner.profile.alias != userService.getCurUserAlias()">
+                    <a href="#" class="button button-rounded button-flat-primary button-tiny form-control ng-binding"
+                       onclick="return false;" ng-click="follow(like)">
                         <span ng-show="like.owner.userPrefer.following">已关注</span>
                         <span ng-show="!like.owner.userPrefer.following">关注</span>
                     </a>
@@ -191,13 +197,13 @@
     </div>
 </div>
 
-<div class="tab-pane" id="reposts">
+<div class="tab-pane fade" id="reposts">
     <div style="padding-top: 20px;padding-left: 40px;padding-right: 10px">
         <div ng-repeat="repost in reposts"
-             style="float:left;padding-right: 25px">
+             style="float:left;padding-right: 25px;padding-bottom:5px">
             <div style="float: left">
                 <a href="{{repost.owner.route}}"><img ng-src="{{repost.owner.profile.avatorUrl}}"
-                                                      style="width: 120px"></a>
+                                                      style="width: 120px;"></a>
             </div>
             <div style="padding-left: 135px">
                 <a href="{{repost.owner.route}}">{{repost.owner.profile.alias}}</a><span
@@ -213,10 +219,9 @@
                                   class="ng-binding">{{repost.owner.userSocial.followed}}
                                 <i class="icon-group" title="{{repost.owner.userSocial.followed}}人关注"></i></span>
                 </div>
-                <div style="padding-top: 10px" ng-show="sound.owner.alias == userService.getCurUserAlias()">
-                    <a href="#" class="button button-rounded button-flat-primary button-tiny ng-binding"
-                       onclick="return false;" ng-click="follow(user.profile.alias)"
-                       style="width: 60px">
+                <div style="padding-top: 10px" ng-show="repost.owner.profile.alias != userService.getCurUserAlias()">
+                    <a href="#" class="button button-rounded button-flat-primary button-tiny form-control ng-binding"
+                       onclick="return false;" ng-click="follow(repost)" >
                         <span ng-show="repost.owner.userPrefer.following">已关注</span>
                         <span ng-show="!repost.owner.userPrefer.following">关注</span>
                     </a>
@@ -230,13 +235,13 @@
     </div>
 </div>
 
-<div class="tab-pane" id="plays">
+<div class="tab-pane fade" id="plays">
     <div style="padding-top: 20px;padding-left: 40px;padding-right: 10px">
         <div ng-repeat="play in plays"
-             style="float:left;padding-right: 25px">
+             style="float:left;padding-right: 25px;padding-bottom:5px">
             <div style="float: left">
                 <a href="{{play.owner.route}}"><img ng-src="{{play.owner.profile.avatorUrl}}"
-                                                    style="width: 120px"></a>
+                                                    style="width: 120px;"></a>
             </div>
             <div style="padding-left: 135px">
                 <a href="{{play.owner.route}}">{{play.owner.profile.alias}}</a><span
@@ -252,10 +257,9 @@
                                   class="ng-binding">{{play.owner.userSocial.followed}}
                                 <i class="icon-group" title="{{play.owner.userSocial.followed}}人关注"></i></span>
                 </div>
-                <div style="padding-top: 10px" ng-show="sound.owner.alias != userService.getCurUserAlias()">
-                    <a href="#" class="button button-rounded button-flat-primary button-tiny ng-binding"
-                       onclick="return false;" ng-click="follow(user.profile.alias)"
-                       style="width: 60px">
+                <div style="padding-top: 10px" ng-show="play.owner.profile.alias != userService.getCurUserAlias()">
+                    <a href="#" class="button button-rounded button-flat-primary button-tiny form-control ng-binding"
+                       onclick="return false;" ng-click="follow(play)" >
                         <span ng-show="play.owner.userPrefer.following">已关注</span>
                         <span ng-show="!play.owner.userPrefer.following">关注</span>
                     </a>
@@ -273,13 +277,13 @@
     </div>
 </div>
 
-<div class="tab-pane" id="visits">
+<div class="tab-pane fade" id="visits">
     <div style="padding-top: 20px;padding-left: 40px;padding-right: 10px">
         <div ng-repeat="visit in visits"
-             style="float:left;padding-right: 25px">
+             style="float:left;padding-right: 25px;padding-bottom:5px">
             <div style="float: left">
                 <a href="{{visit.owner.route}}"><img ng-src="{{visit.owner.profile.avatorUrl}}"
-                                                     style="width: 120px"></a>
+                                                     style="width: 120px;"></a>
             </div>
             <div style="padding-left: 135px">
                 <a href="{{visit.owner.route}}">{{visit.owner.profile.alias}}</a><span
@@ -295,10 +299,9 @@
                                   class="ng-binding">{{visit.owner.userSocial.followed}}
                                 <i class="icon-group" title="{{visit.owner.userSocial.followed}}人关注"></i></span>
                 </div>
-                <div style="padding-top: 10px" ng-show="sound.owner.alias != userService.getCurUserAlias()">
-                    <a href="#" class="button button-rounded button-flat-primary button-tiny ng-binding"
-                       onclick="return false;" ng-click="follow(user.profile.alias)"
-                       style="width: 60px">
+                <div style="padding-top: 10px" ng-show="visit.owner.profile.alias != userService.getCurUserAlias()">
+                    <a href="#" class="button button-rounded button-flat-primary button-tiny form-control ng-binding"
+                       onclick="return false;" ng-click="follow(visit)" >
                         <span ng-show="visit.owner.userPrefer.following">已关注</span>
                         <span ng-show="!visit.owner.userPrefer.following">关注</span>
                     </a>
@@ -322,6 +325,6 @@
     <i class="icon-spinner icon-spin icon-large"></i> 努力加载中...
 </div>
 </div>
-<div class="span3">
+<div class="col-md-3" style="padding: 0px">
 </div>
 </div>

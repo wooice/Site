@@ -14,15 +14,14 @@
         <tr ng-repeat="site in userExternal.sites">
             <td><img src="img/logo/{{site.name}}.png" class="external_logo"/></td>
             <td>
-                <input class="input-block-level" name="{{site.displayName}}" type="url" placeholder="{{site.displayName}}" ng-model="site.url">
+                <input class="form-control" name="{{site.displayName}}" type="url" placeholder="{{site.displayName}}" ng-model="site.url">
             </td>
         </tr>
 
         <tr>
             <td></td>
-            <td></td>
-            <td>
-                <button class="button button-small button-rounded button-flat-action action-button"    ng-disabled="external.$invalid"
+            <td  style="padding-top: 10px">
+                <button class="btn btn-default pull-right"   ng-disabled="external.$invalid"
                    onclick="return false;" ng-click="saveProfile()">
                     <span>保存信息</span>
                 </button>

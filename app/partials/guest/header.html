@@ -1,12 +1,13 @@
-<div class="navbar"  style="margin-bottom:0px" ng-controller="headerCtrl">
-    <div class="navbar-inner">
-        <a class="brand" href="#" title="Wooice">
-            <img style="width: 78px;height: 40px" src="img/logo.jpg"/>
+<nav class="navbar navbar-inverse navbar-static-top" role="navigation" ng-controller="headerCtrl">
+    <div class="navbar-header">
+        <a class="navbar-brand" style="padding: 0px;width: 50px;height: 50px" href="#" title="Wooice">
+            <img class="img-responsive hidden-xs" ng-src="img/logo.jpg"/>
+            <span class="visible-xs" style="padding-left: 10px;padding-top: 5px"><i class="icon-circle-arrow-left icon-2x"></i></span>
         </a>
-        <ul class="nav  pull-right">
-            <li>
-                <a title="已有账号登陆" href="#/guest/login"><i class="icon-signin" style="color: white"></i></a>
-            </li>
-        </ul>
     </div>
-</div>
+    <ul class="nav pull-right hidden-xs">
+        <li>
+            <a title="已有账号登陆" href="#/guest/login"><i class="icon-signin" style="color: white"></i></a>
+        </li>
+    </ul>
+</nav>

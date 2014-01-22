@@ -1,40 +1,40 @@
 <div ng-controller="soundDetailCtrl" style="height: 100%">
-    <div id="sound_{{sound.id}}" ng-class="{'default': 'sound_single_item', 'player': 'iframe_player'}[mode]">
-        <div id="sound_art_{{sound.id}}" class='sound_art' style="height: 100%">
+    <div id="sound_{{sound.id}}" ng-class="{'default': 'sound_single_item', 'player': 'iframe_player'}[mode]" class="row" style="margin: 0px">
+        <div id="sound_art_{{sound.id}}" class='sound_art col-md-2 hidden-xs' style="height: 100%;">
             <div id="sound_cover_{{sound.id}}">
                 <div id="sound_cover_ul_{{sound.id}}" class='poster_img'>
                     <div class="{{imgUploadMsgClass}}" style="font-size: 10px">
                         <i ng-show="imgUploadMsgClass == 'text-info'"
                            class="icon-spinner icon-spin icon-large"></i>{{ imgUploadMsg}}
                     </div>
-                    <img id="poster_img" ng-src="{{sound.poster}}">
+                    <img id="poster_img" ng-src="{{sound.poster}}" class="img-responsive">
 
                     <div style="padding-top: 5px"
                          ng-show="mode == 'default' && !userService.validateRoleGuest() && sound.owner.alias == userService.getCurUserAlias()">
                                   <span ng-show="!isUploadingPoster"
-                                        class="button button-small button-rounded button-flat fileinput-button">
+                                        class="button button-small button-rounded button-flat form-control fileinput-button">
                                     <span>上传海报</span>
                                     <input id="poster_upload" type="file" name="file">
                                   </span>
 
                                     <span ng-click="cancelImageUpload()" id="cancel_img_upload"
                                           ng-show="isUploadingPoster"
-                                          class="button button-small button-rounded button-flat fileinput-button">
+                                          class="button button-small button-rounded button-flat form-control fileinput-button">
                                     <i class="icon-ban-circle icon-white"></i>
-                                        <span>取消海报</span>
+                                        <span>取消上传</span>
                                   </span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="sound_player_{{sound.id}}" class='sound_player'>
-            <div id="sound_player_header_{{sound.id}}" class='sound_player_header'>
-                <div class='sound_player_control'>
-                    <i style="cursor:pointer" id='sound_player_button_{{sound.id}}'
-                       class='icon-play sound_player_button' ng-click="togglePause(sound.id)"></i>
+        <div id="sound_player_{{sound.id}}" class='sound_player col-md-10 col-xs-12' style="padding-right: 0px; padding-left: 0px;">
+            <div id="sound_player_header_{{sound.id}}" class='sound_player_header' style="width: 100%">
+                <div class='sound_player_control' style="padding-left: 20px">
+                    <i style="cursor:pointer"
+                       class="sound_player_button {{sound.isPlaying?'icon-pause': 'icon-play'}}" ng-click="togglePause(sound.id)"></i>
                 </div>
-                <div id="sound_summary_{{sound.id}}">
+                <div id="sound_summary_{{sound.id}}" style="padding-left: 50px;padding-right: 10px;">
                     <div id="sound_owner_{{sound.id}}">
                         <a class='sound_owner ' href="{{sound.owner.route}}" ng-show="mode == 'default'">{{sound.owner.alias}}</a>
                         <a class='sound_owner ' href="{{sound.owner.route}}" ng-show="mode == 'player'" target="_blank">{{sound.owner.alias}}</a>
@@ -54,7 +54,7 @@
                                         <a class='sound_title' href="{{sound.title.route}}" ng-show="mode == 'player'"
                                            target="_blank">{{sound.title.alias}}</a>
                                     </span>
-                        <input ng-if="!sound.title.readonly" type="text" required class="input-small"
+                        <input ng-if="!sound.title.readonly" type="text" required class="input-sm"
                                ng-show="mode == 'default'"
                                ng-model="sound.title.alias"/>
                         <a href="#" ng-if="sound.title.readonly" onclick="return false;"
@@ -75,7 +75,7 @@
                          style="position: absolute;margin-top:-1;top:71%;left:{{comment.left}};line-height:0px">
                         <div id="sound_comment_in_sound_minor_{{comment.commentId}}" >
                             <img
-                                 ng-src="{{comment.owner.profile.avatorUrl}}" style="width: 15px;height: 15px"
+                                 ng-src="{{comment.owner.profile.avatorUrl}}"  style="width: 20px"
                                  ng-mouseover="onImageHavor()">
                         </div>
                         <div id="sound_comment_in_sound_{{comment.commentId}}" class="hide">
@@ -83,7 +83,7 @@
                                 <a href="{{comment.owner.route}}" title="{{comment.owner.profile.alias}}"
                                    ng-show="mode == 'default'"
                                    style="width: 35px;"><img
-                                        ng-src="{{comment.owner.profile.avatorUrl}}" style="width: 35px"></a>
+                                        ng-src="{{comment.owner.profile.avatorUrl}}"   style="width: 35px"></a>
                                 <a href="{{comment.owner.route}}" title="{{comment.owner.profile.alias}}"
                                    target='_blank' ng-show="mode == 'player'"
                                    style="width:35px"><img
@@ -97,13 +97,13 @@
                     </div>
                     <canvas id="sound_wave_canvas_{{sound.id}}"  ng-show="sound.processed">
                     </canvas>
-                    <img ng-src="img/wave.png" ng-show="!sound.processed">
+                    <img ng-src="img/wave.png" ng-show="!sound.processed" class="img-responsive" style="width: 100%;height: 100%">
                 </div>
             </div>
             <div id="sound_player_footer_{{sound.id}}" class='sound_player_footer'>
                 <div id="sound_commentbox_{{sound.id}}" ng-show="mode == 'default' && sound.comment.mode !== 'closed'">
-                    <form ng-submit="comment()" style="margin-bottom:0px; padding-top: 10px">
-                        <input type="text" id="sound_commentbox_input_{{sound.id}}" class="input-block-level"
+                    <form ng-submit="comment()" style="margin-bottom:0px; padding-top: 10px;padding-bottom: 10px">
+                        <input type="text" id="sound_commentbox_input_{{sound.id}}" class="form-control input-sm"
                                ng-model="newComment.comment"
                                placeholder="请留下您的评论...">
                         <input type="hidden" id="sound_comment_point_{{sound.id}}" value="-1"
@@ -112,104 +112,183 @@
                     </form>
                 </div>
 
-                <a href="#" class="button button-small button-rounded button-flat action-button"
-                   ng-show="mode == 'default' && !userService.validateRoleGuest()"
-                   onclick="return false;" ng-click="toggleLike(sound.id)"><i class="icon-heart"></i>
-                    <span ng-show="sound.soundUserPrefer.like==0">赞之</span></a>
-                <a href="#" class="button button-small button-rounded button-flat action-button"
-                   ng-show="mode == 'default' && !userService.validateRoleGuest()"
-                   onclick="return false;" ng-click="toggleRepost(sound.id)"><i
-                        class="icon-retweet"></i></i> <span ng-show="sound.soundUserPrefer.repost==0">转之</span></a>
-                <a href="#" class="button button-small button-rounded button-flat action-button hasTooltip"
-                   ng-show="mode == 'default'" onclick="return false;"><i
-                        class="icon-share"></i>分享
-                </a>
+                <div class="hidden-xs">
+                    <a href="#" class="button button-small button-rounded button-flat action-button"
+                       ng-show="mode == 'default' && !userService.validateRoleGuest()"
+                       onclick="return false;" ng-click="toggleLike(sound.id)"><i class="icon-heart"></i>
+                        <span ng-show="sound.soundUserPrefer.like==0">赞之</span></a>
+                    <a href="#" class="button button-small button-rounded button-flat action-button"
+                       ng-show="mode == 'default' && !userService.validateRoleGuest()"
+                       onclick="return false;" ng-click="toggleRepost(sound.id)"><i
+                            class="icon-retweet"></i></i> <span ng-show="sound.soundUserPrefer.repost==0">转之</span></a>
+                    <a href="#" class="button button-small button-rounded button-flat action-button hasTooltip"
+                       ng-show="mode == 'default'" onclick="return false;"><i
+                            class="icon-share"></i>分享
+                    </a>
 
-                <div style="display: none;">
-                    <div>
-                    <label style="font-size: 9px">链接分享</label><input type="text" style="width: 240px;font-size: 9px"
-                                                                     value="{{config.site.url}}#/sound/{{sound.alias}}">
-                    <label style="font-size: 9px">代码分享</label><input type="text" class="input-xlarge"
-                                                                     style="width: 240px;font-size: 9px"
-                                                                     value='<iframe width="100%" height="188" scrolling="no" frameborder="no" src="{{config.site.url}}#/player/{{sound.alias}}"></iframe>'>
+                    <div style="display: none;">
+                        <div>
+                        <label style="font-size: 9px">链接分享</label><input type="text" class="form-control input-sm"
+                                                                         value="{{config.site.url}}#/sound/{{sound.alias}}">
+                        <label style="font-size: 9px">代码分享</label><input type="text" class="form-control input-sm"
+                                                                         value='<iframe width="100%" height="188" scrolling="no" frameborder="no" src="{{config.site.url}}#/player/{{sound.alias}}"></iframe>'>
+                        </div>
+                        <div>
+                            <a href="http://service.weibo.com/share/share.php?url={{config.site.url}}#/
+                                sound/{{sound.alias}}&type=button&count=0&language=zh_cn&appkey=fu5sr&searchPic=false&style=simple"
+                               target="_blank"    style="border: 0;width: 32px;height: 32px" title="分享到新浪微博"><img src="img/logo/sina.png" class="img-responsive"/></a>
+                        </div>
                     </div>
-                    <div>
-                        <a href="http://service.weibo.com/share/share.php?url={{config.site.url}}#/
-                            sound/{{sound.alias}}&type=button&count=0&language=zh_cn&appkey=fu5sr&searchPic=false&style=simple"
-                           target="_blank"    style="border: 0;width: 32px;height: 32px" title="分享到新浪微博"><img src="img/logo/sina.png" style="width: 30px;height: 30px"/></a>
+                    <a href="#" class="button button-small button-rounded button-flat action-button"
+                       ng-show="mode == 'default' && (userService.validateRolePro() || userService.validateRolesPro())"
+                       onclick="return false;" ng-click="togglePromote(sound.id)"><i
+                            class="icon-star"></i>
+                        <span ng-show="!sound.priority || sound.priority == 0">优先</span>
+                    </a>
+
+                    <a href="#" class="button button-small button-rounded button-flat action-button"
+                       ng-show="sound.downloadable"
+                       onclick="return false;" ng-click="download()"><i
+                            class="icon-trash"></i></i> 下载</a>
+
+                    <div class="pull-right">
+                                     <span ng-show="mode == 'default' && !userService.validateRoleGuest() && sound.owner.alias == userService.getCurUserAlias()">
+                                        <i class="icon-lock"
+                                           ng-show="sound.comment.mode == 'private' && sound.comment.readonly">留言仅自己可见</i>
+                                        <i class="icon-unlock-alt"
+                                           ng-show="sound.comment.mode == 'public' && sound.comment.readonly">留言所有人可见</i>
+                                         <i class="icon-warning-sign"
+                                            ng-show="sound.comment.mode == 'closed' && sound.comment.readonly">关闭留言</i>
+                                          <select ng-model="sound.comment.mode" ng-show="!sound.comment.readonly"
+                                                  style="width: 110px">
+                                              <option value="private" ng-selected="sound.comment.mode == 'private'">自己可见
+                                              </option>
+                                              <option value="public" ng-selected="sound.comment.mode == 'public'">所有人可见
+                                              </option>
+                                              <option value="closed" ng-selected="sound.comment.mode == 'closed'">关闭留言
+                                              </option>
+                                          </select>
+
+                                        <a href="#" ng-if="sound.comment.readonly"
+                                           onclick="return false;"
+                                           ng-click="editCommentMode()"
+                                           style="text-decoration:none;"><i
+                                                class="icon-edit"></i></a>
+                                         <a href="#" ng-if="!sound.comment.readonly" onclick="return false;"
+                                            ng-click="editCommentMode()"
+                                            style="text-decoration:none;"><i class="icon-save"></i></a>
+                                        |
+                                    </span>
+
+                                    <span ng-show="mode == 'default' && !userService.validateRoleGuest() && sound.owner.alias == userService.getCurUserAlias()">
+                                        <i class="icon-lock"
+                                           ng-show="sound.status.value == 'private' && sound.status.readonly">私有</i>
+                                        <i class="icon-unlock-alt"
+                                           ng-show="sound.status.value == 'public' && sound.status.readonly">公开</i>
+                                          <select ng-model="sound.status.value" ng-show="!sound.status.readonly"
+                                                  style="width: 70px">
+                                              <option value="private" ng-selected="sound.status.value == 'private'">私有
+                                              </option>
+                                              <option value="public" ng-selected="sound.status.value == 'public'">公开
+                                              </option>
+                                          </select>
+
+                                        <a href="#" ng-if="sound.status.readonly"
+                                           onclick="return false;"
+                                           ng-click="editSoundStatus()"
+                                           style="text-decoration:none;"><i
+                                                class="icon-edit"></i></a>
+                                         <a href="#" ng-if="!sound.status.readonly" onclick="return false;"
+                                            ng-click="editSoundStatus()"
+                                            style="text-decoration:none;"><i class="icon-save"></i></a>
+                                        |
+                                    </span>
+                        <i class="icon-play-sign stat_icon"></i>{{sound.soundSocial.playedCount}}
+                        |
+                        <i class="icon-heart stat_icon"></i>{{sound.soundSocial.likesCount}}
+                        |
+                        <i class="icon-retweet stat_icon"></i>{{sound.soundSocial.reportsCount}}
+                        |
+                        <i class="icon-comment stat_icon"></i>{{sound.soundSocial.commentsCount}}
                     </div>
-                </div>
-                <a href="#" class="button button-small button-rounded button-flat action-button"
-                   ng-show="mode == 'default' && (userService.validateRolePro() || userService.validateRolesPro())"
-                   onclick="return false;" ng-click="togglePromote(sound.id)"><i
-                        class="icon-star"></i>
-                    <span ng-show="!sound.priority || sound.priority == 0">优先</span>
-                </a>
+            </div>
 
-                <a href="#" class="button button-small button-rounded button-flat action-button"
-                   ng-show="sound.downloadable"
-                   onclick="return false;" ng-click="download()"><i
-                        class="icon-trash"></i></i> 下载</a>
+                <div class="visible-xs">
+                    <div>
+                          <button class="btn btn-xs"  ng-click="toggleLike(sound.id)"><i class="icon-heart"></i>
+                              <span ng-show="sound.soundUserPrefer.like=='0'">赞</span></button>
+                          <button class="btn btn-xs"  ng-click="toggleRepost(sound.id)"><i
+                                  class="icon-retweet"></i> <span
+                                  ng-show="sound.soundUserPrefer.repost==0">转</span></button>
+                          <button class="btn btn-xs"
+                                  ng-show="mode == 'default'"
+                                  onclick="return false;" ng-click="togglePromote(sound.id)"><i
+                                  class="icon-star"></i> <span
+                                  ng-show="!sound.priority || sound.priority == 0">优</span></button>
+                          <button class="btn btn-xs"  ng-click="download()"
+                                  ng-show="sound.downloadable"><i
+                                  class="icon-trash"></i> 下载</button>
+                            <span ng-show="mode == 'default' && !userService.validateRoleGuest() && sound.owner.alias == userService.getCurUserAlias()"
+                                    style="padding-left: 5px">
+                                        <i class="icon-lock"
+                                           ng-show="sound.comment.mode == 'private' && sound.comment.readonly">留言保密</i>
+                                        <i class="icon-unlock-alt"
+                                           ng-show="sound.comment.mode == 'public' && sound.comment.readonly">留言可见</i>
+                                         <i class="icon-warning-sign"
+                                            ng-show="sound.comment.mode == 'closed' && sound.comment.readonly">关闭留言</i>
+                                          <select ng-model="sound.comment.mode" ng-show="!sound.comment.readonly"
+                                                  style="width: 110px">
+                                              <option value="private" ng-selected="sound.comment.mode == 'private'">保密
+                                              </option>
+                                              <option value="public" ng-selected="sound.comment.mode == 'public'">可见
+                                              </option>
+                                              <option value="closed" ng-selected="sound.comment.mode == 'closed'">关闭留言
+                                              </option>
+                                          </select>
 
-                <div class="pull-right">
-                                 <span ng-show="mode == 'default' && !userService.validateRoleGuest() && sound.owner.alias == userService.getCurUserAlias()">
-                                    <i class="icon-lock"
-                                       ng-show="sound.comment.mode == 'private' && sound.comment.readonly">留言仅自己可见</i>
-                                    <i class="icon-unlock-alt"
-                                       ng-show="sound.comment.mode == 'public' && sound.comment.readonly">留言所有人可见</i>
-                                     <i class="icon-warning-sign"
-                                        ng-show="sound.comment.mode == 'closed' && sound.comment.readonly">关闭留言</i>
-                                      <select ng-model="sound.comment.mode" ng-show="!sound.comment.readonly"
-                                              style="width: 110px">
-                                          <option value="private" ng-selected="sound.comment.mode == 'private'">自己可见
-                                          </option>
-                                          <option value="public" ng-selected="sound.comment.mode == 'public'">所有人可见
-                                          </option>
-                                          <option value="closed" ng-selected="sound.comment.mode == 'closed'">关闭留言
-                                          </option>
-                                      </select>
+                                        <a href="#" ng-if="sound.comment.readonly"
+                                           onclick="return false;"
+                                           ng-click="editCommentMode()"
+                                           style="text-decoration:none;"><i
+                                                class="icon-edit"></i></a>
+                                         <a href="#" ng-if="!sound.comment.readonly" onclick="return false;"
+                                            ng-click="editCommentMode()"
+                                            style="text-decoration:none;"><i class="icon-save"></i></a>
+                                        |
+                                    </span>
 
-                                    <a href="#" ng-if="sound.comment.readonly"
-                                       onclick="return false;"
-                                       ng-click="editCommentMode()"
-                                       style="text-decoration:none;"><i
-                                            class="icon-edit"></i></a>
-                                     <a href="#" ng-if="!sound.comment.readonly" onclick="return false;"
-                                        ng-click="editCommentMode()"
-                                        style="text-decoration:none;"><i class="icon-save"></i></a>
-                                    |
-                                </span>
+                                    <span ng-show="mode == 'default' && !userService.validateRoleGuest() && sound.owner.alias == userService.getCurUserAlias()">
+                                        <i class="icon-lock"
+                                           ng-show="sound.status.value == 'private' && sound.status.readonly">私有</i>
+                                        <i class="icon-unlock-alt"
+                                           ng-show="sound.status.value == 'public' && sound.status.readonly">公开</i>
+                                          <select ng-model="sound.status.value" ng-show="!sound.status.readonly"
+                                                  style="width: 70px">
+                                              <option value="private" ng-selected="sound.status.value == 'private'">私有
+                                              </option>
+                                              <option value="public" ng-selected="sound.status.value == 'public'">公开
+                                              </option>
+                                          </select>
 
-                                <span ng-show="mode == 'default' && !userService.validateRoleGuest() && sound.owner.alias == userService.getCurUserAlias()">
-                                    <i class="icon-lock"
-                                       ng-show="sound.status.value == 'private' && sound.status.readonly">私有</i>
-                                    <i class="icon-unlock-alt"
-                                       ng-show="sound.status.value == 'public' && sound.status.readonly">公开</i>
-                                      <select ng-model="sound.status.value" ng-show="!sound.status.readonly"
-                                              style="width: 70px">
-                                          <option value="private" ng-selected="sound.status.value == 'private'">私有
-                                          </option>
-                                          <option value="public" ng-selected="sound.status.value == 'public'">公开
-                                          </option>
-                                      </select>
-
-                                    <a href="#" ng-if="sound.status.readonly"
-                                       onclick="return false;"
-                                       ng-click="editSoundStatus()"
-                                       style="text-decoration:none;"><i
-                                            class="icon-edit"></i></a>
-                                     <a href="#" ng-if="!sound.status.readonly" onclick="return false;"
-                                        ng-click="editSoundStatus()"
-                                        style="text-decoration:none;"><i class="icon-save"></i></a>
-                                    |
-                                </span>
-                    <i class="icon-play-sign stat_icon"></i>{{sound.soundSocial.playedCount}}
-                    |
-                    <i class="icon-heart stat_icon"></i>{{sound.soundSocial.likesCount}}
-                    |
-                    <i class="icon-retweet stat_icon"></i>{{sound.soundSocial.reportsCount}}
-                    |
-                    <i class="icon-comment stat_icon"></i>{{sound.soundSocial.commentsCount}}
+                                        <a href="#" ng-if="sound.status.readonly"
+                                           onclick="return false;"
+                                           ng-click="editSoundStatus()"
+                                           style="text-decoration:none;"><i
+                                                class="icon-edit"></i></a>
+                                         <a href="#" ng-if="!sound.status.readonly" onclick="return false;"
+                                            ng-click="editSoundStatus()"
+                                            style="text-decoration:none;"><i class="icon-save"></i></a>
+                                    </span>
+                    </div>
+                    <div class="pull-right">
+                        <i class="icon-play-sign stat_icon"></i>{{sound.soundSocial.playedCount}}
+                        |
+                        <i class="icon-heart stat_icon"></i>{{sound.soundSocial.likesCount}}
+                        |
+                        <i class="icon-retweet stat_icon"></i>{{sound.soundSocial.reportsCount}}
+                        |
+                        <i class="icon-comment stat_icon"></i>{{sound.soundSocial.commentsCount}}
+                    </div>
                 </div>
             </div>
         </div>

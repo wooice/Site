@@ -1,14 +1,14 @@
 'use strict';
 
-/* Controllers */
-
 angular.module('header.controllers', [])
-    .controller('headerCtrl', ['$scope', '$location', '$routeParams', 'User', 'UserService','WooicePlayer','Feedback', 'MessageService',
-    function ($scope, $location, $routeParams, User, UserService, WooicePlayer, Feedback, MessageService) {
+    .controller('headerCtrl', ['$scope', '$location', '$routeParams', '$timeout', 'User', 'CurSoundList', 'UserService', 'PlayList', 'WooicePlayer','Feedback', 'MessageService',
+    function ($scope, $location, $routeParams, $timeout, User,CurSoundList, UserService, PlayList, WooicePlayer, Feedback, MessageService) {
         $scope.q = $routeParams.q;
         $scope.userAlias = UserService.getCurUserAlias();
         $scope.playMode = UserService.getPlayMode();
         $scope.playModes = ['顺序播放', '单曲循环', '随机播放', '播完即止'];
+        $scope.wooicePlayer =  WooicePlayer;
+        $scope.playList = PlayList;
 
         function postLogout(){
             var token = $.cookie("token");
@@ -74,25 +74,28 @@ angular.module('header.controllers', [])
             });
         }
 
-        var curSound = WooicePlayer.getCurSound();
-        if (curSound)
-        {
-            $('#sound_player_button_global').addClass('icon-pause');
-        }
-
         $scope.goto = function (uri) {
             $location.url(uri);
         }
 
-        $scope.togglePause = function (id) {
+        $scope.togglePause = function () {
             WooicePlayer.toggle({});
         };
 
-        $scope.playPre = function (id) {
+        $scope.togglePauseList = function (id) {
+            var soundDisplayed = CurSoundList.getSound(id);
+            if (soundDisplayed)
+            {
+                PlayList.addSound(soundDisplayed);
+            }
+            WooicePlayer.toggle(PlayList.getSound(id));
+        };
+
+        $scope.playPre = function () {
             WooicePlayer.playSibling('pre');
         };
 
-        $scope.playNext = function (id) {
+        $scope.playNext = function () {
             WooicePlayer.playSibling('next');
         };
 
@@ -100,6 +103,11 @@ angular.module('header.controllers', [])
             $scope.playMode = ++$scope.playMode %  $scope.playModes.length;
             UserService.setPlayMode($scope.playMode);
         }
+
+        $scope.removeSoundFromPlaylist = function(sound) {
+             PlayList.removeSound(sound);
+        }
+
 
         $('#search_box').bind('keyup', function (event) {
             if (event.keyCode == 13) {

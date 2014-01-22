@@ -1,14 +1,17 @@
 'use strict';
 
 angular.module('sound.controllers', [])
-    .controller('soundDetailCtrl', ['$scope', '$window', 'config', '$routeParams', 'Sound', 'SoundUtilService', 'Storage', 'SoundSocial', 'SoundSocialList', 'UserService',
+    .controller('soundDetailCtrl', ['$scope', '$window', 'config', '$routeParams', '$timeout', 'Sound', 'CurSoundList','SoundUtilService', 'Storage', 'SoundSocial', 'SoundSocialList', 'UserService',
         '$location', '$anchorScroll', 'SoundSocialProSocial', 'SoundProSocial', 'UserSocial', 'Tag', 'WooicePlayer', 'WooiceWaver', 'storage', 'WaveStorage',
-        function ($scope, $window, config, $routeParams, Sound, SoundUtilService, Storage, SoundSocial, SoundSocialList, UserService, $location, $anchorScroll, SoundSocialProSocial,
+        function ($scope, $window, config, $routeParams, $timeout, Sound, CurSoundList, SoundUtilService, Storage, SoundSocial, SoundSocialList, UserService, $location, $anchorScroll, SoundSocialProSocial,
                   SoundProSocial, UserSocial, Tag, WooicePlayer, WooiceWaver, storage, WaveStorage) {
             $scope.userService = UserService;
             $scope.config = config;
             $scope.mode = "default";
             $scope.target = "comments";
+            $scope.wooicePlayer =  WooicePlayer;
+            $scope.curSoundList = CurSoundList;
+            CurSoundList.reset();
 
             var query = $location.search();
             if (query.scrollTo) {
@@ -65,10 +68,12 @@ angular.module('sound.controllers', [])
             $scope.newComment = {};
             $scope.newTag = "";
 
-            $scope.togglePause = function (id) {
-                WooicePlayer.toggle({
-                    id: id
-                });
+            $scope.togglePause = function () {
+                if (!$scope.sound)
+                {
+                    return;
+                }
+                WooicePlayer.toggle($scope.sound);
             };
 
             $scope.toggleLike = function (id) {
@@ -171,15 +176,15 @@ angular.module('sound.controllers', [])
                 $scope.reloadTarget(true);
             };
 
-            $scope.follow = function () {
-                if (this.repost.owner.userPrefer.following) {
-                    var result = UserSocial.unfollow({toUserAlias: this.repost.owner.profile.alias}, null, function (count) {
-                        this.repost.owner.userPrefer.following = false;
+            $scope.follow = function (activity) {
+                if (activity.owner.userPrefer.following) {
+                    var result = UserSocial.unfollow({toUserAlias: activity.owner.profile.alias}, null, function (count) {
+                        activity.owner.userPrefer.following = false;
                     });
                 }
                 else {
-                    var result = UserSocial.follow({ toUserAlias: this.repost.owner.profile.alias}, null, function (count) {
-                        this.repost.owner.userPrefer.following = true;
+                    var result = UserSocial.follow({ toUserAlias: activity.owner.profile.alias}, null, function (count) {
+                        activity.owner.userPrefer.following = true;
                     });
                 }
             };
@@ -320,19 +325,14 @@ angular.module('sound.controllers', [])
 
                 if (sound) {
                     $scope.sound = sound;
-                    $scope.$apply();
+                    CurSoundList.getList().push(sound);
 
-                    loadSoundData();
+                    $timeout(function(){
+                        loadSoundData();
+                    }, 0);
 
                     if ($scope.mode == 'default') {
                         $scope.reloadTarget();
-
-                        var curSound = WooicePlayer.getCurSound();
-                        if (curSound) {
-                            $('#sound_player_button_' + curSound.id).addClass('icon-pause');
-                            $('#cur_sound').attr('href', curSound.title.route);
-                            $('#cur_sound').text(curSound.title.alias);
-                        }
                     }
 
                     $('.hasTooltip').each(function () {
@@ -366,26 +366,16 @@ angular.module('sound.controllers', [])
             $scope.loadSound = function () {
                 var sound = Sound.load({sound: $routeParams.soundId}, function () {
                     $scope.sound = SoundUtilService.buildSound(sound);
+                    CurSoundList.getList().push(sound);
 
-                    //TODO
-                    $scope.$apply();
-
-                    //record sound info
-                    WooicePlayer.addSound($scope.sound);
-
-                    loadSoundData();
+                    $timeout(function(){
+                        loadSoundData();
+                    }, 0);
 
                     loadCommentsInSound();
 
                     if ($scope.mode == 'default') {
                         $scope.reloadTarget();
-
-                        var curSound = WooicePlayer.getCurSound();
-                        if (curSound) {
-                            $('#sound_player_button_' + curSound.id).addClass('icon-pause');
-                            $('#cur_sound').attr('href', curSound.title.route);
-                            $('#cur_sound').text(curSound.title.alias);
-                        }
                     }
 
                     $('.hasTooltip').each(function () {
@@ -432,9 +422,7 @@ angular.module('sound.controllers', [])
                         }
                         break;
                     case 'visits':
-                        if (UserService.validateRolesPro()) {
-                            loadVisits(force);
-                        }
+                        loadVisits(force);
                         break;
                     default :
                         loadComments(force);
@@ -564,6 +552,8 @@ angular.module('sound.controllers', [])
             function loadCommentsInSound() {
                 $scope.commentsInsound = [];
                 var comments = SoundSocialList.comment({sound: $scope.sound.id, justInSound: true}, function () {
+                    $scope.$watch($scope.commentsInsound);
+
                     var canvasWidth = $("#sound_wave_" + $scope.sound.id).width();
                     $.each(comments, function (index, comment) {
                         comment.showReply = false;
@@ -571,8 +561,6 @@ angular.module('sound.controllers', [])
                         comment.top = '70%';
                         comment.left = (comment.pointAt * canvasWidth) / ($scope.sound.duration) + "px";
                         $scope.commentsInsound.push(comment);
-
-                        $scope.$apply();
 
                         $('#sound_comment_in_sound_' + comment.commentId).mouseleave(function () {
                             $(this).addClass('hide');
@@ -589,6 +577,8 @@ angular.module('sound.controllers', [])
                 }
                 $scope.loadClass = '';
                 var comments = SoundSocialList.comment({sound: $scope.sound.id, pageNum: $scope.commentPageNum}, function () {
+                    $scope.$watch($scope.comments);
+
                     $.each(comments, function (index, comment) {
                         var added = false;
                         $.each($scope.comments, function (index, addedComment) {
@@ -604,7 +594,6 @@ angular.module('sound.controllers', [])
                                 comment.to.route = config.userStreamPath + comment.to.profile.alias;
                             }
                             $scope.comments.push(comment);
-                            $scope.$apply();
                         }
                     });
 
@@ -637,7 +626,7 @@ angular.module('sound.controllers', [])
                 var soundPlayStatus = storage.get($scope.sound.id + "_player");
                 if (soundPlayStatus && soundPlayStatus.playing)
                 {
-                    WooicePlayer.play({id: $scope.sound.id});
+                    WooicePlayer.play($scope.sound);
                 }
             }
 
@@ -645,7 +634,6 @@ angular.module('sound.controllers', [])
                 if (event.currentScope.$id != event.targetScope.$id) {
                     return;
                 }
-
 
                 if (!$scope.localLoad()) {
                     $scope.loadSound();
@@ -694,12 +682,11 @@ angular.module('sound.controllers', [])
                         });
                     },
                     submit: function (e, data) {
+                        $scope.$watch($scope.isUploadingPoster);
                         $scope.isUploadingPoster = true;
                         $('#cancel_img_upload').click(function () {
                             data.abort();
-                            $scope.$apply(function () {
-                                $scope.isUploadingPoster = false;
-                            });
+                            $scope.isUploadingPoster = false;
                         });
                     },
                     progress: function (e, data) {

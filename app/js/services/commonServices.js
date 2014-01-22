@@ -49,10 +49,31 @@ angular.module('sound.services', ['ngResource'])
                     duration: sound.profile.duration,
                     played: false,
                     downloadable: sound.profile.downloadable,
-                    processed: sound.profile.processed
+                    processed: sound.profile.processed,
+                    isPlaying: false
                 };
 
                 return  newSound;
+            }
+        };
+    }])
+    .factory('CurSoundList', ['User', 'UserService','config', function (User, UserService, config) {
+        var sounds = [];
+        return {
+            getSound: function(id) {
+                for (var i=0; i< sounds.length; i++) {
+                    if (sounds[i].id == id)
+                    {
+                        return  sounds[i];
+                    }
+                }
+                return  null;
+            },
+            getList: function () {
+                return  sounds;
+            },
+            reset: function() {
+                sounds = [];
             }
         };
     }])

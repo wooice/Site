@@ -30,6 +30,8 @@
         var onHover = 0;
         var commentable = options.commentable;
 
+        var colorList = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
+
         if (options.color) {
             playedUpperColor = options.color.upper?options.color.upper:'#00B2EE';
             playedLowerColor = options.color.lower?options.color.lower:'#A4D3EE';
@@ -103,6 +105,54 @@
             $('#sound_wave_' + soundId).css('cursor', 'pointer');
         }
 
+        function getPlayedUpperColor() {
+            if (playedUpperColor == 'random')
+            {
+                var upperColor = "";
+                for(var i=0; i<6;i++)
+                {
+                    upperColor += colorList[parseInt(Math.random()*16)];
+                }
+                return  upperColor;
+            }
+            else
+            {
+                return playedUpperColor;
+            }
+        }
+
+        function getPlayedLowerColor() {
+            if (playedLowerColor == 'random')
+            {
+                var lowerColor = "";
+                for(var i=0; i<6;i++)
+                {
+                    lowerColor += colorList[parseInt(Math.random()*16)];
+                }
+                return  lowerColor;
+            }
+            else
+            {
+                return playedLowerColor;
+            }
+        }
+
+        function getPlayedUpperDeeper() {
+            if (playedUpperDeeper == 'random')
+            {
+                var deeperColor = "";
+                for(var i=0; i<6;i++)
+                {
+                    deeperColor += colorList[parseInt(Math.random()*16)];
+                }
+                return  deeperColor;
+            }
+            else
+            {
+                return playedUpperDeeper;
+            }
+        }
+
         function redrawWave() {
             context.fillStyle = "transparent";
             var widthPerLine = waveWidth / waveData.length;
@@ -145,7 +195,7 @@
             }
 
             if (x < soundPosition / soundDuration) {
-                return y == 'upper' ? (!playStatus && onHover) ? playedUpperDeeper : playedUpperColor : playedLowerColor;
+                return y == 'upper' ? (!playStatus && onHover) ? getPlayedUpperDeeper() : getPlayedUpperColor() : getPlayedLowerColor();
             }
             if (x < soundBytesloaded / soundBytesTotal) {
                 return y == 'upper' ? (!playStatus && onHover) ? loadedUpperDeeperColor : loadedUpperColor : loadedLowerColor;

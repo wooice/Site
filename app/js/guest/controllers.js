@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('guest.controllers', [])
-    .controller('loginCtrl', ['$scope', '$location', 'config', '$routeParams', 'Guest', 'UserService', 'MessageService', function ($scope, $location, config, $routeParams, Guest, UserService,MessageService) {
+    .controller('loginCtrl', ['$scope', '$location', 'config', '$routeParams', 'Guest', 'PlayList', 'UserService', 'MessageService',
+        function ($scope, $location, config, $routeParams, Guest, PlayList, UserService,MessageService) {
         $('#login_div').height($(window).height());
         var undef,
             v = 3,
@@ -103,7 +104,7 @@ angular.module('guest.controllers', [])
         }
 
         if ($routeParams.relogin == 'true' && $.cookie('token'))
-            {
+        {
             var user = {userId: UserService.getCurUserAlias(), token: $.cookie('token')};;
                 Guest.tokenLogin({}, user, function(){
                 $location.url('/stream');
@@ -124,7 +125,7 @@ angular.module('guest.controllers', [])
         }
 
         $scope.toLogin = function () {
-            var user = {userId: $scope.userId, password: md5($scope.password), rememberUser:$scope.rememberUser};
+            var user = {userId: $scope.userId, password: md5($scope.password), rememberUser:$scope.rememberUser};   ;
             if ($scope.verifyCode)
             {
                 user.verifyCode =  $scope.verifyCode;
@@ -150,9 +151,10 @@ angular.module('guest.controllers', [])
             UserService.setColor(user.profile.color);
             $.globalMessenger().post({
                 message: user.profile.alias + "，欢迎回来！",
-                hideAfter: 10,
+                hideAfter: 5,
                 showCloseButton: true
             });
+            PlayList.setup();
 
             if ($scope.rememberUser)
             {

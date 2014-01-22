@@ -278,7 +278,7 @@ angular.module('wooice.player', []).
                     var sound = CurSoundList.getSound(oneSound.id);
                     if (!sound)
                     {
-                        PlayList.getSound(oneSound.id);
+                        sound = PlayList.getSound(oneSound.id);
                     }
 
                     sound.from = oneSound.from;
@@ -292,7 +292,7 @@ angular.module('wooice.player', []).
                     var sound = CurSoundList.getSound(oneSound.id);
                     if (!sound)
                     {
-                        PlayList.getSound(oneSound.id);
+                        sound = PlayList.getSound(oneSound.id);
                     }
 
                     soundData.toggle(sound);

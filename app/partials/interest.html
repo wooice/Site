@@ -6,18 +6,22 @@
 
 <div class="container">
     <div id="tags">
-        <div class="row-fluid">
-            <div class="span6">
+        <div class="row">
+            <div class="col-md-6">
                 <div ng-repeat="cate in categories | filter:odd">
                     <div style="padding-top: 30px;">
-                        <legend>{{cate.name}}</legend>
-                        <div style="padding-top: 15px;">
+                        <legend>{{cate.name}} <span class="pull-right" style="font-size: 10px"> <label ng-click="cate.showAll=!cate.showAll">More
+                           <i class="icon-double-angle-right" ng-show="cate.showAll"></i><i class="icon-double-angle-down" ng-show="!cate.showAll"></i></label></span></legend>
+                        <div>
                             <ul class="tags">
-                                <li ng-repeat="curatedTag in curatedTags | filter:{category.name: cate.name}"
-                                     style="float:left;padding-right: 25px;padding-bottom: 10px;">
+                                <li ng-repeat="curatedTag in curatedTags | filter:{category.name: cate.name}"  ng-show="cate.showAll || $index<5"
+                                     style="padding-right: 25px;padding-bottom: 30px;float: left">
                                     <a  onclick="return false;" ng-click="toogleInterest()" style="background: {{curatedTag.class}};cursor:pointer;">
                                        <span > {{curatedTag.label}} </span>
                                     </a>
+                                </li>
+                                <li style="padding-right: 25px;padding-bottom: 30px;float: left" ng-show="!cate.showAll && curatedTags.length>5">
+                                    <i class="icon-ellipsis-horizontal"></i>
                                 </li>
                             </ul>
                         </div>
@@ -26,17 +30,22 @@
                 </div>
             </div>
 
-            <div class="span6">
+            <div class="col-md-6">
                 <div ng-repeat="cate in categories | filter:even">
                     <div style="padding-top: 30px;">
-                        <legend>{{cate.name}}</legend>
-                        <div style="padding-top: 15px;">
+                        <legend>{{cate.name}} <span class="pull-right" style="font-size: 10px"> <label ng-click="cate.showAll=!cate.showAll">More
+                            <i class="icon-double-angle-right" ng-show="cate.showAll"></i><i class="icon-double-angle-down" ng-show="!cate.showAll"></i></label></span></legend>
+                        <div>
                             <ul class="tags">
-                                <li ng-repeat="curatedTag in curatedTags | filter:{category.name: cate.name}"
-                                    style="float:left;padding-right: 25px;padding-bottom: 10px;">
-                                    <a   onclick="return false;" ng-click="toogleInterest()" style="background: {{curatedTag.class}};cursor:pointer;">
+                                <li ng-repeat="curatedTag in curatedTags | filter:{category.name: cate.name}"  ng-show="cate.showAll || $index<5"
+                                    style="padding-right: 25px;padding-bottom: 30px;float: left">
+                                    <a onclick="return false;" ng-click="toogleInterest()" style="background: {{curatedTag.class}};cursor:pointer;">
                                           <span > {{curatedTag.label}} </span>
                                     </a>
+                                </li>
+
+                                <li style="padding-right: 25px;padding-bottom: 30px;float: left" ng-show="!cate.showAll && curatedTags.length>5">
+                                    <i class="icon-ellipsis-horizontal"></i>
                                 </li>
                             </ul>
                         </div>
@@ -52,13 +61,14 @@
     </div>
 
     <div id="recommand" style="padding-top: 30px">
-        <legend>推荐用户</legend>
-        <div ng-if="recommendUsers.length > 0">
-            <div ng-repeat="recommendUser in recommendUsers" style="float:left" ng-click="toogleFollow()">
-                <div style="text-align:center;padding-right: 20px">
+        <legend>推荐用户<i style="cursor:pointer" class='button button-small button-rounded button-flat action-button pull-right'
+                       ng-click="save()">关注</i></legend>
+        <div ng-if="recommendUsers.length > 0" style="padding-left: 10px" class="row">
+            <div ng-repeat="recommendUser in recommendUsers" class="col-md-1 col-xs-3" ng-click="toogleFollow()">
+                <div>
                     <div class="user {{recommendUser.class}}">
                         <a href="#" onclick="return false;">
-                            <img style="width: 80px;height: 80px" ng-src="{{recommendUser.profile.avatorUrl}}">
+                            <img class="img-responsive" ng-src="{{recommendUser.profile.avatorUrl}}">
                         </a>
                     </div>
                     </a>
@@ -67,8 +77,6 @@
                     </div>
                 </div>
             </div>
-            <i style="cursor:pointer" class='button button-small button-rounded button-flat action-button pull-right'
-               ng-click="save()">保存</i>
         </div>
     </div>
     <div ng-if="recommendUsers.length == 0">

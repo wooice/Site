@@ -3,12 +3,12 @@
 <div class="container" style="padding-top:30px">
     <div>
         <legend>侵权举报</legend>
-        <p style="font-size: 9px;color: gray">Wooice对上传的音频进行版权初检，但是如果您仍然发现有音频侵犯了您的版权，请及时告知，我们将尽快予以处理。感谢您的合作。</p>
+        <p style="font-size: 9px;color: gray">WOWOICE对上传的音频进行版权初检，但是如果您仍然发现有音频侵犯了您的版权，请及时告知，我们将尽快予以处理。感谢您的合作。</p>
     </div>
     <form name="infringe" style="padding-left: 3%;padding-top: 10px">
         <div style="padding-bottom: 15px">
             <b>请填写侵权音乐链接 <span style="color: red">*</span></b><br>
-            <textarea ng-model="soundLinks" name="soundLinks" required tooltip="多个音乐链接请分多行填写"  class="input-xxlarge"></textarea>
+            <textarea ng-model="soundLinks" name="soundLinks" required tooltip="多个音乐链接请分多行填写"   tooltip-trigger="click" class="input-xxlarge"></textarea>
         </div>
         <div style="padding-bottom: 20px">
             <b>您对侵权音频有何种权限？ <span style="color: red">*</span></b><br>
@@ -36,35 +36,35 @@
             </div>
 
             <div style="padding-top: 20px">
-                <b tooltip="ISWC编码可用于查询音乐版权所有人信息">请提供侵权音频的ISWC编码</b><br/>
-                <input type="text" ng-model="infringe.iswc" style="padding-top: 10px">
+                <b>请提供侵权音频的ISWC编码</b><br/>
+                <input type="text" ng-model="infringe.iswc" style="padding-top: 10px"  tooltip="填写ISWC编码可以帮助您的证实版权归属"  tooltip-trigger="click">
             </div>
         </div>
 
         <div style="padding-bottom: 20px">
             <b>请填写真实的个人信息</b><br>
 
-            <div class="row-fluid" style="padding-bottom: 10px">
-                <div class="span3">
+            <div class="row" style="padding-bottom: 10px">
+                <div class="col-md-3">
                     <label>姓<span style="color: red">*</span></label> <input ng-model="infringe.informer.xing" required>
                     <label>公司</label> <input ng-model="infringe.informer.company">
                     <label>地址<span style="color: red">*</span></label> <input ng-model="infringe.informer.street"
                                                                               required>
                     <label>邮编<span style="color: red">*</span></label> <input ng-model="infringe.informer.postalCode"
                                                                               required>
-                    <label tooltip="请确保我们能联系您了解更多细节">手机<span style="color: red">*</span></label> <input ng-model="infringe.informer.mobile" required
-                                                                       tooltip="请确保我们能联系您了解更多细节">
+                    <label>手机<span style="color: red">*</span></label> <input ng-model="infringe.informer.mobile" required
+                                                                       tooltip="请确保我们能联系您了解更多细节"  tooltip-trigger="click" >
                     <label>固定电话</label> <input ng-model="infringe.informer.phone">
                 </div>
-                <div class="span3">
+                <div class="col-md-3">
                     <label>名<span style="color: red">*</span></label> <input ng-model="infringe.informer.ming" required>
-                    <label tooltip="如果您是代理人，请填写真实的所有者">版权拥有者</label> <input ng-model="infringe.informer.rightsHolder"
-                                                                            tooltip="如果您是代理人，请填写真实的所有者">
+                    <label>版权拥有者</label> <input ng-model="infringe.informer.rightsHolder"
+                                                                            tooltip="如果您是代理人，请填写真实的所有者"  tooltip-trigger="click" >
                     <label>城市<span style="color: red">*</span></label> <input ng-model="infringe.informer.city" required>
                     <label>国家<span style="color: red">*</span></label> <input ng-model="infringe.informer.country" required>
-                    <label tooltip="请确保我们能通过邮件方式通知您侵权处理结果">邮箱<span style="color: red">*</span></label> <input
+                    <label>邮箱<span style="color: red">*</span></label> <input
                         ng-model="infringe.informer.email" required
-                        tooltip="请确保我们能通过邮件方式通知您侵权处理结果">
+                        tooltip="请确保我们能通过邮件方式通知您侵权处理结果"  tooltip-trigger="click" >
                 </div>
             </div>
         </div>

@@ -5,20 +5,29 @@
 angular.module('wooice.config', []).constant(
 	'config',
 	{
-		site : {
-			url : 'http://localhost:8080/Site/app/index.html'
-		},
+//		site : {
+//			url : 'http://192.168.1.3:8080//Site/app/index.html'
+//		},
+//		service : {
+//			url : 'http:///192.168.1.3\\:8080/Services',
+//            url_noescp : 'http:///192.168.1.3:8080/Services'
+//		},
+//        storage: {
+//            wave: 'http://wooice-wave-dev.u.qiniudn.com'
+//        },
 
-		service : {
-			url : 'http://localhost\\:8080/commonService',
-            url_noescp : 'http://localhost:8080/commonService'
-		},
+        site : {
+            url : 'http://www.wowoice.com'
+        },
+        service : {
+            url : 'http://www.wowoice.com/Services',
+            url_noescp : 'http://www.wowoice.com/Services'
+        },
+        storage: {
+             wave: 'http://wowoice-wave.u.qiniudn.com'
+        },
 
         userStreamPath: 'index.html#/stream/',
-
-        soundAccessExpires: 1,
-        imageAccessExpires: 7,
-
         soundsPerPage: 4,
         commentsPerPage: 8,
         likesPerPage: 9,

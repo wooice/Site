@@ -1,5 +1,5 @@
 angular.module('wooice.waver', []).
-    factory('WooiceWaver', [ 'config','storage', function (config, storage) {
+    factory('WooiceWaver', [ 'config', 'storage', function (config, storage) {
         function init() {
             var soundData = {};
             //init sound list, which will cache waves
@@ -8,20 +8,18 @@ angular.module('wooice.waver', []).
 
             return soundData;
         }
+
         var soundData = init();
 
         return {
-            recordWaveStatus: function(){
+            recordWaveStatus: function () {
                 // when user leave the page, record the current status of the wave.
                 for (var oneSound in soundData.soundList) {
                     oneSound = soundData.soundList[oneSound];
-                    if (oneSound && oneSound.waveForm.getSoundPosition() && oneSound.waveForm.getSoundPosition() > 0) {
-                        storage.set(oneSound.id + "_wave", {
-                            id: oneSound.id,
-                            waveData: oneSound.waveData,
-                            duration: oneSound.duration,
-                            position: oneSound.waveForm.getSoundPosition()
-                        });
+                    if (oneSound && oneSound.waveForm.getSoundPosition() != null) {
+                        var storedSound = storage.get(oneSound.id + "_wave");
+                        storedSound.position = oneSound.waveForm.getSoundPosition();
+                        storage.set(oneSound.id + "_wave", storedSound);
                     }
                 }
             },
@@ -36,17 +34,20 @@ angular.module('wooice.waver', []).
                 canvas.height = $('#sound_wave_' + newSound.id).height();
                 var sound = null;
 
-                if (soundData.soundList[newSound.id])
-                {
+                if (!newSound.position) {
+                    var playerCache = storage.get(newSound.id + "_player");
+                    if (playerCache) {
+                        newSound.position = playerCache.from;
+                    }
+                }
+
+                if (soundData.soundList[newSound.id]) {
                     sound = soundData.soundList[newSound.id];
-                    sound.waveForm.updateWaveData(newSound.waveData);
-                    sound.waveForm.updateCanvas(canvas);
+                    sound.waveForm.updateCanvas(canvas, newSound.waveData);
                     sound.waveForm.updateCommentable(newSound.commentable);
                     sound.waveForm.updateColor(newSound.color);
-                    newSound.waveData = null;
                 }
-                else
-                {
+                else {
                     sound = newSound;
                     var waveForm = new $.waveForm({
                         id: sound.id,
@@ -60,52 +61,68 @@ angular.module('wooice.waver', []).
                         color: sound.color,
                         commentable: sound.commentable
                     });
+
                     sound.waveForm = waveForm;
                     soundData.soundList[sound.id] = sound;
                 }
 
+                storage.set(sound.id + "_wave",
+                    {
+                        waveData: newSound.waveData,
+                        position: sound.position
+                    });
+
+                delete newSound.waveData;
                 sound.waveForm.redraw();
+                sound.waveForm.cleanWaveData();
             },
 
             move: function (sound) {
-                var waveForm = soundData.soundList[sound.id].waveForm;
-                if (waveForm)
+                if (soundData.soundList[sound.id])
                 {
-                    waveForm.play();
-                    waveForm.setSoundPosition(sound.soundPosition);
-                    waveForm.redraw();
+                    var waveForm = soundData.soundList[sound.id].waveForm;
+                    if (waveForm) {
+                        waveForm.recoverWaveData(storage);
+                        waveForm.play();
+                        waveForm.setSoundPosition(sound.soundPosition);
+                        waveForm.redraw();
+                    }
                 }
             },
 
             load: function (sound) {
-                var waveForm = soundData.soundList[sound.id].waveForm;
-                waveForm.setSoundBytesloaded(sound.soundBytesloaded);
-                waveForm.setSoundBytesTotal(sound.soundBytesTotal);
-                waveForm.redraw();
+                if (soundData.soundList[sound.id])
+                {
+                    var waveForm = soundData.soundList[sound.id].waveForm;
+                    waveForm.setSoundBytesloaded(sound.soundBytesloaded);
+                    waveForm.setSoundBytesTotal(sound.soundBytesTotal);
+                    waveForm.redraw();
+                }
             },
 
             stop: function (sound) {
-                var waveForm = soundData.soundList[sound.id].waveForm;
-                if (waveForm)
-                {
-                    waveForm.stop();
+                if (soundData.soundList[sound.id]) {
+                    var waveForm = soundData.soundList[sound.id].waveForm;
+                    if (waveForm) {
+                        waveForm.cleanWaveData();
+                        waveForm.stop();
+                    }
                 }
             },
 
             play: function (sound) {
-                var waveForm = soundData.soundList[sound.id].waveForm;
-                waveForm.play();
+                if (soundData.soundList[sound.id]) {
+                    var waveForm = soundData.soundList[sound.id].waveForm;
+                    waveForm.play();
+                }
             },
 
-            jump: function (sound, toWavePoint) {
-                var waveForm = soundData.soundList[sound.id].waveForm;
-                waveForm.setSoundPosition(sound.soundPosition);
-                waveForm.redraw();
-
-                $(window).trigger('onJump', {
-                    id: sound.id,
-                    from: 1000 * (soundToJump * soundToJump.duration / soundToJump.waveData.length)
-                });
+            jump: function (sound) {
+                if (soundData.soundList[sound.id]) {
+                    var waveForm = soundData.soundList[sound.id].waveForm;
+                    waveForm.setSoundPosition(sound.soundPosition);
+                    waveForm.redraw();
+                }
             }
-    }
-}]);
+        }
+    }]);

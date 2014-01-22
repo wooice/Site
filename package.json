@@ -1,0 +1,18 @@
+{
+    "name": "WOWOICE",
+    "version": "0.0.1",
+    "description": "Wowoice platform",
+    "author": "WOWOICE TEAM",
+    "repository": {
+        "type:": "git",
+        "url": "https://github.com/wooice/Site.git"
+    },
+    "devDependencies": {
+        "grunt": "~0.4.x",
+        "grunt-contrib": "~0.7.0",
+        "grunt-html2js": "~0.1.3",
+        "grunt-htmlrefs": "~0.4.1",
+        "grunt-regex-replace": "~0.2.5",
+        "grunt-conventional-changelog": "~0.1.2"
+    }
+}

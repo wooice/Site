@@ -1,20 +1,12 @@
-'use strict';
 
 angular.module('sound.social.controllers', [])
     .controller('soundSocialCtrl', ['$scope', '$window', 'config', '$routeParams', 'Sound', 'SoundUtilService', 'Storage', 'SoundSocial', 'SoundSocialList', 'UserService', '$location', '$anchorScroll', 'SoundSocialProSocial', 'SoundProSocial', 'UserSocial', 'Tag',
         function ($scope, $window, config, $routeParams, Sound, SoundUtilService, Storage, SoundSocial, SoundSocialList, UserService, $location, $anchorScroll, SoundSocialProSocial, SoundProSocial, UserSocial, Tag) {
 
-            $scope.target = "comments";
-            var query = $location.search();
-            if (query.scrollTo) {
-                $scope.target = query.scrollTo;
-                $location.hash($routeParams.scrollTo);
-                $anchorScroll();
-            }
-            $("#" + $scope.target + "_li").addClass("active");
-            $("#" + $scope.target).addClass("active");
-
             $scope.$parent.$on('$includeContentLoaded', function (event) {
+                $("#" + $scope.target + "_li").addClass("active");
+                $("#" + $scope.target).addClass("in active");
+
                 $("#tags").typeahead({
                     remote: {
                         url: config.service.url_noescp + '/tag/list?term=%QUERY',

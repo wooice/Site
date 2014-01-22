@@ -1,11 +1,20 @@
 <!doctype html>
-<html lang="en" ng-app="wooice">
+<html lang="en" ng-app="wooice"  xmlns:wb="http://open.weibo.com/wb">
 <head>
   <meta charset="utf-8">
-  <title>Wooice</title>
+  <meta property="wb:webmaster" content="371bd3642058ba5d" />
+  <meta property="qc:admins" content="4361253037677771356375" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
+  <title>WOWOICE</title>
+  <link rel="shortcut icon" href="img/logo.ico" type="image/x-icon">
+  <link rel="Bookmark" href="img/logo.ico" />
+
+  <script src=" http://tjs.sjs.sinajs.cn/open/api/js/wb.js?appkey=157170823&debug=true" type="text/javascript" charset="utf-8"></script>
+  <script src="http://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js" data-appid="100565532" data-redirecturi=""  type="text/javascript" charset="utf-8"></script>
+
+    <!-- ref:css css/styles.min.<%= buildNumber %>.css -->
   <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css">
-  <link rel="stylesheet" href="lib/bootstrap/css/bootstrap-responsive.css">
   <link rel="stylesheet" href="lib/font-awesome/css/font-awesome.min.css">
   <link rel="stylesheet" href="lib/Buttons/css/buttons.css">
   <link rel="stylesheet" href="css/app.css"/>
@@ -14,16 +23,20 @@
   <link rel="stylesheet" href="lib/message/css/messenger.css">
   <link rel="stylesheet" href="lib/message/css/messenger-theme-future.css">
   <link rel="stylesheet" href="lib/jquery/qtip2/css/jquery.qtip.min.css">
+    <!-- endref -->
 </head>
-<body style="">
+<body style="padding-bottom: 50px;">
 
   <div ng-view ></div>
+
+  <!-- ref:js js/scripts.min.<%= buildNumber %>.js -->
   <script src="lib/angular/angular.js"></script>
   <script src="lib/angular/angular-route.min.js"></script>
   <script src="lib/angular/angular-resource.min.js"></script>
   <script src="lib/angular/angular-animate.min.js"></script>
   <script src="lib/angular/angular-cookies.min.js"></script>
   <script src="lib/angular-storage/angularLocalStorage.js"></script>
+  <script src="lib/angular-ui/ui-bootstrap-tpls-0.6.0.js"></script>
 
   <script src="lib/jquery/jquery-2.0.2.min.js"></script>
   <script src="lib/jquery/jquery.cookie.js"></script>
@@ -34,30 +47,38 @@
   <script src="lib/soundmanager/script/soundmanager2.js"></script>
   <script src="lib/jquery/qtip2/js/jquery.qtip.min.js"></script>
 
-  <!--<script src="lib/angular-ui/ui-bootstrap-tpls-0.6.0.js"></script>-->
-
   <script src="lib/message/js/messenger.min.js"></script>
+  <script src="lib/util/md5.js"></script>
   <script src="js/util/dateFormat.js"></script>
+  <script src="lib/wooice/wave.js"></script>
+  <script src="lib/wooice/player.js"></script>
+  <script src="lib/wooice/waveForm.js"></script>
+
+  <script src="lib/upload/jquery.ui.widget.js"></script>
+  <script src="lib/upload/jquery.iframe-transport.js"></script>
+  <script src="lib/upload/jquery.fileupload.js"></script>
+  <script src="lib/typeahead.js/typeahead.min.js"></script>
 
   <script src="js/app.js"></script>
   <script src="js/config.js"></script>
   <script src="js/directives.js"></script>
   <script src="js/filters.js"></script>
-  <script src="js/commonServices.js"></script>
-  <script src="js/proServices.js"></script>
-  <script src="js/headerControllers.js"></script>
-  <script src="js/userStreamController.js"></script>
-  <script src="js/streamControllers.js"></script>
-  <script src="js/commonStreamControllers.js"></script>
-  <script src="js/soundControllers.js"></script>
-  <script src="js/soundSocialController.js"></script>
-  <script src="js/playerController.js"></script>
-  <script src="js/uploadControllers.js"></script>
-  <script src="js/interestControllers.js"></script>
-  <script src="js/footerControllers.js"></script>
-  <script src="js/infringeCtrl.js"></script>
-  <script src="js/messageServices.js"></script>
-  <script src="js/userServices.js"></script>
+  <script src="js/services/commonServices.js"></script>
+  <script src="js/services/playListService.js"></script>
+  <script src="js/services/proServices.js"></script>
+  <script src="js/controllers/headerControllers.js"></script>
+  <script src="js/controllers/userStreamController.js"></script>
+  <script src="js/controllers/streamControllers.js"></script>
+  <script src="js/controllers/commonStreamControllers.js"></script>
+  <script src="js/controllers/soundControllers.js"></script>
+  <script src="js/controllers/soundSocialController.js"></script>
+  <script src="js/controllers/playerController.js"></script>
+  <script src="js/controllers/uploadControllers.js"></script>
+  <script src="js/controllers/interestControllers.js"></script>
+  <script src="js/controllers/footerControllers.js"></script>
+  <script src="js/controllers/infringeCtrl.js"></script>
+  <script src="js/services/messageServices.js"></script>
+  <script src="js/services/userServices.js"></script>
   <script src="js/directives.js"></script>
   <script src="js/user/controllers.js"></script>
   <script src="js/user/services.js"></script>
@@ -67,15 +88,6 @@
   <script src="js/auth/services.js"></script>
   <script src="js/admin/services.js"></script>
   <script src="js/admin/controller.js"></script>
-
-  <script src="lib/wooice/wave.js"></script>
-  <script src="lib/wooice/player.js"></script>
-  <script src="lib/wooice/waveForm.js"></script>
-
-<script src="lib/upload/jquery.ui.widget.js"></script>
-<script src="lib/upload/jquery.iframe-transport.js"></script>
-<script src="lib/upload/jquery.fileupload.js"></script>
-<script src="lib/typeahead.js/typeahead.min.js"></script>
 
 </body>
 </html>

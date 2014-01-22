@@ -22,6 +22,7 @@ angular.module('profile.controllers', [])
         $scope.colors.push({upper: '#cc3300', lower: '#db704c', deeper: '#a32800'});
         $scope.colors.push({upper: '#006b75', lower: '#4c979e', deeper: '#00555d'});
         $scope.colors.push({upper: '#003300', lower: '#4c704c', deeper: '#002800'});
+        $scope.colors.push({upper: 'random', lower: 'random', deeper: 'random'});
 
         var user = User.get({userAlias: UserService.getCurUserAlias()},function(){
            if(!user.profile.avatorUrl)
@@ -118,6 +119,7 @@ angular.module('profile.controllers', [])
             done: function (e, data) {
                 var postData = {};
                 postData.avatorUrl = $scope.user.id;
+                postData.hasAvatar = true;
                 UserProfile.updateBasic({}, postData, function(){
                     $scope.posterUploadMsgClass = "text-success";
                     $scope.posterUploadMsg = '个人头像上传成功';
@@ -137,12 +139,12 @@ angular.module('profile.controllers', [])
     }])
 
     .controller('externalProfileCtrl', ['$scope', '$routeParams','User','UserService', 'UserProfile', function ($scope, $routeParams, User, UserService, UserProfile) {
-        var user = User.get({userAlias: UserService.getCurUserAlias()},function(){
-            $scope.user = user;
+        var userExternal = User.getExternal({userAlias: UserService.getCurUserAlias()},function(){
+            $scope.userExternal = userExternal;
         });
 
         $scope.saveProfile = function(){
-            UserProfile.updateExternal({}, $scope.user.external, function(){
+            UserProfile.updateExternal({}, $scope.userExternal, function(){
                 $scope.messageClass = "text-success";
                 $scope.message = "站外信息保存成功";
             },function(){

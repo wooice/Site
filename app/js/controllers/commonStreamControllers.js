@@ -6,7 +6,7 @@ angular.module('common.stream.controllers', [])
     .controller('recommandUserCtrl', ['$scope', 'config', '$routeParams', 'UserSocial', 'SoundSocial', function ($scope, config, $routeParams, UserSocial, SoundSocial) {
         $scope.pageNum = 1;
         $scope.pageSize = 8;
-        var users = UserSocial.getRecommand({}, {pageNum: $scope.pageNum, pageSize: $scope.pageSize}, function () {
+        var users = UserSocial.getRecommand({}, {pageNum: $scope.pageNum, pageSize: 5}, function () {
             $.each(users, function (index, user) {
                 users.class = "";
                 if (!user.profile.avatorUrl) {

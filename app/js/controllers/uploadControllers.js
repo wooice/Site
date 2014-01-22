@@ -6,7 +6,15 @@ angular.module('upload.controllers', [
     .controller('soundUploadCtrl', [
         '$scope', 'Sound', 'Tag', 'User', 'config', 'Storage', 'UserService',
         function ($scope, Sound, Tag, User, config, Storage, UserService) {
+            $scope.commentModes = [
+                {name: '所有人可见', id: 'public'},
+                {name: '自己可见', id: 'private'},
+                {name: '关闭评论', id: 'closed'}
+            ];
+
+            $scope.defaultSound = {};
             reset();
+
             $scope.uploadUrl = "http://up.qiniu.com";
             $scope.defaultSound.minutesToUpload = 120;
             $scope.defaultSound.secondsToUpload = 0;
@@ -23,16 +31,34 @@ angular.module('upload.controllers', [
                 }
             }
 
+            $scope.addNewTag = function() {
+                var label = $("#tags").val();
+                if (label) {
+                    if ($.inArray(label, $scope.defaultSound.tags) != -1) {
+                        return;
+                    }
+                    $scope.defaultSound.tags.push(label);
+                    $("#tags").val("");
+                    $("#tags").attr("placeholder", "请再多打几个");
+                }
+            }
 
-            $scope.commentModes = [
-                {name: '所有人可見', id: 'public'},
-                {name: '自己可見', id: 'private'},
-                {name: '关闭評論', id: 'closed'}
-            ];
-            $scope.defaultSound.commentMode = $scope.commentModes[0];
+            $scope.addTag = function(){
+                var label = $("#tags").val();
+                if (label) {
+                    if ($.inArray(label, $scope.defaultSound.tags) != -1) {
+                        return;
+                    }
+                    $scope.$apply(function () {
+                        $scope.defaultSound.tags.push(label);
+                    });
+                    $("#tags").val("");
+                    $("#tags").attr("placeholder", "请再多打几个");
+                }
+            }
 
             $scope.save = function () {
-                if ($scope.defaultSound.name && $scope.defaultSound.tags.length > 0) {
+                if ($scope.defaultSound.name) {
                     $scope.defaultSound.profileError = '';
 
                     if ($scope.defaultSound.alias) {
@@ -137,7 +163,7 @@ angular.module('upload.controllers', [
                 });
                 var soundToUpload = Sound.getSoundToUpload(
                     {sound: 'toupload'}, function () {
-                        if (soundToUpload.profile) {
+                        if (soundToUpload.profile && soundToUpload.profile.alias) {
                             $scope.defaultSound.id = soundToUpload.id;
                             $scope.defaultSound.name = soundToUpload.profile.name;
                             $scope.defaultSound.fileName = soundToUpload.profile.remoteId;
@@ -162,11 +188,11 @@ angular.module('upload.controllers', [
                             $('#sound_info').show();
                         }
                         else {
-                            if (soundToUpload.soundData) {
+                            if (soundToUpload.profile && !soundToUpload.profile.alias) {
                                 $scope.defaultSound.uploadStatus = "hide";
-                                var names = soundToUpload.soundData.originName.split(".");
+                                var names = soundToUpload.profile.name.split(".");
                                 $scope.defaultSound.name = names[0];
-                                $scope.defaultSound.fileName = soundToUpload.soundData.objectId;
+                                $scope.defaultSound.fileName = soundToUpload.profile.remoteId;
                                 $scope.defaultSound.dataSaved = true;
                                 $scope.defaultSound.uploadMsgClass = "text-warning";
                                 $scope.defaultSound.uploadMsg = "您有未完成的声音分享，请完善" + $scope.defaultSound.name + "的声音信息。";
@@ -181,16 +207,10 @@ angular.module('upload.controllers', [
                     }
                 );
 
-                $("#tags").typeahead({
-                    remote: {
-                        url: config.service.url_noescp + '/tag/list?term=%QUERY',
-                        filter: function (parsedResponse) {
-                            var tags = [];
-                            $.each(parsedResponse, function (index, tag) {
-                                tags.push(tag.label);
-                            });
-                            return tags;
-                        }
+                //workaround
+                $("#tags").bind('keypress', function (event) {
+                    if (event.keyCode == 13) {
+                        event.preventDefault();
                     }
                 });
                 $("#tags").bind('keyup', function (event) {
@@ -205,6 +225,19 @@ angular.module('upload.controllers', [
                             });
                             $("#tags").val("");
                             $("#tags").attr("placeholder", "请再多打几个");
+                        }
+                    }
+                });
+
+                $("#tags").typeahead({
+                    remote: {
+                        url: config.service.url_noescp + '/tag/list?term=%QUERY',
+                        filter: function (parsedResponse) {
+                            var tags = [];
+                            $.each(parsedResponse, function (index, tag) {
+                                tags.push(tag.label);
+                            });
+                            return tags;
                         }
                     }
                 });
@@ -243,13 +276,12 @@ angular.module('upload.controllers', [
             $scope.jqXHR = $('.upload_button').fileupload({
                 url: $scope.uploadUrl,
                 dataType: 'json',
-                acceptFileTypes: /(\.|\/)(mp3|wav)$/i,
 
                 add: function (e, data) {
-                    if (!(/\.(mp3|wav|flac|ogg)$/i).test(data.files[0].name)) {
+                    if (!(/\.(mp3|wma|flac|ogg)$/i).test(data.files[0].name)) {
                         $scope.$apply(function () {
                             $scope.defaultSound.uploadMsgClass = "text-error";
-                            $scope.defaultSound.uploadMsg = '对不起,您上传的文件格式不被本站接受，请上传以下音频文件中的一种：mp3,wav,flac,ogg';
+                            $scope.defaultSound.uploadMsg = '对不起,您上传的文件格式不被本站接受，请上传以下音频文件中的一种：mp3,wma,flac,ogg';
                         });
                         return;
                     }
@@ -300,8 +332,9 @@ angular.module('upload.controllers', [
                     });
                 },
                 progress: function (e, data) {
+                    $scope.defaultSound.uploadStatus = "progress-bar-info";
                     var progress = parseInt(data.loaded / data.total * 100, 10);
-                    $('#progress .bar').css(
+                    $('#progress .progress-bar').css(
                         'width',
                         progress + '%'
                     );
@@ -324,10 +357,10 @@ angular.module('upload.controllers', [
                     postData.fileName = $scope.defaultSound.fileName;
                     postData.originName = $scope.defaultSound.name;
                     Storage.upload({}, postData, function () {
-                        $scope.defaultSound.uploadStatus = 'bar-success';
+                        $scope.defaultSound.uploadStatus = 'progress-bar-success';
                         $scope.defaultSound.uploadMsgClass = "text-success";
                         $scope.defaultSound.uploadMsg = '上传完成，请填写信息介绍这段声音。 ';
-                        $('#progress .bar').addClass('bar-success');
+                        $('#progress .progress-bar').addClass('progress-bar-success');
                         $scope.defaultSound.dataSaved = true;
 
                         if ($scope.defaultSound.profileSaved) {
@@ -437,7 +470,6 @@ angular.module('upload.controllers', [
             });
 
             function reset() {
-                $scope.defaultSound = {};
                 $scope.defaultSound.soundRight = {};
                 $scope.defaultSound.name = null;
                 $scope.defaultSound.fileName = null;
@@ -448,7 +480,7 @@ angular.module('upload.controllers', [
                 $scope.defaultSound.profileSaved = false;
                 $scope.defaultSound.dataSaved = false;
                 $scope.defaultSound.downloadable = false;
-                $scope.defaultSound.recordType = 'original';
+                $scope.defaultSound.recordType = 'resing';
                 $scope.defaultSound.posterUrl = "img/voice.jpg";
 
                 $scope.defaultSound.profileMsgClass = "";
@@ -461,6 +493,8 @@ angular.module('upload.controllers', [
                 $scope.defaultSound.uplodingPoster = false;
                 $scope.defaultSound.imgUploadMsgClass = "";
                 $scope.defaultSound.imgUploadMsg = '';
+
+                $scope.defaultSound.commentMode = $scope.commentModes[0];
             }
         }
     ])

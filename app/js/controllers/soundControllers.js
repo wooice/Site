@@ -1,12 +1,25 @@
 'use strict';
 
 angular.module('sound.controllers', [])
-    .controller('soundDetailCtrl', ['$scope', '$window', 'config', '$routeParams', 'Sound', 'SoundUtilService', 'Storage', 'SoundSocial', 'SoundSocialList', 'UserService',
-        '$location', '$anchorScroll', 'SoundSocialProSocial', 'SoundProSocial', 'UserSocial', 'Tag', 'WooicePlayer', 'WooiceWaver', 'storage',
-        function ($scope, $window, config, $routeParams, Sound, SoundUtilService, Storage, SoundSocial, SoundSocialList, UserService, $location, $anchorScroll, SoundSocialProSocial, SoundProSocial, UserSocial, Tag, WooicePlayer, WooiceWaver, storage) {
+    .controller('soundDetailCtrl', ['$scope', '$window', 'config', '$routeParams', '$timeout', 'Sound', 'CurSoundList','SoundUtilService', 'Storage', 'SoundSocial', 'SoundSocialList', 'UserService',
+        '$location', '$anchorScroll', 'SoundSocialProSocial', 'SoundProSocial', 'UserSocial', 'Tag', 'WooicePlayer', 'WooiceWaver', 'storage', 'WaveStorage',
+        function ($scope, $window, config, $routeParams, $timeout, Sound, CurSoundList, SoundUtilService, Storage, SoundSocial, SoundSocialList, UserService, $location, $anchorScroll, SoundSocialProSocial,
+                  SoundProSocial, UserSocial, Tag, WooicePlayer, WooiceWaver, storage, WaveStorage) {
             $scope.userService = UserService;
             $scope.config = config;
             $scope.mode = "default";
+            $scope.target = "comments";
+            $scope.wooicePlayer =  WooicePlayer;
+            $scope.curSoundList = CurSoundList;
+            CurSoundList.reset();
+
+            var query = $location.search();
+            if (query.scrollTo) {
+                $scope.target = query.scrollTo;
+                $location.hash($routeParams.scrollTo);
+                $anchorScroll();
+            }
+
             if ($scope.$parent.mode) {
                 $scope.mode = $scope.$parent.mode;
             }
@@ -55,10 +68,12 @@ angular.module('sound.controllers', [])
             $scope.newComment = {};
             $scope.newTag = "";
 
-            $scope.togglePause = function (id) {
-                WooicePlayer.toggle({
-                    id: id
-                });
+            $scope.togglePause = function () {
+                if (!$scope.sound)
+                {
+                    return;
+                }
+                WooicePlayer.toggle($scope.sound);
             };
 
             $scope.toggleLike = function (id) {
@@ -108,6 +123,12 @@ angular.module('sound.controllers', [])
             };
 
             $scope.comment = function () {
+                if (UserService.validateRoleGuest())
+                {
+                    $('#sound_commentbox_input_' + $scope.sound.id).val('');
+                    $('#sound_commentbox_input_' + $scope.sound.id).attr("placeholder", "对不起，请登陆后留言。。");
+                    return;
+                }
                 $scope.newComment.pointAt = $('#sound_comment_point_' + $scope.sound.id).val();
                 $scope.newComment.toUserAlias = $('#sound_comment_to_' + $scope.sound.id).val();
                 var result = SoundSocial.comment({sound: $scope.sound.id}, $scope.newComment, function (count) {
@@ -118,6 +139,17 @@ angular.module('sound.controllers', [])
 
                     $scope.refreshTarget("comments");
                     loadCommentsInSound();
+                }, function(error){
+                    if (error.data == 'INVALID_COMMENT')
+                    {
+                        $('#sound_commentbox_input_' + $scope.sound.id).val('');
+                        $('#sound_commentbox_input_' + $scope.sound.id).attr("placeholder", "对不起，您的评论含有敏感词，请慎重输入");
+                    }
+                    else
+                    {
+                        $('#sound_commentbox_input_' + $scope.sound.id).val('');
+                        $('#sound_commentbox_input_' + $scope.sound.id).attr("placeholder", "对不起，您的评论输入失败，请稍后再试");
+                    }
                 });
             };
 
@@ -144,15 +176,15 @@ angular.module('sound.controllers', [])
                 $scope.reloadTarget(true);
             };
 
-            $scope.follow = function () {
-                if (this.repost.owner.userPrefer.following) {
-                    var result = UserSocial.unfollow({toUserAlias: this.repost.owner.profile.alias}, null, function (count) {
-                        this.repost.owner.userPrefer.following = false;
+            $scope.follow = function (activity) {
+                if (activity.owner.userPrefer.following) {
+                    var result = UserSocial.unfollow({toUserAlias: activity.owner.profile.alias}, null, function (count) {
+                        activity.owner.userPrefer.following = false;
                     });
                 }
                 else {
-                    var result = UserSocial.follow({ toUserAlias: this.repost.owner.profile.alias}, null, function (count) {
-                        this.repost.owner.userPrefer.following = true;
+                    var result = UserSocial.follow({ toUserAlias: activity.owner.profile.alias}, null, function (count) {
+                        activity.owner.userPrefer.following = true;
                     });
                 }
             };
@@ -205,7 +237,19 @@ angular.module('sound.controllers', [])
                     $('#sound_comment_reply_input_' + this.$index).attr("placeholder", "感谢您的回复!");
 
                     $scope.refreshTarget("comments");
-                }, this));
+                }, this), function(error)
+                {
+                    if (error.data == 'INVALID_COMMENT')
+                    {
+                        $('#sound_commentbox_input_' + $scope.sound.id).val('');
+                        $('#sound_commentbox_input_' + $scope.sound.id).attr("placeholder", "对不起，您的评论含有敏感词，请慎重输入");
+                    }
+                    else
+                    {
+                        $('#sound_commentbox_input_' + $scope.sound.id).val('');
+                        $('#sound_commentbox_input_' + $scope.sound.id).attr("placeholder", "对不起，您的评论输入失败，请稍后再试");
+                    }
+                });
             };
 
             $scope.replyInSound = function () {
@@ -281,19 +325,14 @@ angular.module('sound.controllers', [])
 
                 if (sound) {
                     $scope.sound = sound;
-                    $scope.$apply();
+                    CurSoundList.getList().push(sound);
 
-                    loadSoundData();
+                    $timeout(function(){
+                        loadSoundData();
+                    }, 0);
 
                     if ($scope.mode == 'default') {
                         $scope.reloadTarget();
-
-                        var curSound = WooicePlayer.getCurSound();
-                        if (curSound) {
-                            $('#sound_player_button_' + curSound.id).addClass('icon-pause');
-                            $('#cur_sound').attr('href', curSound.title.route);
-                            $('#cur_sound').text(curSound.title.alias);
-                        }
                     }
 
                     $('.hasTooltip').each(function () {
@@ -327,26 +366,16 @@ angular.module('sound.controllers', [])
             $scope.loadSound = function () {
                 var sound = Sound.load({sound: $routeParams.soundId}, function () {
                     $scope.sound = SoundUtilService.buildSound(sound);
+                    CurSoundList.getList().push(sound);
 
-                    //TODO
-                    $scope.$apply();
-
-                    //record sound info
-                    WooicePlayer.addSound($scope.sound);
-
-                    loadSoundData();
+                    $timeout(function(){
+                        loadSoundData();
+                    }, 0);
 
                     loadCommentsInSound();
 
                     if ($scope.mode == 'default') {
                         $scope.reloadTarget();
-
-                        var curSound = WooicePlayer.getCurSound();
-                        if (curSound) {
-                            $('#sound_player_button_' + curSound.id).addClass('icon-pause');
-                            $('#cur_sound').attr('href', curSound.title.route);
-                            $('#cur_sound').text(curSound.title.alias);
-                        }
                     }
 
                     $('.hasTooltip').each(function () {
@@ -376,7 +405,7 @@ angular.module('sound.controllers', [])
             $scope.reloadTarget = function (force) {
                 switch ($scope.target) {
                     case 'comments':
-                        if (($scope.sound.comment.mode == 'public' || $scope.sound.comment.mode == 'closed') && $scope.sound.owner.alias !== UserService.getCurUserAlias()) {
+                        if (($scope.sound.comment.mode == 'private' || $scope.sound.comment.mode == 'closed') && $scope.sound.owner.alias !== UserService.getCurUserAlias()) {
                             return;
                         }
                         loadComments(force);
@@ -393,9 +422,7 @@ angular.module('sound.controllers', [])
                         }
                         break;
                     case 'visits':
-                        if (UserService.validateRolesPro()) {
-                            loadVisits(force);
-                        }
+                        loadVisits(force);
                         break;
                     default :
                         loadComments(force);
@@ -525,36 +552,21 @@ angular.module('sound.controllers', [])
             function loadCommentsInSound() {
                 $scope.commentsInsound = [];
                 var comments = SoundSocialList.comment({sound: $scope.sound.id, justInSound: true}, function () {
+                    $scope.$watch($scope.commentsInsound);
+
                     var canvasWidth = $("#sound_wave_" + $scope.sound.id).width();
                     $.each(comments, function (index, comment) {
                         comment.showReply = false;
                         comment.owner.route = config.userStreamPath + comment.owner.profile.alias;
                         comment.top = '70%';
                         comment.left = (comment.pointAt * canvasWidth) / ($scope.sound.duration) + "px";
-
-                        if (!comment.owner.profile.avatorUrl) {
-                            comment.owner.profile.avatorUrl = "img/default_avatar.png";
-                        }
-                        else {
-                            var avatorUrl = $.cookie(comment.owner.profile.alias + '_avator_small_url');
-
-                            if (avatorUrl) {
-                                comment.owner.profile.avatorUrl = avatorUrl;
-                            }
-                            else {
-                                $.cookie(comment.owner.profile.alias + '_avator_small_url', comment.owner.profile.avatorUrl, {expires: config.imageAccessExpires});
-                            }
-                        }
                         $scope.commentsInsound.push(comment);
-
-                        $scope.$apply();
 
                         $('#sound_comment_in_sound_' + comment.commentId).mouseleave(function () {
                             $(this).addClass('hide');
                             $("#sound_comment_in_sound_minor_" + comment.commentId).removeClass("hide");
                         });
                     });
-
                 });
             }
 
@@ -565,6 +577,8 @@ angular.module('sound.controllers', [])
                 }
                 $scope.loadClass = '';
                 var comments = SoundSocialList.comment({sound: $scope.sound.id, pageNum: $scope.commentPageNum}, function () {
+                    $scope.$watch($scope.comments);
+
                     $.each(comments, function (index, comment) {
                         var added = false;
                         $.each($scope.comments, function (index, addedComment) {
@@ -579,21 +593,7 @@ angular.module('sound.controllers', [])
                             if (comment.to) {
                                 comment.to.route = config.userStreamPath + comment.to.profile.alias;
                             }
-                            if (!comment.owner.profile.avatorUrl) {
-                                comment.owner.profile.avatorUrl = "img/default_avatar.png";
-                            }
-                            else {
-                                var avatorUrl = $.cookie(comment.owner.profile.alias + '_avator_small_url');
-
-                                if (avatorUrl) {
-                                    comment.owner.profile.avatorUrl = avatorUrl;
-                                }
-                                else {
-                                    $.cookie(comment.owner.profile.alias + '_avator_small_url', comment.owner.profile.avatorUrl, {expires: config.imageAccessExpires});
-                                }
-                            }
                             $scope.comments.push(comment);
-                            $scope.$apply();
                         }
                     });
 
@@ -605,53 +605,36 @@ angular.module('sound.controllers', [])
             }
 
             function loadSoundData() {
-                var sound = storage.get($scope.sound.id + "_wave");
-                if (sound) {
-                    sound.color = UserService.getColor();
-                    sound.commentable = $scope.sound.commentMode !== 'closed';
-                    WooiceWaver.render(sound);
-
-                    var soundPlayStatus = storage.get($scope.sound.id + "_player");
-                    if (soundPlayStatus && soundPlayStatus.playing)
-                    {
-                        WooicePlayer.play({id: $scope.sound.id});
-                    }
-                }
-                else {
-                    var toLoadList = [];
-                    toLoadList.push($scope.sound.id);
-                    var newDatas = Sound.loadData({}, toLoadList, function () {
-                        $.each(newDatas, function (index, oneData) {
-                            //render wave
-                            WooiceWaver.render(
-                                {
-                                    id: oneData.soundId,
-                                    waveData: oneData.wave[0],
-                                    duration: oneData.duration * 1000,
-                                    color: UserService.getColor(),
-                                    commentable: oneData.commentMode !== 'closed',
-                                    position: 0
-                                }
-                            );
-
-                            storage.set(oneData.soundId + "_wave", {
-                                id: oneData.soundId,
-                                waveData: oneData.wave[0],
-                                duration: oneData.duration * 1000,
-                                position: 0
-                            });
-                            oneData.wave = null;
-                        });
+                if ($scope.sound.processed)
+                {
+                    var waveData = WaveStorage.get({remoteId: $scope.sound.remoteId+".png"}, function(){
+                        WooiceWaver.render(
+                            {
+                                id: $scope.sound.id,
+                                waveData: waveData.waveData[0],
+                                duration: $scope.sound.duration * 1000,
+                                color: UserService.getColor(),
+                                commentable: $scope.sound.comment.mode !== 'closed'
+                            }
+                        );
                     });
+                    delete waveData.waveData;
+
+                    loadCommentsInSound();
                 }
 
-                loadCommentsInSound();
+                var soundPlayStatus = storage.get($scope.sound.id + "_player");
+                if (soundPlayStatus && soundPlayStatus.playing)
+                {
+                    WooicePlayer.play($scope.sound);
+                }
             }
 
             $scope.$parent.$on("$includeContentLoaded", function (event) {
                 if (event.currentScope.$id != event.targetScope.$id) {
                     return;
                 }
+
                 if (!$scope.localLoad()) {
                     $scope.loadSound();
                 }
@@ -699,12 +682,11 @@ angular.module('sound.controllers', [])
                         });
                     },
                     submit: function (e, data) {
+                        $scope.$watch($scope.isUploadingPoster);
                         $scope.isUploadingPoster = true;
                         $('#cancel_img_upload').click(function () {
                             data.abort();
-                            $scope.$apply(function () {
-                                $scope.isUploadingPoster = false;
-                            });
+                            $scope.isUploadingPoster = false;
                         });
                     },
                     progress: function (e, data) {

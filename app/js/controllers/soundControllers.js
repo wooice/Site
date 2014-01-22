@@ -13,6 +13,10 @@ angular.module('sound.controllers', [])
             $scope.curSoundList = CurSoundList;
             CurSoundList.reset();
 
+            $scope.$on('$destroy', function (e) {
+                document.title = "WOWOICE";
+            });
+
             var query = $location.search();
             if (query.scrollTo) {
                 $scope.target = query.scrollTo;
@@ -325,7 +329,8 @@ angular.module('sound.controllers', [])
 
                 if (sound) {
                     $scope.sound = sound;
-                    CurSoundList.getList().push(sound);
+                    CurSoundList.getList().push($scope.sound);
+                    document.title = "WOWOICE - " + $scope.sound.title.alias;
 
                     $timeout(function(){
                         loadSoundData();
@@ -366,7 +371,8 @@ angular.module('sound.controllers', [])
             $scope.loadSound = function () {
                 var sound = Sound.load({sound: $routeParams.soundId}, function () {
                     $scope.sound = SoundUtilService.buildSound(sound);
-                    CurSoundList.getList().push(sound);
+                    CurSoundList.getList().push($scope.sound);
+                    document.title = "WOWOICE - " + $scope.sound.title.alias;
 
                     $timeout(function(){
                         loadSoundData();

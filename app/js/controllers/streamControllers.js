@@ -9,7 +9,7 @@ angular.module('stream.controllers', []).
             $scope.userService = UserService;
             $scope.routeParams = $routeParams;
             $scope.wooicePlayer = WooicePlayer;
-            $scope.curSoundList = CurSoundList
+            $scope.curSoundList = CurSoundList;
 
             window.onbeforeunload = function (event) {
                 // when user leave the page, record the current status of the sound.
@@ -215,6 +215,11 @@ angular.module('stream.controllers', []).
             $scope.newSoundCount = 0;
             $scope.lastLoadedTime = new Date().Format("yyyy-MM-dd hh:mm:ss");
             $scope.userCurPage = $routeParams.value;
+            if ($scope.userCurPage)
+            {
+                document.title = "WOWOICE - " + $scope.userCurPage;
+            }
+
 
             $scope.loadStream = function (force) {
                 if (force) {
@@ -347,6 +352,7 @@ angular.module('stream.controllers', []).
             $scope.$on('$destroy', function (e) {
                 clearInterval(soundsReLoad);
                 $(window).off("scroll", scrollHandler);
+                document.title = "WOWOICE";
             });
 
             function toTopBar(toTopEle, mainBody) {

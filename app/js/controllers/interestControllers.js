@@ -6,7 +6,7 @@ angular.module('interest.controllers', [])
     .controller('interestCtrl', ['$scope', 'config', '$routeParams', 'Tag', 'UserSocial',
         function ($scope, config, $routeParams, Tag, UserSocial) {
             $scope.pageNum = 1;
-            $scope.pageSize = 8;
+            $scope.pageSize = 11;
             $scope.curatedTags = [];
             $scope.recommendUsers = [];
             $scope.includePage = "";

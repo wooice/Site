@@ -25,10 +25,6 @@ angular.module('profile.controllers', [])
         $scope.colors.push({upper: 'random', lower: 'random', deeper: 'random'});
 
         var user = User.get({userAlias: UserService.getCurUserAlias()},function(){
-           if(!user.profile.avatorUrl)
-           {
-               user.profile.avatorUrl = "img/default_avatar.png";
-           }
             $scope.user = user;
 
             if (!$scope.user.profile.color)

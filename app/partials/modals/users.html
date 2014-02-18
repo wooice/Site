@@ -1,0 +1,58 @@
+<div id="{{modalId}}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     ng-controller="userModalCtrl"
+     aria-hidden="true">
+    <form style="margin-bottom: 0px">
+        <div class="modal-dialog" style="width: 1000px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <b style="font-size: 16px;text-align: center">{{title}}</b>
+                </div>
+
+                <div class="modal-body row" style="padding-bottom: 0px">
+                    <div class="col-xs-12 col-md-12">
+                        <div style="padding-left: 5%;OVERFLOW-Y: auto; OVERFLOW-X: hidden;height: 320px">
+                            <div ng-repeat="user in users"
+                                 style="float:left;padding-right: 25px;padding-bottom:5px">
+                                <div style="float: left">
+                                    <a href="{{user.route}}"><img ng-src="{{user.profile.avatorUrl}}"
+                                                                  class="user_avatar_oval"
+                                                                  style="width: 75px;height: 75px"></a>
+                                </div>
+                                <div style="padding-left: 95px">
+                                    <a href="{{user.route}}" ng-click="hideModal()">{{user.profile.alias}}</a>
+
+                                    <div style="padding-top: 5px">
+                                        <span title="{{user.userSocial.sounds}}条声音" class="ng-binding">{{user.userSocial.sounds}}
+                                            <i class="icon-music" title="{{user.userSocial.sounds}}条声音"></i></span>
+                                        <span style="padding-left: 5px" title="关注{{user.userSocial.following}}人"
+                                              class="ng-binding">{{user.userSocial.following}}
+                                            <i class="icon-user" title="关注{{user.userSocial.following}}人"></i></span>
+                                        <span style="padding-left: 5px" title="{{user.userSocial.followed}}人关注"
+                                              class="ng-binding">{{user.userSocial.followed}}
+                                            <i class="icon-group" title="{{user.userSocial.followed}}人关注"></i></span>
+                                    </div>
+                                    <div style="padding-top: 10px"
+                                         ng-show="user.profile.alias != userService.getCurUserAlias()">
+                                        <a href="#" class="btn btn-primary button-tiny form-control ng-binding"
+                                           onclick="return false;" ng-click="follow(user)">
+                                            <span ng-if="user.userPrefer.following">已关注</span>
+                                            <span ng-if="!user.userPrefer.following">关注</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <pagination data="users" load-func="list" count-all-func="count"
+                                        style="width: 95%;margin-top: 0px;margin-bottom: 0px"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

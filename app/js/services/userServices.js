@@ -10,9 +10,7 @@ angular.module('user.services', ['ngCookies']).
             logout: {method: 'POST', params: {userAlias: 'logout'}, isArray: false},
             confirm: {method: 'PUT', params: {action: "sendEmailConfirm"}, isArray: false},
             submitPassChange: {method: 'POST', params: {action:'submitPassChange'}, isArray: false},
-            sendMessage: {method: 'PUT', params: {uri:"messages", action:'send'}, isArray: false},
-            markMessage: {method: 'POST', params: {uri:"messages", action:'mark'}, isArray: false},
-            listMessages: {method: 'GET', params: {uri:"messages", pageNum:1,perPage:5, status:'unread'}, isArray: true}
+            changeContactEmail: {method: 'POST', params: {action: 'changeContactEmail'}, isArray: false}
         });
     }]).
     factory('UserSocial', ['$resource', 'config', function ($resource, config) {
@@ -38,6 +36,8 @@ angular.module('user.services', ['ngCookies']).
         var guestRoles = ["guest"];
         var color = {upper: '#00B2EE', lower: '#A4D3EE', deeper: '#008AEE'};
         var playMode = 0;
+        var avatar = null;
+        var unreadMsgs = 0;
 
         return {
             setupUser: function (user) {
@@ -155,6 +155,36 @@ angular.module('user.services', ['ngCookies']).
             {
                 playMode = newPlayMode;
                 $cookies.playMode = "" + newPlayMode;
+            },
+            getAvatar: function(){
+                if ($cookies.avatar)
+                {
+                    return $cookies.avatar;
+                }
+                else
+                {
+                    return avatar;
+                }
+            },
+            setAvatar: function(newAvatar)
+            {
+                avatar = newAvatar;
+                $cookies.avatar = "" + newAvatar;
+            },
+            getUnreadMsgs: function(){
+                if ($cookies.unreadMsgs)
+                {
+                    return $cookies.unreadMsgs;
+                }
+                else
+                {
+                    return unreadMsgs;
+                }
+            },
+            setUnreadMsgs: function(newUnreadMsgs)
+            {
+                unreadMsgs = newUnreadMsgs;
+                $cookies.unreadMsgs = "" + newUnreadMsgs;
             }
         };
     }])

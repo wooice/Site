@@ -1,8 +1,41 @@
 'use strict';
 
 angular.module('guest.controllers', [])
-    .controller('loginCtrl', ['$scope', '$location', 'config', '$routeParams', 'Guest', 'PlayList', 'UserService', 'MessageService',
-        function ($scope, $location, config, $routeParams, Guest, PlayList, UserService,MessageService) {
+    .controller('loginPageCtrl', ['$scope', '$location', 'config', '$routeParams', 'Guest', 'PlayList', 'UserService',
+        function ($scope, $location, config, $routeParams, Guest, PlayList, UserService) {
+            $(document.body).css('padding', '0px');
+
+            $('#login_div').height($(window).height());
+            var undef,
+                v = 3,
+                div = document.createElement('div'),
+                all = div.getElementsByTagName('i');
+
+            while (
+                div.innerHTML = '<!--[if gt IE ' + (++v) + ']><i></i><![endif]-->',
+                    all[0]
+                );
+
+            v = v > 4 ? v : undef;
+            if (v<9)
+            {
+                $('#blocker').modal({
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                return;
+            }
+
+            if ($location.absUrl().indexOf("http://wowoice.cn/") >= 0 || $location.absUrl().indexOf("http://wowoice.com/") >= 0)
+            {
+                window.location = (config.site.url);
+                return;
+            }
+    }])
+
+    .controller('loginCtrl', ['$scope', '$location', 'config', '$routeParams', 'Guest', 'PlayList', 'UserService',
+        function ($scope, $location, config, $routeParams, Guest, PlayList, UserService) {
+
         $('#login_div').height($(window).height());
         var undef,
             v = 3,
@@ -34,7 +67,7 @@ angular.module('guest.controllers', [])
         {
             QC.Login.showPopup({
                 appId: "100565532",
-                redirectURI: config.site.url + "#/guest/login?action=qqLoginCallback"
+                redirectURI: config.site.url + "/guest/login?action=qqLoginCallback"
             });
         }
         checkQQcallback();
@@ -144,11 +177,14 @@ angular.module('guest.controllers', [])
         }
 
         function postLogin(user) {
+            $('#login_modal').modal('hide');
+
             UserService.setupUser({
                 userAlias: user.profile.alias,
                 role: user.userRoles[0].role
             });
             UserService.setColor(user.profile.color);
+            UserService.setAvatar(user.profile.avatorUrl);
             $.globalMessenger().post({
                 message: user.profile.alias + "，欢迎回来！",
                 hideAfter: 5,
@@ -171,8 +207,10 @@ angular.module('guest.controllers', [])
                 $.removeCookie("rememberUser");
             }
             $.cookie('show_verify', false);
-            MessageService.setupMessager();
             if (!UserService.validateRoleGuest()) {
+                $(document.body).css('padding-bottom', '50px');
+                $(document.body).css('padding-top', '90px');
+
                 $location.url('/interest');
             }
         }
@@ -197,7 +235,7 @@ angular.module('guest.controllers', [])
                         userAlias: $scope.userAlias,
                         role: curUser.userRoles[0].role
                     });
-                    User.confirm({userAlias: $scope.userAlias, emailAddress: $scope.emailAddress}, null, function () {
+                    User.confirm({emailAddress: $scope.emailAddress}, null, function () {
                         $location.url('/interest');
                     });
                 });

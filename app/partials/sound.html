@@ -40,8 +40,8 @@
                         <a class='sound_owner ' href="{{sound.owner.route}}" ng-show="mode == 'player'" target="_blank">{{sound.owner.alias}}</a>
 
                         <div class="pull-right" style="font-size: 10px"  ng-show="mode == 'default'">
-                            <a href="#/infringement?alias={{sound.alias}}" tooltip="举报版权侵权"><i class="icon-ban-circle"></i> 侵权举报</a><br>
-                            <a href="#" onclick="return false;" tooltip="举报低俗，反动等内容" ng-click="reportSound()" style="text-decoration: none"
+                            <a href="infringement?alias={{sound.alias}}" title="举报版权侵权"><i class="icon-ban-circle"></i> 侵权举报</a><br>
+                            <a href="#" onclick="return false;" title="举报低俗，反动等内容" ng-click="reportSound()" style="text-decoration: none"
                                     ng-show="!userService.validateRoleGuest()">
                                 <i class="icon-thumbs-down-alt" ng-show="!sound.reported"></i>
                                 <i class="icon-thumbs-down" ng-show="sound.reported"></i>
@@ -73,12 +73,13 @@
                 <div id="sound_wave_{{sound.id}}" class='sound_player_wave' style="position: relative;">
                     <div ng-repeat="comment in commentsInsound"
                          style="position: absolute;margin-top:-1;top:71%;left:{{comment.left}};line-height:0px">
-                        <div id="sound_comment_in_sound_minor_{{comment.commentId}}" >
+                        <div id="sound_comment_in_sound_minor_{{comment.commentId}}" ng-show="!comment.showDetail">
                             <img
                                  ng-src="{{comment.owner.profile.avatorUrl}}"  style="width: 20px"
-                                 ng-mouseover="onImageHavor()">
+                                 ng-mouseover="comment.showDetail=!comment.showDetail">
                         </div>
-                        <div id="sound_comment_in_sound_{{comment.commentId}}" class="hide">
+
+                        <div id="sound_comment_in_sound_{{comment.commentId}}" ng-show="comment.showDetail"     ng-mouseleave="comment.showDetail=!comment.showDetail">
                             <div>
                                 <a href="{{comment.owner.route}}" title="{{comment.owner.profile.alias}}"
                                    ng-show="mode == 'default'"
@@ -129,14 +130,14 @@
                     <div style="display: none;">
                         <div>
                         <label style="font-size: 9px">链接分享</label><input type="text" class="form-control input-sm"
-                                                                         value="{{config.site.url}}#/sound/{{sound.alias}}">
+                                                                         value="{{config.site.url}}/sound/{{sound.alias}}">
                         <label style="font-size: 9px">代码分享</label><input type="text" class="form-control input-sm"
-                                                                         value='<iframe width="100%" height="188" scrolling="no" frameborder="no" src="{{config.site.url}}#/player/{{sound.alias}}"></iframe>'>
+                                                                         value='<iframe width="100%" height="188" scrolling="no" frameborder="no" src="{{config.site.url}}/player/{{sound.alias}}"></iframe>'>
                         </div>
                         <div>
-                            <a href="http://service.weibo.com/share/share.php?url={{config.site.url}}#/
+                            <a href="http://service.weibo.com/share/share.php?url={{config.site.url}}/
                                 sound/{{sound.alias}}&type=button&count=0&language=zh_cn&appkey=fu5sr&searchPic=false&style=simple"
-                               target="_blank"    style="border: 0;width: 32px;height: 32px" title="分享到新浪微博"><img src="img/logo/sina.png" class="img-responsive"/></a>
+                               target="_blank"    style="border: 0;width: 32px;height: 32px" title="分享到新浪微博"><img src="img/logo/sina.png" style="width: 35px"/></a>
                         </div>
                     </div>
                     <a href="#" class="button button-small button-rounded button-flat action-button"

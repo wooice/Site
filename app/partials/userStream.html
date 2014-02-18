@@ -1,79 +1,85 @@
 <ng-include src="'partials/header.html'"></ng-include>
 <div role="main">
 
-    <div class="row" style="margin-right: 0px;margin-left: 0px">
-        <div class="col-md-2 hidden-xs" style="padding-left: 30px;padding-right: 0px">
-            <div>
-                <div style="width: 200px">
-                    <img ng-src="{{user.profile.avatorUrl}}" style="width: 100%">
-                </div>
+    <div style="position: absolute; top: 50px; width: 100%; " class="hidden-xs">
+        <div style="background: #19a5f0;">
+            <div style="opacity: 1;background-position-x: center;background-repeat: no-repeat;background-image:url(img/literature.png);width: 100%;height: 330px;">
 
-                <div style="padding-top: 10px;"><span class="userInfo__title">{{user.profile.alias}}</span> <span
-                        ng-show="user.profile.city"
-                        style="color:#999;">@{{user.profile.city}}</span></div>
-                <div style="color:#999;margin-bottom:20px;margin-top:20px;font-size:16px;">
-                    {{user.profile.description}}
-                </div>
+                <div class="row" style="padding-top: 135px">
+                    <div class="col-md-2 hidden-xs"></div>
+                    <div class="col-md-9 col-xs-12">
+                        <div class="pull-left" style="margin-right: 10px;margin-top: 20px;">
+                            <img ng-src="{{user.profile.avatorUrl}}" class="user_avatar_circle"
+                                 style="width: 90px;height: 90px;">
+                        </div>
 
-                <div style="padding-bottom: 25px;padding-left: 15%">
-                    <div style="padding-bottom: 10px">
-                        <i class="icon-music icon-large" title="{{user.userSocial.sounds}} sounds"
-                           style="font-size: 18px"><span style="padding-left:10px; padding-right: 10px"
-                                                         title="{{user.userSocial.sounds}} sounds">{{user.userSocial.sounds}}</span></i>|
-                        <i class="icon-retweet icon-large" title="{{user.userSocial.reposts}} reposts"
-                           style="padding-left:10px;font-size: 18px;"><span
-                                style="padding-left:10px; padding-right: 10px"
-                                title="{{user.userSocial.reposts}} reposts">{{user.userSocial.reposts}}</span></i>
+                        <div style=" position: relative; overflow: hidden; ">
+                            <div style="padding-top: 5px;"><span
+                                    class="userInfo__title">{{user.profile.alias}}</span> <span
+                                    ng-show="user.profile.city"
+                                    style="color:white;">@{{user.profile.city}}</span></div>
+                            <div style="color:white;margin-bottom:10px;margin-top:10px;font-size:16px;">
+                                {{user.profile.description}}
+                            </div>
+
+                            <div style="padding-bottom: 10px;color: white">
+                                <div style="padding-bottom: 10px">
+                                    <i class="icon-music" title="{{user.userSocial.sounds}} sounds"
+                                       style="font-size: 18px"><span style="padding-left:10px; padding-right: 10px"
+                                                                     title="{{user.userSocial.sounds}} sounds">{{user.userSocial.sounds}}</span></i>|
+                                    <i class="icon-retweet" title="{{user.userSocial.reposts}} reposts"
+                                       style="font-size: 18px;"><span
+                                            style="padding-left:10px; padding-right: 10px"
+                                            title="{{user.userSocial.reposts}} reposts">{{user.userSocial.reposts}}</span></i>|
+                                    <i class="icon-user" title="following {{user.userSocial.following}}"
+                                       style="font-size: 18px;"><span style="padding-left:10px; padding-right: 10px"
+                                                                      title="following {{user.userSocial.following}}">{{user.userSocial.following}}</span></i>|
+                                    <i class="icon-group" title="{{user.userSocial.followed}} followers"
+                                       style="font-size: 18px;"><span
+                                            style="padding-left:10px; padding-right: 10px"
+                                            title="{{user.userSocial.followed}} followers">{{user.userSocial.followed}}</span></i>
+                                </div>
+                            </div>
+
+                            <!-- social action-->
+                            <div style="padding-bottom: 10px;" ng-if="!user.isCurrent">
+                                <button  class="btn btn-primary button-small" onclick="return false;" style="width: 90px"
+                                   ng-click="follow(user.profile.alias)">{{user.userPrefer.followingString}}</button>
+
+                                <button  class="btn btn-info button-small" onclick="return false;"    style="width: 90px"
+                                   ng-click="showMessage(user.profile.alias)"><i class="icon-envelope"></i> 私信</button>
+                                <ng-include src="'partials/modals/message.html'"></ng-include>
+
+                                <a href="#" class="button button-rounded button-flat-highlight button-small hide"
+                                   onclick="return false;">Share</a>
+                            </div>
+
+                            <!-- external -->
+                            <div>
+                            <span ng-repeat="site in user.external.sites | filter:{ url: '.' }">
+                                <i title="{{site.displayName}}"> <a href="{{site.url}}" target=_blank><img
+                                        ng-src="img/logo/{{site.name}}.png" style="width: 30;height: 30px"
+                                        class="external_logo"/></a> </i>
+                            </span>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <i class="icon-user icon-large" title="following {{user.userSocial.following}}"
-                           style="font-size: 18px;"><span style="padding-left:10px; padding-right: 10px"
-                                                          title="following {{user.userSocial.following}}">{{user.userSocial.following}}</span></i>|
-                        <i class="icon-group icon-large" title="{{user.userSocial.followed}} followers"
-                           style="padding-left:10px;font-size: 18px;"><span
-                                style="padding-left:10px; padding-right: 10px"
-                                title="{{user.userSocial.followed}} followers">{{user.userSocial.followed}}</span></i>
-                    </div>
-                </div>
-
-                <!-- social action-->
-                <div style="padding-bottom: 25px" ng-class="{true: 'hide', false: ''}[user.isCurrent]">
-                    <a href="#" class="button button-rounded button-flat-primary button-small" onclick="return false;"
-                       style="width: 80%"
-                       ng-click="follow(user.profile.alias)">{{user.userPrefer.followingString}}</a>
-                    <a href="#" class="button button-rounded button-flat-highlight button-small hide"
-                       onclick="return false;">Share</a>
-                </div>
-
-                <!-- external -->
-                <div>
-                    <span ng-repeat="site in user.external.sites | filter:{ url: '.' }">
-                        <i title="{{site.displayName}}"> <a href="{{site.url}}" target=_blank><img
-                                ng-src="img/logo/{{site.name}}.png" style="width: 30;height: 30px"
-                                class="external_logo"/></a> </i>
-                    </span>
-                </div>
-
-                <!-- history -->
-                <div data-ng-controller="userHistoryCtrl" style="padding-top: 10px">
-                    <div ng-show="curAlias == userService.getCurUserAlias() && histories.length>0">
-                        <legend style="font-size: 14px">您的播放记录</legend>
-                    <span ng-repeat="history in histories">
-                        <a href="{{history.title.route}}" title="{{history.alias}}" style="padding: 3px"
-                           ng-show="$index < 9"><img style="width: 60px;"
-                                                     ng-src="{{history.poster}}"/></a>
-                    </span>
-                    </div>
+                    <div class="col-md-3 hidden-xs"></div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="col-md-8" style="padding-left: 0px;padding-right: 0px">
+    <div class="row" style="margin-right: 0px;margin-left: 0px;padding-top: 320px">
+        <div class="col-md-2 hidden-xs">
+        </div>
+
+        <div class="col-md-8" style="padding: 0px">
             <div class="visible-xs row" style="padding-top: 15px;margin-left: 0px;margin-right: 0px">
                 <div class="col-xs-3">
-                     <img ng-src="{{user.profile.avatorUrl}}" class="img-responsive"/>
+                    <img ng-src="{{user.profile.avatorUrl}}" class="img-responsive"/>
                 </div>
-                <div  class="col-xs-7" style="padding-bottom: 10px;padding-left: 10px">
+                <div class="col-xs-7" style="padding-bottom: 10px;padding-left: 10px">
                     <div>
                         <span class="userInfo__title" style="font-size: 16px">{{user.profile.alias}}</span> <span
                             ng-show="user.profile.city"
@@ -83,7 +89,8 @@
                         <i class="icon-music" title="{{user.userSocial.sounds}} sounds"
                            style="font-size: 15px"><span style="padding-left:5px; padding-right: 5px"
                                                          title="{{user.userSocial.sounds}} sounds">{{user.userSocial.sounds}}</span></i>|
-                        <i class="icon-retweet" title="{{user.userSocial.reposts}} reposts" style="font-size: 15px"><span
+                        <i class="icon-retweet" title="{{user.userSocial.reposts}} reposts"
+                           style="font-size: 15px"><span
                                 style="padding-left:5px; padding-right: 5px"
                                 title="{{user.userSocial.reposts}} reposts">{{user.userSocial.reposts}}</span></i>|
                         <i class="icon-user" title="following {{user.userSocial.following}}"
@@ -94,7 +101,8 @@
                                 style="padding-left:5px; padding-right: 5px"
                                 title="{{user.userSocial.followed}} followers">{{user.userSocial.followed}}</span></i>
                     </div>
-                    <div style="padding-bottom: 25px;padding-top: 5px" ng-class="{true: 'hide', false: ''}[user.isCurrent]">
+                    <div style="padding-bottom: 25px;padding-top: 5px"
+                         ng-class="{true: 'hide', false: ''}[user.isCurrent]">
                         <a href="#" class="btn btn-default btn-xs btn-info" onclick="return false;"
                            style="width: 80%"
                            ng-click="follow(user.profile.alias)">{{user.userPrefer.followingString}}</a>
@@ -104,49 +112,76 @@
                 </div>
                 <hr>
             </div>
-            <ng-include src="'partials/stream.html'"></ng-include>
-        </div>
 
-        <div class="col-md-2 hidden-xs" ng-controller="userSocialController" style="padding-right: 10px">
-            <div style="padding-bottom: 15px;height:150px">
-                <legend style="font-size: 18px;margin-bottom:15px"><i class="icon-user icon-large" title="3 followers"
-                                                                      style="padding-left:10px;font-size: 18px;"></i>
-                    他关注的人({{user.userSocial.following}})
-                </legend>
-                <div ng-show="following.length > 0" class="row" style="height: 100%">
-                    <div ng-repeat="user in following" class="col-xs-4">
-                        <div ng-show="$index < 3">
-                            <a href="{{user.route}}" title="{{user.profile.alias}}">
-                                <img class="img-responsive" ng-src="{{user.profile.avatorUrl}}">
-                            </a>
+            <div class="row" style="padding: 0px;">
+                <div class="col-md-10 col-xs-12">
+                    <ng-include src="'partials/stream.html'"></ng-include>
+                </div>
+                <div class="col-md-2 hidden-xs">
+                    <div ng-controller="userSocialController">
+                        <div style="padding-bottom: 15px;height:150px" ng-controller="userFollowingCtrl">
+                            <legend style="font-size: 13px;margin-bottom:15px"><i class="icon-user" title="3 followers"
+                                                                                  style="font-size: 18px;"></i>
+                                <span>{{title}}({{user.userSocial.following}})</span>
+                                <label class="pull-right" ng-if="routeParams.value == userService.getCurUserAlias()" ng-click="showFollowingUser()"
+                                       title="浏览更多关注的人">
+                                    <i class="icon-fullscreen"></i>
+                                </label>
+                            </legend>
+                            <div ng-show="following.length > 0" class="row" style="height: 100%">
+                                <div ng-repeat="user in following" class="col-xs-4" style="padding-left: 8px;padding-right: 8px">
+                                    <div ng-show="$index < 3">
+                                        <a href="{{user.route}}" title="{{user.profile.alias}}">
+                                            <img class="img-responsive user_avatar_oval" ng-src="{{user.profile.avatorUrl}}">
+                                        </a>
+                                        <div class="user_alias">
+                                            <a href='{{user.route}}'>{{user.profile.alias}}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div ng-show="following.length == 0" style="padding-left: 10px">
+                                暂无关注任何用户
+                            </div>
+
+                            <ng-include src="'partials/modals/users.html'"></ng-include>
+                        </div>
+
+                        <div style="padding-bottom: 15px;height:150px"   ng-controller="userFollowedCtrl">
+                            <legend style="font-size: 13px"><i class="icon-group" title="3 followers"
+                                                               style="font-size: 18px;"></i>
+                                {{title}}({{user.userSocial.followed}})
+                                <label class="pull-right" ng-if="routeParams.value == userService.getCurUserAlias()" ng-click="showFollowedUser()"
+                                       title="浏览更多关注他的人">
+                                    <i class="icon-fullscreen"></i>
+                                </label>
+                            </legend>
+                            <div ng-show="followed.length > 0" class="row">
+                                <div ng-repeat="user in followed" class="col-xs-4" style="padding-left: 8px;padding-right: 8px">
+                                    <div ng-show="$index < 3">
+                                        <a href="{{user.route}}" title="{{user.profile.alias}}">
+                                            <img class="img-responsive user_avatar_oval" ng-src="{{user.profile.avatorUrl}}">
+                                        </a>
+                                        <div class="user_alias">
+                                            <a href='{{user.route}}'>{{user.profile.alias}}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div ng-show="followed.length == 0" style="padding-left: 10px">
+                                暂无用户关注{{user.profile.alias}}
+                            </div>
+
+                            <ng-include src="'partials/modals/users.html'"></ng-include>
                         </div>
                     </div>
                 </div>
-                <div ng-show="following.length == 0" style="padding-left: 10px">
-                    暂无关注任何用户
-                </div>
-            </div>
-
-            <div style="padding-bottom: 15px;height:150px">
-                <legend style="font-size: 18px"><i class="icon-group icon-large" title="3 followers"
-                                                   style="padding-left:10px;font-size: 18px;"></i>
-                    关注他的人({{user.userSocial.followed}})
-                </legend>
-                <div ng-show="followed.length > 0" class="row">
-                    <div ng-repeat="user in followed" class="col-xs-4">
-                        <div ng-show="$index < 3">
-                            <a href="{{user.route}}" title="{{user.profile.alias}}">
-                                <img class="img-responsive" ng-src="{{user.profile.avatorUrl}}">
-                            </a>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div ng-show="followed.length == 0" style="padding-left: 10px">
-                    暂无用户关注{{user.profile.alias}}
-                </div>
             </div>
         </div>
+
+        <div class="col-md-2 hidden-xs">
+        </div>
+
     </div>
 </div>
 

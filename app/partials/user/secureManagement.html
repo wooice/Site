@@ -1,0 +1,64 @@
+<div>
+    <div ng-controller="submitChangePassCtrl" style="padding-bottom: 50px">
+        <legend><i class="icon-key"></i> 重置密码</legend>
+        <form class="form-horizontal">
+            <div class="form-group">
+                <div class="controls" style="margin-left: 100px">
+                    <h5 ng-class="messageClass">{{message}}</h5>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="controls" style="margin-left: 100px">
+                    为了您的账号安全，我们将发送重置密码链接邮件到您的注册邮箱，请
+                    <button type="submit" class="btn btn-default" ng-click="changePass()">提交</button>
+                    重置请求。
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div ng-controller="changeContactEmailCtrl" style="padding-bottom: 50px">
+        <legend><i class="icon-envelope"></i> 更新联系邮箱</legend>
+        <form name="changeContactForm" class="form-horizontal">
+            <div class="form-group">
+                <div class="controls" style="margin-left: 100px">
+                    <h5 ng-class="messageClass">{{message}}</h5>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="input-group" style="margin-left: 100px">
+                    <div class="text-warning"
+                         ng-show="changeContactForm.targetEmail.$dirty && changeContactForm.targetEmail.$invalid">
+                        <small class="text-warning"
+                               ng-show="changeContactForm.targetEmail.$error.required">
+                            邮箱地址不能为空
+                        </small>
+                        <small class="text-warning"
+                               ng-show="changeContactForm.targetEmail.$error.email">
+                            请输入合理的邮箱地址
+                        </small>
+                        <small class="text-warning"
+                               ng-show="changeContactForm.targetEmail.$error.unique">
+                            邮箱已被使用，请重新选择
+                        </small>
+                    </div>
+                    <input type="email" id="targetEmail" name="targetEmail" email-unique="targetEmail"
+                          ng-model="targetEmail" class="form-control" placeholder="请输入绑定邮箱" required>
+                </div>
+            </div>
+            <div  class="form-group">
+                <div class="input-group"  style="margin-left: 100px">
+                    <button type="submit" ng-disabled="changeContactForm.$invalid" class="btn btn-default form-control"
+                           ng-click="changeContact()">提交
+                    </button>
+                </div>
+            </div>
+
+            <div style="font-size: 9px;color: gray;width: 90%;padding-top: 30px">
+                *<b>联系邮箱</b>将用于您的身份验证，帮助您完成修改密码等操作。如果您使用其他平台账号登陆，绑定联系邮箱后，可单独设置WOWOICE登陆密码。
+            </div>
+        </form>
+    </div>
+</div>
+<ng-include src="'partials/footer.html'"></ng-include>

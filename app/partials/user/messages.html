@@ -1,0 +1,54 @@
+<ng-include src="'partials/header.html'"></ng-include>
+<div ng-controller="messagesCtrl" style="padding-top: 20px">
+    <div class="row">
+        <div class="col-md-2 hidden-xs">
+        </div>
+        <div class="col-md-8 col-xs-12">
+            <div ng-if="messages.length > 0">
+                <div ng-repeat="message in messages" class="row"
+                     style="padding-top: 10px; padding-bottom: 6;font-size:12px;border-bottom:1px solid #bfbfcf;background-color: {{(!hasUnRead())?'#fbfbfc':''}}">
+                    <div class="col-xs-1">
+                        <span ng-if="hasUnRead()" class="visible-xs"><i class="icon-flag-alt"></i></span>
+                        <span ng-if="!hasUnRead()" class="visible-xs"><i class="icon-flag"></i></span>
+                        <span ng-if="hasUnRead()" class="hidden-xs">未读<i class="icon-flag-alt"></i></span>
+                        <span ng-if="!hasUnRead()" class="hidden-xs">已读<i class="icon-flag"></i></span>
+                    </div>
+                    <div class="col-xs-2" style="overflow: hidden;">
+                        <a ng-if="message.viewMessage.from" href="stream/{{message.viewMessage.from.profile.alias}}">
+                            <span ng-if="hasUnRead()"><b>{{message.viewMessage.from.profile.alias}}</b></span>
+                            <span ng-if="!hasUnRead()">{{message.viewMessage.from.profile.alias}}</span>
+                        </a>
+                    <span ng-if="!message.viewMessage.from">
+                        <span ng-if="hasUnRead()"><b>WOWOICE</b></span>
+                        <span ng-if="!hasUnRead()">WOWOICE</span>
+                    </span>
+                    </div>
+
+                    <div class="col-xs-7">
+                        <a href="message/{{message.id}}" style="text-decoration: none">
+                        <span style="color: black">
+                            <b ng-if="hasUnRead()">{{message.topic}}</b>
+                            <span ng-if="!hasUnRead()">{{message.topic}}</span>  -
+                            <span style="color: gray">{{message.viewMessage.summary}}</span>
+                        </span>
+                        </a>
+                    </div>
+                    <div class="col-xs-1 hidden-xs">{{message.viewMessage.date}}</div>
+                    <div class="col-xs-1"><label ng-click="trashMessage()" style="cursor:pointer"><i class="icon-trash"></i></label>
+                    </div>
+                </div>
+            </div>
+
+            <div ng-show="messages.length==0" style="text-align: center;padding-top: 10%">
+                <span class="visible-xs">暂无消息</span>
+                <span class="hidden-xs"><h3>暂无消息</h3></span>
+            </div>
+
+            <pagination data="messages" load-func="list" count-all-func="count" style="width: 100%;margin-top: 0px"/>
+        </div>
+
+        <div class="col-md-2 hidden-xs">
+        </div>
+    </div>
+
+</div>

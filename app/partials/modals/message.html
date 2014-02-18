@@ -1,0 +1,47 @@
+<div id="message_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" ng-controller="messageModalCtrl"
+     aria-hidden="true">
+    <form style="margin-bottom: 0px">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <b style="font-size: 16px;"> 私信框 <i class="icon-pencil"></i></b>
+                </div>
+                <div class="modal-body row">
+                    <div class="col-xs-12 col-md-12">
+                        <div ng-show="!isSent">
+                            <form>
+                                <div class="form-group">
+                                    <label for="message_subject">标题</label>
+                                    <input type="text" class="form-control" id="message_subject" placeholder="请输入标题.." ng-model="topic">
+                                </div>
+                                <div class="form-group">
+                                    <label for="message_content">消息内容</label>
+                                    <textarea  class="form-control" rows="5" id="message_content" placeholder="请输入消息内容.." ng-model="content"></textarea>
+                                </div>
+
+                                <button type="submit" class="btn btn-default pull-right" ng-click="sendMessage()" ng-disabled="sending">发送消息</button>
+                            </form>
+                        </div>
+
+                        <div ng-if="isSent">
+                            <div>
+                                <span ng-if="result=='success'">
+                                    <i style="color: green" class="icon-check"></i>
+                                    您的消息已成功发送
+                                </span>
+                                 <span ng-if="result=='failed'">
+                                        您的消息发送失败，请稍后再试
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

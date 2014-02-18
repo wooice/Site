@@ -9,9 +9,6 @@ angular.module('common.stream.controllers', [])
         var users = UserSocial.getRecommand({}, {pageNum: $scope.pageNum, pageSize: 5}, function () {
             $.each(users, function (index, user) {
                 users.class = "";
-                if (!user.profile.avatorUrl) {
-                    user.profile.avatorUrl = "img/default_avatar.png";
-                }
                 user.route = config.userStreamPath + user.profile.alias;
             });
 
@@ -20,7 +17,7 @@ angular.module('common.stream.controllers', [])
 
         var sounds = SoundSocial.recommandSounds({}, function () {
             $.each(sounds, function (index, sound) {
-                sound.route = 'index.html#/sound/' + sound.profile.alias;
+                sound.route = 'sound/' + sound.profile.alias;
             });
             $scope.recommendSounds = sounds;
         });

@@ -46,11 +46,11 @@
 }
 
 .sound_player_body {
-    height: 40%
+    height: 45%
 }
 
 .sound_player_footer{
-    padding-top: 5px;
+    padding-top: 15px;
 }
 
 .sound_player_wave {
@@ -357,4 +357,48 @@ input.ng-dirty.ng-valid {
 
 .player_odd {
      background-color: white;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.message_class {
+    padding: 10px 40px;
+    margin: 0 0 20px;
+    display: block;
+    -webkit-margin-before: 1em;
+    -webkit-margin-after: 1em;
+    -webkit-margin-start: 40px;
+    -webkit-margin-end: 40px;
+}
+
+.message_left {
+    border-left: 5px solid #eeeeee;
+    padding-bottom: 10px
+}
+
+.message_right {
+    border-right: 5px solid #eeeeee;
+    padding-bottom: 10px
+}
+
+.user_alias {
+    word-wrap: break-word;
+    text-align: center;
+    font-size: 12px;
+}
+
+.user_avatar_circle {
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+}
+
+.user_avatar_oval {
+    -webkit-border-radius: 30%;
+    border-radius: 30%;
 }

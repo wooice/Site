@@ -3,11 +3,14 @@
     <div>
         <div class="hidden-xs" style="padding-top: 50px"></div>
         <legend>用户注册</legend>
+
         <form name="the_form" class="form-horizontal">
             <div class="row">
                 <div class="col-md-1 hidden-xs">
                 </div>
                 <div class="col-md-3 col-xs-12">
+                    <span><a href="/"><i class="icon-home"></i> 返回首页</a></span>
+
                     <div class="form-group">
                         <div class="controls text-warning">
                             <div ng-show="failedReason=='VERIFY_CODE'">注册码填写错误</div>
@@ -18,6 +21,7 @@
                             <div ng-show="failedReason=='ERROR'">注册失败，请稍后再试</div>
                         </div>
                     </div>
+
                     <div class="form-group">
                         <label class="control-label" for="inputAlias"><i
                                 style="color: #F00;padding-right: 4px;">*</i>邮箱</label>

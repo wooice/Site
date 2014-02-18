@@ -1,0 +1,38 @@
+<div id="feedback" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <form name="feedback" style="margin-bottom: 0px">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <b id="myModalLabel" style="font-size: 21px">意见反馈</b>
+                </div>
+                <div class="modal-body" style="padding-left: 40px">
+                    <div>
+                        <label>功能</label>
+                        <input ng-model="feedback.function" class="form-control">
+                    </div>
+
+                    <div style="padding-top: 10px">
+                        <div class="text-warning"
+                             ng-show="feedback.feedback_content.$dirty && feedback.feedback_content.$invalid">
+                            <small class="text-warning"
+                                   ng-show="feedback.feedback_content.$error.minlength">
+                                为了保证反馈内容清晰完整，请至少填写15个字符
+                            </small>
+                        </div>
+                        <label>改善意见</label>
+                        <textarea ng-model="feedback_content" name="feedback_content" required rows="8"
+                                  class="form-control"
+                                  ng-minlength=15></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                    <button class="btn btn-primary" ng-click="sendFeedback()" ng-disabled="feedback.$invalid">保存
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

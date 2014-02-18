@@ -96,4 +96,42 @@ angular.module('wooice.directives', []).
                 $img.replaceWith($svg);
             }, 'xml');
         }
-    }]);
+    }]).
+    directive('pagination', function($parse, $q) {
+        return {
+            restrict: 'E',
+            scope: {},
+            templateUrl: 'partials/directives/pagination.html',
+            link: function(scope, element, attrs) {
+                var _this = this;
+                scope.data = $parse(attrs.data)(scope.$parent);
+                scope.loadFunc = $parse(attrs.loadFunc)(scope.$parent);
+                scope.countAllFunc = $parse(attrs.countAllFunc)(scope.$parent);
+                scope.countAllFunc().then(function(data) {
+                    return scope.allNum = data;
+                });
+                scope.loadFunc(1).then(function() {
+                    return scope.data = $parse(attrs.data)(scope.$parent);
+                });;
+
+                scope.has_more = function() {
+                    return scope.data.length < scope.allNum;
+                };
+                scope.loaded = true;
+                return scope.show_more = function() {
+                    var countPromise, loadPromise,
+                        _this = this;
+                    scope.loaded = false;
+                    loadPromise = scope.loadFunc(scope.data.length + 1).then(function() {
+                        return scope.data = $parse(attrs.data)(scope.$parent);
+                    });
+                    countPromise = scope.countAllFunc().then(function(data) {
+                        return scope.allNum = data;
+                    });
+                    return $q.all([loadPromise, countPromise]).then(function() {
+                        return scope.loaded = true;
+                    });
+                };
+            }
+        };
+    });

@@ -1,0 +1,87 @@
+<ng-include src="'partials/guest/header.html'"></ng-include>
+<div style="padding-left: 10%;padding-top: 5%;padding-right: 10%;">
+    <div>
+        <legend>重置密码</legend>
+
+        <form name="the_form" style="padding-left: 50px">
+            <div class="row">
+                <div class="col-md-1 hidden-xs">
+                </div>
+                <div class="col-md-3 col-xs-12">
+                    <span><a href="/"><i class="icon-home"></i> 返回首页</a></span>
+
+                    <div style="padding-bottom: 10px;padding-left: 20px;">
+                        <span class="{{messageClass}}">{{message}}</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label" for="inputPassword1"><i
+                                style="color: #F00;padding-right: 4px;">*</i>新密码</label>
+
+                        <div class="error"
+                             ng-show="the_form.inputPassword1.$dirty && the_form.inputPassword1.$invalid">
+                            <small class="text-warning"
+                                   ng-show="the_form.inputPassword1.$error.required">
+                                密码不能为空
+                            </small>
+                            <small class="text-warning"
+                                   ng-show="the_form.inputPassword1.$error.minlength">
+                                密码长度必须大于6个字符
+                            </small>
+                            <small class="text-warning"
+                                   ng-show="the_form.inputPassword1.$error.maxlength">
+                                密码长度不得超过20个字符
+                            </small>
+                            <small class="text-warning"
+                                   ng-show="the_form.inputPassword1.$error.equal">
+                                2次输入密码不相同
+                            </small>
+                        </div>
+                        <input type="password" class="form-control" id="inputPassword1" name="inputPassword1"
+                               placeholder="请输入新密码" ng-model="password1" ng-minlength=6 ng-maxlength=20
+                               pass-equal="inputPassword1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label" for="inputPassword1"><i
+                                style="color: #F00;padding-right: 4px;">*</i>再次输入</label>
+
+                        <div class="error"
+                             ng-show="the_form.inputPassword2.$dirty && the_form.inputPassword2.$invalid">
+                            <small class="text-warning"
+                                   ng-show="the_form.inputPassword2.$error.required">
+                                密码不能为空
+                            </small>
+                            <small class="text-warning"
+                                   ng-show="the_form.inputPassword2.$error.minlength">
+                                密码长度必须大于6个字符
+                            </small>
+                            <small class="text-warning"
+                                   ng-show="the_form.inputPassword2.$error.maxlength">
+                                密码长度不得超过20个字符
+                            </small>
+                            <small class="text-warning"
+                                   ng-show="the_form.inputPassword2.$error.equal">
+                                2次输入密码不相同
+                            </small>
+                        </div>
+                        <input type="password" id="inputPassword2" class="form-control"
+                               name="inputPassword2"
+                               placeholder="请再次输入新密码" ng-model="password2" ng-minlength=6
+                               ng-maxlength=20
+                               pass-equal="inputPassword2" required>
+                    </div>
+
+                    <button class="btn btn-default form-control" ng-disabled="the_form.$invalid" ng-click="resetPass()">
+                        <span>提交</span>
+                    </button>
+                </div>
+                <div class="col-md-8 hidden-xs">
+                </div>
+            </div>
+        </form>
+        <div>
+
+        </div>
+    </div>
+</div>

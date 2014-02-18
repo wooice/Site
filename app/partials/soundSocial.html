@@ -1,4 +1,4 @@
-<div class="row" style="padding-top: 10px;margin: 0px" data-ng-controller="soundSocialCtrl">
+<div class="row" style="padding-top: 40px;margin: 0px" data-ng-controller="soundSocialCtrl">
 <div class="col-md-2" style="padding: 0px">
 </div>
 <div class="col-md-8" style="padding: 0px">
@@ -14,7 +14,7 @@
     <div style="padding-bottom: 15px;padding-top: 15px"  class="border-light-top">
         <div class="tags">
             <span ng-repeat="tag in sound.tags" style="padding-bottom: 10px">
-                <a href="#/stream/tags/{{tag.label}}">
+                <a href="/stream/tags/{{tag.label}}">
                     <span ng-show="tag.curated"><i class="icon-certificate" style="color: #A4D3EE" title="Wooice标签"></i> {{tag.label}}</span>
                     <span ng-show="!tag.curated">{{tag.label}}</span>
                 </a>
@@ -165,9 +165,9 @@
              style="float:left;padding-right: 25px;padding-bottom:5px">
             <div style="float: left">
                 <a href="{{like.owner.route}}"><img ng-src="{{like.owner.profile.avatorUrl}}"
-                                                    style="width: 120px;"></a>
+                                                    style="width: 90px;"></a>
             </div>
-            <div style="padding-left: 135px">
+            <div style="padding-left: 105px">
                 <a href="{{like.owner.route}}">{{like.owner.profile.alias}}</a><span
                     style="color: gray;font-size: 10px"> @{{like.createdTime}}</span>
 
@@ -203,9 +203,9 @@
              style="float:left;padding-right: 25px;padding-bottom:5px">
             <div style="float: left">
                 <a href="{{repost.owner.route}}"><img ng-src="{{repost.owner.profile.avatorUrl}}"
-                                                      style="width: 120px;"></a>
+                                                      style="width: 90px;"></a>
             </div>
-            <div style="padding-left: 135px">
+            <div style="padding-left: 105px">
                 <a href="{{repost.owner.route}}">{{repost.owner.profile.alias}}</a><span
                     style="color: gray;font-size: 10px"> @{{repost.createdTime}}</span>
 
@@ -241,9 +241,9 @@
              style="float:left;padding-right: 25px;padding-bottom:5px">
             <div style="float: left">
                 <a href="{{play.owner.route}}"><img ng-src="{{play.owner.profile.avatorUrl}}"
-                                                    style="width: 120px;"></a>
+                                                    style="width: 90px;"></a>
             </div>
-            <div style="padding-left: 135px">
+            <div style="padding-left: 105px">
                 <a href="{{play.owner.route}}">{{play.owner.profile.alias}}</a><span
                     style="color: gray;font-size: 10px"> @{{play.createdTime}}</span>
 
@@ -283,9 +283,9 @@
              style="float:left;padding-right: 25px;padding-bottom:5px">
             <div style="float: left">
                 <a href="{{visit.owner.route}}"><img ng-src="{{visit.owner.profile.avatorUrl}}"
-                                                     style="width: 120px;"></a>
+                                                     style="width: 90px;"></a>
             </div>
-            <div style="padding-left: 135px">
+            <div style="padding-left: 105px">
                 <a href="{{visit.owner.route}}">{{visit.owner.profile.alias}}</a><span
                     style="color: gray;font-size: 10px"> @{{visit.createdTime}}</span>
 

@@ -8,11 +8,12 @@ angular.module('sound.services', ['ngResource'])
     }
     ])
     .factory('Sound', ['$resource', 'config', function ($resource, config) {
-        return $resource(config.service.url + '/sound/:sound/:userAlias/:action', {}, {
+        return $resource(config.service.url + '/sound/:sound/:userAlias/:remoteId/:action', {}, {
             load: {method: 'GET', params: {sound: 'current'}, isArray: false},
             delete: {method: 'DELETE', params: {sound: 'current'}, isArray: false},
             save: {method: 'PUT', params: {}, isArray: false},
             update: {method: 'POST', params: {}, isArray: false },
+            discard: {method: 'DELETE', params: {action: 'discard'}, isArray: false },
             getSoundToUpload: {method: 'GET', params: {}, isArray: false},
             hasNew: {method: 'GET', params: {sound: 'hasNew'}, isArray: false},
             hasNewCreated: {method: 'GET', params: {sound: 'hasNewCreated'}, isArray: false},
@@ -35,7 +36,7 @@ angular.module('sound.services', ['ngResource'])
                     poster: sound.profile.poster.url,
                     posterPosterId: sound.profile.posterId,
                     remoteId: sound.profile.remoteId,
-                    title: {alias: sound.profile.name, route: 'index.html#/sound/' + sound.profile.alias, readonly: true},
+                    title: {alias: sound.profile.name, route: 'sound/' + sound.profile.alias, readonly: true},
                     owner: {alias: sound.profile.owner.profile.alias, route: config.userStreamPath + sound.profile.owner.profile.alias},
                     description: {context: sound.profile.description, readonly: true},
                     tags: sound.tags,

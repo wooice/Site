@@ -3,34 +3,36 @@
 <div role="main">
 
     <div class="row">
+        <div class="col-md-1 hidden-xs">
+        </div>
 
-        <div class="col-md-9 col-xs-12">
+        <div class="col-md-7 col-xs-12">
             <ng-include src="'partials/stream.html'"></ng-include>
         </div>
 
-        <div class="col-md-3 hidden-xs" ng-controller="recommandUserCtrl">
-            <div class="affix" style="width: 20%">
+        <div class="col-md-2 hidden-xs" ng-controller="recommandUserCtrl">
+            <div class="affix" style="width: 16%;padding-left: 20px">
                 <div style="padding-top: 15px;height:150px">
-                    <legend style="font-size: 18px;margin-bottom:10px">为您推荐的用户
-                        <span>
+                    <legend style="font-size: 13px;margin-bottom:10px">为您推荐的用户
+                        <span class="pull-right">
                             <i style="cursor:pointer" ng-show="recommendUsers.length > 0"
-                               class='button button-small button-pill button-flat'
+                               class='button button-small button-pill'
                                ng-click="save()">关注选定用户</i>
                          </span>
                     </legend>
 
-                    <div class="{{msgClass}}" style="padding-bottom: 10px">
+                    <div class="{{msgClass}}" style="padding-bottom: 10px;font-size: 10px">
                         {{msg}}
                     </div>
                     <div ng-if="recommendUsers.length > 0" class="row">
-                        <div ng-repeat="recommendUser in recommendUsers" class="col-xs-3" ng-click="toogleFollow()">
+                        <div ng-repeat="recommendUser in recommendUsers" class="col-xs-3" ng-click="toogleFollow()"  style="padding-left: 8px;padding-right: 8px">
                             <div ng-show="$index < 4">
                                 <div class="user {{recommendUser.class}}">
                                     <a href="#" onclick="return false;">
-                                        <img ng-src="{{recommendUser.profile.avatorUrl}}" class="img-responsive">
+                                        <img ng-src="{{recommendUser.profile.avatorUrl}}" class="img-responsive user_avatar_oval">
                                     </a>
                                 </div>
-                                <div>
+                                <div class="user_alias">
                                     <a href='{{recommendUser.route}}'>{{recommendUser.profile.alias}}</a>
                                 </div>
                             </div>
@@ -42,17 +44,17 @@
                 </div>
 
                 <div style="padding-top: 35px;height:150px">
-                    <legend style="font-size: 18px">为您推荐的声音 </legend>
+                    <legend style="font-size: 13px">为您推荐的声音 </legend>
 
                     <div ng-if="recommendSounds.length > 0"  class="row">
-                        <div ng-repeat="recommendSound in recommendSounds"  class="col-xs-3">
+                        <div ng-repeat="recommendSound in recommendSounds"  class="col-xs-3" style="padding-left: 8px;padding-right: 8px">
                             <div ng-show="$index < 4">
                                 <div>
                                     <a href='{{recommendSound.route}}'>
-                                        <img ng-src="{{recommendSound.profile.poster.url}}" class="img-responsive">
+                                        <img ng-src="{{recommendSound.profile.poster.url}}" class="img-responsive user_avatar_oval">
                                     </a>
                                 </div>
-                                <div>
+                                <div style="word-wrap: break-word;text-align: center">
                                     <a href='{{recommendSound.route}}'>{{recommendSound.profile.alias}}</a>
                                 </div>
                             </div>
@@ -66,6 +68,8 @@
             </div>
         </div>
 
+        <div class="col-md-2 hidden-xs">
+        </div>
     </div>
 </div>
 <ng-include src="'partials/footer.html'"></ng-include>

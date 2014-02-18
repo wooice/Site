@@ -121,11 +121,6 @@ angular.module('sound.controllers', [])
                 });
             }
 
-            $scope.onImageHavor = function () {
-                $("#sound_comment_in_sound_minor_" + this.comment.commentId).addClass("hide");
-                $("#sound_comment_in_sound_" + this.comment.commentId).removeClass("hide");
-            };
-
             $scope.comment = function () {
                 if (UserService.validateRoleGuest())
                 {
@@ -269,7 +264,7 @@ angular.module('sound.controllers', [])
                     postData.name = $scope.sound.title.alias;
                     var sound = Sound.update({sound: $scope.sound.id}, postData, function () {
                         $scope.sound.alias = sound.profile.alias;
-                        $scope.sound.title.route = '#/sound/' + $scope.sound.alias;
+                        $scope.sound.title.route = 'sound/' + $scope.sound.alias;
                         WooicePlayer.updateAlias({
                             id: $scope.sound.id,
                             alias: $scope.sound.alias

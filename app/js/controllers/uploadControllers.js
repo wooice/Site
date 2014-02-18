@@ -57,6 +57,26 @@ angular.module('upload.controllers', [
                 }
             }
 
+            $scope.discard = function()
+            {
+                if (confirm('确定要放弃本次上传吗?')) {
+                    if ($scope.cancelUpload)
+                    {
+                        $scope.cancelUpload();
+                    }
+
+                    Sound.discard({remoteId: $scope.defaultSound.fileName}, function(){
+                        $scope.defaultSound.uploadMsg = null;
+                        $('#uploadpart').show();
+                        $('#progresspart').hide();
+                        $('#sound_info').hide();
+                    }, function(){
+                        $scope.defaultSound.uploadMsgClass = "text-error";
+                        $scope.defaultSound.uploadMsg = "放弃上传失败，请售后再试";
+                    });
+                }
+            }
+
             $scope.save = function () {
                 if ($scope.defaultSound.name) {
                     $scope.defaultSound.profileError = '';
@@ -253,10 +273,18 @@ angular.module('upload.controllers', [
 
             $scope.$on('$locationChangeStart', function (event, next, current) {
                 if ($scope.defaultSound.isSoundUploading || $scope.defaultSound.uplodingPoster) {
-                    var result = confirm("你的声音正在上传，离开当然页面将放弃本次上传，确定离开吗？");
-                    if (!result) {
+                    if (confirm("你的声音正在上传，离开当然页面将放弃本次上传，确定离开吗？"))
+                    {
+                        if ($scope.cancelUpload)
+                        {
+                            $scope.cancelUpload();
+                        }
+                    }
+                    else
+                    {
                         event.preventDefault();
                     }
+
                 }
             });
 
@@ -322,14 +350,16 @@ angular.module('upload.controllers', [
                         null
                     );
 
-                    $('#cancel_button').click(function () {
-                        data.abort();
+                    $scope.cancelUpload = function()
+                    {
+                        if (data)
+                        {
+                            data.abort();
+                        }
                         $scope.$apply(function () {
                             $scope.defaultSound.isSoundUploading = false;
                         });
-
-                        return false;
-                    });
+                    }
                 },
                 progress: function (e, data) {
                     $scope.defaultSound.uploadStatus = "progress-bar-info";

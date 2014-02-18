@@ -43,11 +43,11 @@
                 <span>更换音频</span>
                 <input id="sound_change_upload" type="file" name="file" class="upload_button">
          </span>
-        <a href="#" ng-show="defaultSound.isSoundUploading" id="cancel_button"
+        <button ng-show="defaultSound.isSoundUploading" ng-click="cancelUpload()"
            class="button button-small button-rounded button-flat-highlight">
             <i class="icon-ban-circle icon-white"></i>
             <span>取消上传</span>
-        </a>
+        </button>
     </div>
 </div>
 <br>
@@ -56,7 +56,7 @@
     <div style="padding-bottom: 10px" class="alert alert-info">
         <button type="button" class="close" data-dismiss="alert">×</button>
             <span style="color: gray;font-size: 10px;">上传时请注意：WOWOICE接受您上传的原创及翻唱（演奏等）作品，上传时请确保音频信息中作者名与您填写的ID或姓名相同，否则无法完成上传。<a
-                    href="#/copyright" target="_blank">了解更多版权信息。</a></span>
+                    href="copyright" target="_blank">了解更多版权信息。</a></span>
     </div>
     <div>
         <div class="row">
@@ -86,7 +86,7 @@
                     </div>
                     <div style="width: 100%;padding: 5px">
                         <label style="color:rgb(51, 51, 51)"><span style="color: red">*</span>声音名称</label>
-                        <input type="text" id="name" name="name" placeholder="请输入这段声音的名称"
+                        <input type="text" id="name" name="name" placeholder="请输入这段声音的名称..."
                                ng-model="defaultSound.name" required
                                class="form-control">
                     </div>
@@ -108,7 +108,7 @@
                         </div>
 
                         <div>
-                            <input type="text" id="tags" name="tags" class="form-control" placeholder="添加一个标签"
+                            <input type="text" id="tags" name="tags" class="form-control" placeholder="添加一个标签..."
                                    tooltip="丰富的标签会让声音更被更多人发现">
                             <button class="button button-rounded button-flat-primary button-small"
                                     ng-click="addNewTag()">添加
@@ -122,7 +122,7 @@
 
             <div style="width: 100%;padding: 5px">
                 <label style="color:rgb(51, 51, 51)">声音描述</label>
-                <textarea id="description" name="description" placeholder="请介绍这段声音"
+                <textarea id="description" name="description" placeholder="请介绍这段声音..."
                           ng-model="defaultSound.description" class="form-control"></textarea>
 
                 <div style="padding-top: 15px">
@@ -219,7 +219,7 @@
                                                         如果您尚未注册版权，可通过<a
                                             href="http://morp.mcsc.com.cn/www_new/mainPage.php"
                                             target="_blank">音著协版权服务中心</a>注册版权，获得合法的版权保护。
-                                                        <a href="#/copyright" target="_blank">了解更多版权信息。</a>
+                                                        <a href="copyright" target="_blank">了解更多版权信息。</a>
                                     </span>
                         </div>
                     </div>
@@ -231,6 +231,12 @@
                 <span style="color: #808080;font-size: 10px" class="pull-left">注：带有<span style="color: red">*</span>标注为必须填写内容</span>
 
                 <div class="pull-right">
+                    <button href="#"
+                            ng-disabled="defaultSound.uplodingPoster || defaultSound.isSoundUploading"
+                            class="btn btn-default"
+                            onclick="return false;" ng-click="discard()">放弃上传
+                    </button>
+
                     <button id="save_button" href="#"
                             ng-disabled="upload_form.$invalid || defaultSound.uplodingPoster"
                             class="btn btn-default"

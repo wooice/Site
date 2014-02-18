@@ -32,7 +32,7 @@ angular.module('infringe.controllers', [])
 
         if ($routeParams.alias)
         {
-            $scope.soundLinks = config.site.url + "#/sound/" + $routeParams.alias;
+            $scope.soundLinks = "sound/" + $routeParams.alias;
         }
 
         $scope.submit = function(){

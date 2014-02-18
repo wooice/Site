@@ -44,9 +44,6 @@ angular.module('interest.controllers', [])
                 var users = UserSocial.getRecommandByTags({}, {tags: interestedTags, pageNum: $scope.pageNum, pageSize: $scope.pageSize}, function () {
                     $.each(users, function (index, user) {
                         users.class = "";
-                        if (!user.profile.avatorUrl) {
-                            user.profile.avatorUrl = "img/default_avatar.png";
-                        }
                         user.route = config.userStreamPath + user.profile.alias;
                     });
                     $.each(users, function (index, user) {
@@ -87,9 +84,6 @@ angular.module('interest.controllers', [])
                 var users = UserSocial.getRecommandByTags({}, interestedTags, function () {
                     $.each(users, function (index, user) {
                         users.class = "";
-                        if (!user.profile.avatorUrl) {
-                            user.profile.avatorUrl = "img/default_avatar.png";
-                        }
                         user.route = config.userStreamPath + user.profile.alias;
                     });
                     $.each(users, function (index, user) {

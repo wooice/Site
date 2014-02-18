@@ -1,0 +1,13 @@
+<div style="margin: 5px;width: 100%" ng-if="allNum > 0">
+    <div>
+        <div>
+            <button ng-if="has_more()" class="btn btn-primary btn-sm" style="float: none;width: 100%" ng-click="show_more()" ng-disabled="!loaded">
+                <i class="icon-plus icon-white"></i> <span>{{ loaded ? 'More' : 'Loading...' }}</span>
+            </button>
+        </div>
+        <div class="clearfix" style="margin: 5px"></div>
+        <div class="pull-right" style="padding-right: 3%">
+            <span style="vertical-align:middle;color: grey;font-size: 15px"><strong>{{data.length}} of {{ allNum }}</strong></span>
+        </div>
+    </div>
+</div>

@@ -17,6 +17,11 @@ angular.module('wooice.player', []).
                 );
                 soundData.settings = settings;
 
+                    soundManager.setup({
+                    url: soundData.settings.swfUrl,
+                    preferFlash: soundData.settings.preferFlash
+                });
+
                 return soundData;
             }
             var currentSound = {};

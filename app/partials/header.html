@@ -1,7 +1,7 @@
 <div ng-controller="headerCtrl">
 
-<ul class="nav nav-pills navbar-static-top visible-xs">
-    <li><a href="#"><i class="icon-eye-open icon-2x"></i></a></li>
+<ul class="nav nav-pills navbar-fixed-top visible-xs" style="background-color: white">
+    <li><a href="#" ng-click="goto('/stream')"><i class="icon-eye-open icon-2x"></i></a></li>
     <li>
         <a href="#" onclick="return false;" ng-click="goto('/stream/{{userAlias}}')"><i
                 class="icon-bullhorn icon-2x"></i></a></li>
@@ -13,6 +13,10 @@
             <i class="icon-chevron-down"></i>
         </a>
         <ul class="dropdown-menu" role="menu">
+            <li>
+                <a
+                   href="#" onclick="return false;" ng-click="goto('/messages')"><i class="icon-envelope"></i> 我的消息</a>
+            </li>
             <li role="presentation"
                 style="border-left-width: 1px;border-left-style: solid;border-left-color: rgba(0, 0, 0, 0.498039);">
                 <a role="menuitem" tabindex="-1"
@@ -42,7 +46,8 @@
         <a class="playlist" ng-click="showPlaylist=!showPlaylist"><i class="icon-th-list icon-2x" title="播放列表"></i></a>
 
         <div style="position : absolute;bottom: 100%;background-color: #333;margin-left: -160px;
-            -moz-border-radius-topleft:7px;-webkit-border-top-left-radius: 7px;-moz-border-radius-topright:7px;-webkit-border-top-right-radius: 7px;">
+            -moz-border-radius-topleft:7px;-webkit-border-top-left-radius: 7px;-moz-border-radius-topright:7px;-webkit-border-top-right-radius: 7px;"
+                ng-blur="showPlaylist=!showPlaylist">
             <div ng-show="showPlaylist" style="height: 230px;width: 220px;overflow: auto;">
                 <div style="padding-top: 5px">
                         <span style="padding-left: 15px">
@@ -93,31 +98,34 @@
     </li>
 </ul>
 
-<nav class="navbar navbar-inverse navbar-static-top hidden-xs" role="navigation">
+<nav class="navbar navbar-inverse navbar-fixed-top hidden-xs" role="navigation">
     <div class="navbar-header">
-        <a class="navbar-brand" style="padding: 0px;width: 50px;height: 50px" href="#" title="Wooice">
-            <img class="img-responsive" ng-src="img/logo.jpg"/>
+        <a class="navbar-brand" style="padding: 0px;" href="#" title="Wooice" ng-click="goto('/stream')">
+            <img class="img-responsive" ng-src="img/logo.jpg"   style="width: 50px;height: 50px"/>
         </a>
     </div>
     <div class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
-            <li><a href="#" title="你关注的声音推送"><i class="icon-eye-open"></i></a></li>
             <li>
-                <a href="#" onclick="return false;" ng-click="goto('/stream/{{userAlias}}')" title="你的声音"><i
-                        class="icon-bullhorn"></i></a></li>
+                <a href="#" title="你关注的声音推送" ng-click="goto('/stream')"><i class="icon-eye-open"></i></a>
+            </li>
             <li>
                 <a href="#" onclick="return false;" ng-click="goto('/interest')" title="发现你感兴趣的声音"><i
                         class="icon-question-sign"></i></a>
             </li>
         </ul>
 
-        <form class="navbar-form navbar-left" role="search" style="padding-left: 40px">
+        <form class="navbar-form navbar-left" role="search" style="padding-left: 15%">
             <div class="form-group">
                 <input type="text" id="search_box" class="form-control" ng-model="q" placeholder="寻找一段声音...">
             </div>
         </form>
 
         <ul class="nav navbar-nav navbar-right">
+            <li><a href="#" onclick="return false;" title="上一首"><i
+                    style="cursor:pointer;color:#e5e5e5"
+                    class='icon-step-backward' ng-click="playPre()"></i></a>
+            </li>
             <li><a href="#" onclick="return false;">
                 <i style="cursor:pointer;color:#e5e5e5"
                    class='sound_player_button'
@@ -142,7 +150,7 @@
                 <a class="playlist" ng-click="showPlaylist=!showPlaylist"><i class="icon-th-list" title="播放列表"></i></a>
 
                 <div style="position : absolute;background-color: #333;margin-left: -65px;
-                -moz-border-radius-bottomleft:7px;-webkit-border-bottom-left-radius: 7px;-moz-border-radius-bottomright:7px;-webkit-border-bottom-right-radius: 7px;">
+                -moz-border-radius-bottomleft:7px;-webkit-border-bottom-left-radius: 7px;-moz-border-radius-bottomright:7px;-webkit-border-bottom-right-radius: 7px;" >
                     <div ng-show="showPlaylist" style="padding-top: 5px;height: 230px;width: 220px;overflow: auto;">
                         <span style="padding-left:60px;color: white;font-weight: bold;">播放列表({{playList.list().length}})</span>
                         <hr style="margin: 5px">
@@ -170,10 +178,21 @@
                 </div>
             </li>
             <li style="border-left-width: 1px;border-left-style: solid;border-left-color: rgba(0, 0, 0, 0.498039);">
+                <a href="#" onclick="return false;" ng-click="goto('/stream/{{userAlias}}')" title="您的主页"  style="padding: 10px;">
+                       <img ng-src="{{userAvatar}}" class="user_avatar_oval" style="width: 30px;height: 30px"/>
+                </a>
+            </li>
+            <li>
+                <a title="邮件箱"
+                   href="#" onclick="return false;" ng-click="goto('/messages')"><i class="icon-envelope"></i>
+                    <span class="badge" ng-if="unreadMsgs>0">{{unreadMsgs}}</span>
+                </a>
+            </li>
+            <li>
                 <a title="个人配置"
                    href="#" onclick="return false;" ng-click="goto('/profile')"><i class="icon-cog"></i></a>
             </li>
-            <li style="padding-right: 90px"><a href="#" onclick="return false;" ng-click="goto('/upload')"
+            <li style="padding-right: 50px"><a href="#" onclick="return false;" ng-click="goto('/upload')"
                                                title="声音上传"><i
                     class="icon-cloud-upload"></i></a>
             </li>
@@ -185,42 +204,4 @@
     </div>
 </nav>
 
-<div id="feedback" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true">
-    <form name="feedback" style="margin-bottom: 0px">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <b id="myModalLabel" style="font-size: 21px">意见反馈</b>
-                </div>
-                <div class="modal-body" style="padding-left: 40px">
-                    <div>
-                        <label>功能</label>
-                        <input ng-model="feedback.function" class="form-control">
-                    </div>
-
-                    <div style="padding-top: 10px">
-                        <div class="text-warning"
-                             ng-show="feedback.feedback_content.$dirty && feedback.feedback_content.$invalid">
-                            <small class="text-warning"
-                                   ng-show="feedback.feedback_content.$error.minlength">
-                                为了保证反馈内容清晰完整，请至少填写15个字符
-                            </small>
-                        </div>
-                        <label>改善意见</label>
-                        <textarea ng-model="feedback_content" name="feedback_content" required rows="8"
-                                  class="form-control"
-                                  ng-minlength=15></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
-                    <button class="btn btn-primary" ng-click="sendFeedback()" ng-disabled="feedback.$invalid">保存
-                    </button>
-                </div>
-            </div>
-        </div>
-    </form>
-</div>
 </div>

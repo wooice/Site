@@ -271,6 +271,28 @@ angular.module('stream.controllers', []).
 
                     $timeout(function () {
                         loadWave(CurSoundList.getList(), 0);
+
+                        $('.hasTooltip').each(function () {
+                            $(this).qtip({
+                                content: {
+                                    text: $(this).next('div')
+                                },
+                                show: {
+                                    event: 'click'
+                                },
+                                hide: {
+                                    event: 'unfocus'
+                                },
+                                position: {
+                                    at: 'bottom left',
+                                    target: $(this)
+                                },
+                                style: {
+                                    def: false,
+                                    classes: 'tip qtip-rounded qtip-bootstrap'
+                                }
+                            });
+                        });
                     }, 0);
 
                     $.each(CurSoundList.getList(), function (index, oneSound) {
@@ -288,28 +310,6 @@ angular.module('stream.controllers', []).
                     $scope.isloading = false;
                     $scope.newSoundCount = 0;
                     $scope.lastLoadedTime = new Date().Format("yyyy-MM-dd hh:mm:ss");
-
-                    $('.hasTooltip').each(function () {
-                        $(this).qtip({
-                            content: {
-                                text: $(this).next('div')
-                            },
-                            show: {
-                                event: 'click'
-                            },
-                            hide: {
-                                event: 'unfocus'
-                            },
-                            position: {
-                                at: 'bottom left',
-                                target: $(this)
-                            },
-                            style: {
-                                def: false,
-                                classes: 'tip qtip-rounded qtip-bootstrap'
-                            }
-                        });
-                    });
                 });
             };
 

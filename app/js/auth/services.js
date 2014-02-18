@@ -9,6 +9,7 @@ angular.module('auth.services', []).
             verifyReset: {method: 'GET', params: {uri:"resetRequest", action:'', code:''}, isArray: false},
             isAlive: {method: 'GET', params: {uri: 'isAlive'}, isArray: false},
             changePass: {method: 'POST', params: {uri: "updatePassword"}, isArray: false},
+            resetPass: {method: 'POST', params: {uri: "resetPassword"}, isArray: false},
             verifyCode: {method: 'GET', params:{uri:'verify', action:'image'}, isArray: false}
         });
     }])

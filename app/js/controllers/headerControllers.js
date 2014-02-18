@@ -1,10 +1,12 @@
 'use strict';
 
 angular.module('header.controllers', [])
-    .controller('headerCtrl', ['$scope', '$location', '$routeParams', '$timeout', 'User', 'CurSoundList', 'UserService', 'PlayList', 'WooicePlayer','Feedback', 'MessageService',
-    function ($scope, $location, $routeParams, $timeout, User,CurSoundList, UserService, PlayList, WooicePlayer, Feedback, MessageService) {
+    .controller('headerCtrl', ['$scope', '$location', '$routeParams', '$timeout', 'User', 'CurSoundList', 'UserService', 'PlayList', 'WooicePlayer','Feedback',
+    function ($scope, $location, $routeParams, $timeout, User,CurSoundList, UserService, PlayList, WooicePlayer, Feedback) {
         $scope.q = $routeParams.q;
         $scope.userAlias = UserService.getCurUserAlias();
+        $scope.userAvatar = UserService.getAvatar();
+        $scope.unreadMsgs =  UserService.getUnreadMsgs();
         $scope.playMode = UserService.getPlayMode();
         $scope.playModes = ['顺序播放', '单曲循环', '随机播放', '播完即止'];
         $scope.wooicePlayer =  WooicePlayer;
@@ -17,7 +19,6 @@ angular.module('header.controllers', [])
                 UserService.setupUser(null);
             }
 
-            MessageService.destroyMessager();
             $.globalMessenger().post({
                 message: "感谢您的使用",
                 hideAfter: 10,

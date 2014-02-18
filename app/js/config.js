@@ -5,29 +5,29 @@
 angular.module('wooice.config', []).constant(
 	'config',
 	{
-		site : {
-			url : 'http://192.168.1.3:8080//Site/app/index.html'
-		},
-		service : {
-			url : 'http:///192.168.1.3\\:8080/Services',
-            url_noescp : 'http:///192.168.1.3:8080/Services'
-		},
+//		site : {
+//			url : 'http://192.168.1.3:8080/Site/app'
+//		},
+//		service : {
+//			url : 'http:///192.168.1.3\\:8080/Services',
+//            url_noescp : 'http:///192.168.1.3:8080/Services'
+//		},
+//        storage: {
+//            wave: 'http://wooice-wave-dev.u.qiniudn.com'
+//        },
+
+        site : {
+            url : 'http://www.wowoice.com'
+        },
+        service : {
+            url : 'http://www.wowoice.com/Services',
+            url_noescp : 'http://www.wowoice.com/Services'
+        },
         storage: {
-            wave: 'http://wooice-wave-dev.u.qiniudn.com'
+             wave: 'http://wowoice-wave.u.qiniudn.com'
         },
 
-//        site : {
-//            url : 'http://www.wowoice.com'
-//        },
-//        service : {
-//            url : 'http://www.wowoice.com/Services',
-//            url_noescp : 'http://www.wowoice.com/Services'
-//        },
-//        storage: {
-//             wave: 'http://wowoice-wave.u.qiniudn.com'
-//        },
-
-        userStreamPath: 'index.html#/stream/',
+        userStreamPath: 'stream/',
         soundsPerPage: 4,
         commentsPerPage: 8,
         likesPerPage: 9,

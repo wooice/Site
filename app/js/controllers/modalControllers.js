@@ -39,9 +39,12 @@ angular.module('modal.controllers', [])
             UserMessage.sendMessage({}, {toUser: $scope.user.profile.alias, topic: $scope.topic, content: $scope.content}, function(){
                 $scope.isSent = true;
                 $scope.result = 'success';
-            }, function(){
+            }, function(error){
                 $scope.isSent = true;
-                $scope.result = 'failed';
+                if (error.status != 401)
+                {
+                    $scope.result = 'failed';
+                }
             });
         }
 

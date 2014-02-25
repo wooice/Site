@@ -2,7 +2,6 @@
 <html lang="en" ng-app="wooice" xmlns:wb="http://open.weibo.com/wb">
 <head>
     <meta charset="utf-8">
-    <!--<base href="/Site/app/">-->
     <base href="/">
     <meta name="fragment" content="!"/>
 
@@ -20,26 +19,26 @@
             type="text/javascript" charset="utf-8"></script>
 
     <!-- ref:css css/styles.min.<%= buildNumber %>.css -->
-    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css">
-    <link rel="stylesheet" href="lib/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="lib/Buttons/css/buttons.css">
-    <link rel="stylesheet" href="css/app.css"/>
-    <link rel="stylesheet" href="css/upload/jquery.fileupload-ui.css">
-    <link rel="stylesheet" href="lib/typeahead.js/typeahead.js-bootstrap.css">
-    <link rel="stylesheet" href="lib/message/css/messenger.css">
-    <link rel="stylesheet" href="lib/message/css/messenger-theme-future.css">
-    <link rel="stylesheet" href="lib/jquery/qtip2/css/jquery.qtip.min.css">
+        <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css">
+        <link rel="stylesheet" href="lib/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="lib/Buttons/css/buttons.css">
+        <link rel="stylesheet" href="css/app.css"/>
+        <link rel="stylesheet" href="css/upload/jquery.fileupload-ui.css">
+        <link rel="stylesheet" href="lib/typeahead.js/typeahead.js-bootstrap.css">
+        <link rel="stylesheet" href="lib/message/css/messenger.css">
+        <link rel="stylesheet" href="lib/message/css/messenger-theme-future.css">
+        <link rel="stylesheet" href="lib/jquery/qtip2/css/jquery.qtip.min.css">
     <!-- endref -->
 </head>
 <body style="padding-bottom: 50px;padding-top: 90px;">
 
 <div ng-view></div>
 
-    <ng-include src="'partials/modals/login.html'"></ng-include>
     <ng-include src="'partials/modals/forbidden.html'"></ng-include>
     <ng-include src="'partials/modals/notFound.html'"></ng-include>
     <ng-include src="'partials/modals/error.html'"></ng-include>
     <ng-include src="'partials/modals/feedback.html'"></ng-include>
+    <ng-include src="'partials/modals/login.html'"></ng-include>
 
 <!-- ref:js js/scripts.min.<%= buildNumber %>.js -->
     <script src="lib/angular/angular.js"></script>

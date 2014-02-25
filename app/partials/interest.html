@@ -6,14 +6,19 @@
 
 <div class="row">
     <div class="col-md-2 col-xs-1"></div>
-    <div class="col-md-8 col-xs-10" style="padding: 100px;padding-top: 0px">
+    <div class="col-md-8 col-xs-10" style="padding-top: 0px">
         <div id="tags">
             <div class="row">
                 <div class="col-md-6">
                     <div ng-repeat="cate in categories | filter:odd">
                         <div style="padding-top: 30px;">
-                            <legend>{{cate.name}} <span class="pull-right" style="font-size: 10px"> <label ng-click="cate.showAll=!cate.showAll">More
-                               <i class="icon-double-angle-right" ng-show="cate.showAll"></i><i class="icon-double-angle-down" ng-show="!cate.showAll"></i></label></span></legend>
+                            <div class="title_div">
+                                <h2 class="title_h2">{{cate.name}}
+                                <span class="pull-right" style="font-size: 10px"> <label ng-click="cate.showAll=!cate.showAll">More
+                                    <i class="icon-double-angle-right" ng-show="cate.showAll"></i><i class="icon-double-angle-down" ng-show="!cate.showAll"></i></label></span>
+                                </h2>
+                                <div style="clear: both;"></div>
+                            </div>
                             <div>
                                 <ul class="tags">
                                     <li ng-repeat="curatedTag in curatedTags | filter:{category.name: cate.name}"  ng-show="cate.showAll || $index<5"
@@ -58,37 +63,34 @@
             </div>
         </div>
 
-        <div  class="{{msgClass}}" style="padding-bottom: 10px">
-            {{msg}}
-        </div>
+        <div id="recommand" style="padding-top: 10px;position: relative;">
+            <div class="title_div">
+                <h2 class="title_h2">推荐音乐人</h2>
+            </div>
 
-        <div id="recommand" style="padding-top: 30px">
-            <legend>推荐用户<i style="cursor:pointer" class='button button-small button-rounded button-flat action-button pull-right'
-                           ng-click="save()">关注</i></legend>
-            <div ng-if="recommendUsers.length > 0" style="padding-left: 10px" class="row">
-                <div class="col-md-1 col-xs-3"></div>
-                <div ng-repeat="recommendUser in recommendUsers" class="col-md-1 col-xs-3" ng-click="toogleFollow()" style="padding: 5px">
-                    <div>
-                        <div class="user {{recommendUser.class}}">
-                            <a href="#" onclick="return false;">
-                                <img class="img-responsive user_avatar_oval" ng-src="{{recommendUser.profile.avatorUrl}}">
-                            </a>
-                        </div>
+            <div style="padding:25px {{deviceEnv!='xs'?'10%':'0%'}} 0px {{deviceEnv!='xs'?'10%':'0%'}};">
+                <ul class="users_display" style="padding: 0px;">
+                    <li ng-repeat="recommendUser in recommendUsers"
+                        style="padding: 5px;padding-bottom: 10px">
+                        <a href="{{recommendUser.route}}">
+                             <img ng-src="{{recommendUser.profile.avatorUrl}}" class="title_link" style="{{deviceEnv=='xs'?'width:100px;height:100px':''}}">
                         </a>
-                        <div  class="user_alias">
-                            <a href='{{recommendUser.route}}'>{{recommendUser.profile.alias}}</a>
+                        <div class="user_alias">
+                            {{recommendUser.profile.alias}}
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-1 col-xs-3"></div>
+                    </li>
+                </ul>
+                <div style="clear: both"></div>
             </div>
         </div>
         <div ng-if="recommendUsers.length == 0">
             暂无用户推荐
         </div>
 
-        <div style="padding-top: 20px">
-            <legend>推荐声音</legend>
+        <div style="padding-top: 15px;position: relative">
+            <div class="title_div">
+                <h2 class="title_h2">推荐声音</h2>
+            </div>
             <ng-include src="includePage" autoscroll></ng-include>
         </div>
     </div>

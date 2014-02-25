@@ -74,7 +74,7 @@ angular.module('wooice', ['ngRoute', 'ui.bootstrap', 'wooice.directives', 'wooic
     .run(function ($rootScope, config, $location, $anchorScroll, $routeParams, Auth, UserService, Guest) {
         $rootScope.config = config;
 
-        var routesThatDontRequireAuth = ['/guest', '/auth', '/sound'];
+        var routesThatDontRequireAuth = ['/guest', '/auth', '/interest', '/stream', '/sound'];
         var routesThatForAdmins = ['/admin'];
         var routesNoCheck = ["/player", "/iframe"];
 
@@ -106,7 +106,7 @@ angular.module('wooice', ['ngRoute', 'ui.bootstrap', 'wooice.directives', 'wooic
                 {
                     if (UserService.validateRoleGuest())
                     {
-                        $location.path('guest/login');
+                        $location.path('interest');
                         return;
                     }
                     $location.path('stream');

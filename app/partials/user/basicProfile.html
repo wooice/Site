@@ -1,7 +1,9 @@
 <div class="row" ng-controller="basicProfileCtrl">
-    <legend><i class="icon-wrench"></i> 基本信息</legend>
+    <div class="title_div">
+        <h2 class="title_h2"><i class="icon-wrench"></i> 基本信息</h2>
+    </div>
 
-    <div class="col-xs-4  hidden-xs">
+    <div class="col-xs-4  hidden-xs"  style="padding-top: 35px">
         <div class="{{posterUploadMsgClass}}">
             <i ng-show="uplodingPoster"
                class="icon-spinner icon-spin icon-large"></i>{{posterUploadMsg}}

@@ -6,7 +6,7 @@ angular.module('interest.controllers', [])
     .controller('interestCtrl', ['$scope', 'config', '$routeParams', 'Tag', 'UserSocial',
         function ($scope, config, $routeParams, Tag, UserSocial) {
             $scope.pageNum = 1;
-            $scope.pageSize = 11;
+            $scope.pageSize = 8;
             $scope.curatedTags = [];
             $scope.recommendUsers = [];
             $scope.includePage = "";
@@ -43,7 +43,6 @@ angular.module('interest.controllers', [])
 
                 var users = UserSocial.getRecommandByTags({}, {tags: interestedTags, pageNum: $scope.pageNum, pageSize: $scope.pageSize}, function () {
                     $.each(users, function (index, user) {
-                        users.class = "";
                         user.route = config.userStreamPath + user.profile.alias;
                     });
                     $.each(users, function (index, user) {
@@ -100,39 +99,6 @@ angular.module('interest.controllers', [])
                 });
 
                 $scope.includePage = "partials/stream.html";
-            }
-
-            $scope.toogleFollow = function () {
-                var recommendUser = this.recommendUser;
-                if (recommendUser.follow) {
-                    recommendUser.follow = false;
-                    recommendUser.class = "";
-                }
-                else {
-                    recommendUser.follow = true;
-                    recommendUser.class = "user_selected";
-                }
-            }
-
-            $scope.save = function () {
-                var followedUser = [];
-
-                $.each($scope.recommendUsers, function (index, user) {
-                    if (user.follow) {
-                        followedUser.push(user);
-                    }
-                });
-
-                $.each(followedUser, function (index, user) {
-                    UserSocial.follow({toUserAlias: user.profile.alias}, null, function () {
-                            $scope.msg = "关注成功，你将接收他们的上传与分享的声音";
-                            $scope.msgClass = "text-success";
-                        }, function () {
-                            $scope.msg = "关注失败，请稍后再试";
-                            $scope.msgClass = "text-warning";
-                        }
-                    );
-                });
             }
 
         }]);

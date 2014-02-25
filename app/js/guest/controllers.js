@@ -3,8 +3,6 @@
 angular.module('guest.controllers', [])
     .controller('loginPageCtrl', ['$scope', '$location', 'config', '$routeParams', 'Guest', 'PlayList', 'UserService',
         function ($scope, $location, config, $routeParams, Guest, PlayList, UserService) {
-            $(document.body).css('padding', '0px');
-
             $('#login_div').height($(window).height());
             var undef,
                 v = 3,
@@ -70,7 +68,6 @@ angular.module('guest.controllers', [])
                 redirectURI: config.site.url + "/guest/login?action=qqLoginCallback"
             });
         }
-        checkQQcallback();
 
         function checkQQcallback()
         {
@@ -94,6 +91,7 @@ angular.module('guest.controllers', [])
                      });
              }
         }
+        checkQQcallback();
 
         $scope.weiboLogin = function()
         {
@@ -208,9 +206,6 @@ angular.module('guest.controllers', [])
             }
             $.cookie('show_verify', false);
             if (!UserService.validateRoleGuest()) {
-                $(document.body).css('padding-bottom', '50px');
-                $(document.body).css('padding-top', '90px');
-
                 $location.url('/interest');
             }
         }

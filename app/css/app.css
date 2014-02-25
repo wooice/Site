@@ -402,3 +402,61 @@ input.ng-dirty.ng-valid {
     -webkit-border-radius: 30%;
     border-radius: 30%;
 }
+
+.user_display {
+    width: 120px;
+    height: 120px;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    -ms-border-radius: 0;
+    -o-border-radius: 0;
+    border-radius: 0;
+    display: block;
+    overflow: hidden;
+}
+
+.users_display li {
+    position: relative;
+    margin-left: 20px;
+    display: inline;
+    float: left;
+}
+
+.users_display  {
+    margin: 0;
+    list-style: none;
+}
+
+.title_div {
+    border-bottom: 3px #e5e5e5 solid;
+    margin-bottom: 0px;position: relative;
+    line-height: 50px;
+}
+
+.title_div:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.title_h2 {
+    border-bottom: 3px #e05c55 solid;
+    margin: 0 0 -3px 0;
+    position: relative;
+    font-size: 20px;
+    display: inline;
+    float: left;
+    line-height: 50px   ;
+}
+
+.title_link {
+    display: block;
+    overflow: hidden;
+    width: 125px;
+    height: 125px;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    -ms-border-radius: 0;
+    -o-border-radius: 0;
+    border-radius: 0;
+}

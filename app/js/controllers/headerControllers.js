@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('header.controllers', [])
-    .controller('headerCtrl', ['$scope', '$location', '$routeParams', '$timeout', 'User', 'CurSoundList', 'UserService', 'PlayList', 'WooicePlayer','Feedback',
-    function ($scope, $location, $routeParams, $timeout, User,CurSoundList, UserService, PlayList, WooicePlayer, Feedback) {
+    .controller('headerCtrl', ['$scope', '$rootScope', '$location', '$routeParams', '$timeout', 'User', 'CurSoundList', 'UserService', 'PlayList', 'WooicePlayer','Feedback',
+    function ($scope, $rootScope, $location, $routeParams, $timeout, User,CurSoundList, UserService, PlayList, WooicePlayer, Feedback) {
         $scope.q = $routeParams.q;
         $scope.userAlias = UserService.getCurUserAlias();
         $scope.userAvatar = UserService.getAvatar();
@@ -11,6 +11,7 @@ angular.module('header.controllers', [])
         $scope.playModes = ['顺序播放', '单曲循环', '随机播放', '播完即止'];
         $scope.wooicePlayer =  WooicePlayer;
         $scope.playList = PlayList;
+        $scope.userService = UserService;
 
         function postLogout(){
             var token = $.cookie("token");
@@ -60,6 +61,10 @@ angular.module('header.controllers', [])
              }
         };
 
+        $scope.showLoginForm = function() {
+            $('#login_modal').modal();
+        }
+
         $scope.feedback = {};
         $scope.feedback.function = null;
         $scope.feedback_content = null;
@@ -108,6 +113,24 @@ angular.module('header.controllers', [])
         $scope.removeSoundFromPlaylist = function(sound) {
              PlayList.removeSound(sound);
         }
+
+        $scope.findBootstrapEnvironment = function() {
+            var envs = ['xs', 'sm', 'md', 'lg'];
+
+            var el = $('<div>');
+            el.appendTo($('body'));
+
+            for (var i = envs.length - 1; i >= 0; i--) {
+                var env = envs[i];
+
+                el.addClass('hidden-'+env);
+                if (el.is(':hidden')) {
+                    el.remove();
+                    return env
+                }
+            };
+        }
+        $rootScope.deviceEnv = $scope.findBootstrapEnvironment();
 
 
         $('#search_box').bind('keyup', function (event) {

@@ -11,26 +11,25 @@
             <div class="row">
                 <div class="col-md-6">
                     <div ng-repeat="cate in categories | filter:odd">
-                        <div style="padding-top: 30px;">
+                        <div>
                             <div class="title_div">
+                                <span class="pull-right" style="font-size: 10px;height: 50px"> <label ng-click="cate.showAll=!cate.showAll">More
+                                    <i class="icon-double-angle-right" ng-show="cate.showAll"></i><i class="icon-double-angle-down" ng-show="!cate.showAll"></i></label>
+                                </span>
                                 <h2 class="title_h2">{{cate.name}}
-                                <span class="pull-right" style="font-size: 10px"> <label ng-click="cate.showAll=!cate.showAll">More
-                                    <i class="icon-double-angle-right" ng-show="cate.showAll"></i><i class="icon-double-angle-down" ng-show="!cate.showAll"></i></label></span>
                                 </h2>
                                 <div style="clear: both;"></div>
                             </div>
                             <div>
-                                <ul class="tags">
+                                <ul class="tags" style="padding-top: 10px">
                                     <li ng-repeat="curatedTag in curatedTags | filter:{category.name: cate.name}"  ng-show="cate.showAll || $index<5"
                                          style="padding-right: 25px;padding-bottom: 30px;float: left">
                                         <a  onclick="return false;" ng-click="toogleInterest()" style="background: {{curatedTag.class}};cursor:pointer;">
-                                           <span > {{curatedTag.label}} </span>
+                                           <span > {{curatedTag.label}}   </span>
                                         </a>
                                     </li>
-                                    <li style="padding-right: 25px;padding-bottom: 30px;float: left" ng-show="!cate.showAll && curatedTags.length>5">
-                                        <i class="icon-ellipsis-horizontal"></i>
-                                    </li>
                                 </ul>
+                                <div style="clear: both"></div>
                             </div>
                         </div>
                         <br>
@@ -39,22 +38,24 @@
 
                 <div class="col-md-6">
                     <div ng-repeat="cate in categories | filter:even">
-                        <div style="padding-top: 30px;">
-                            <legend>{{cate.name}} <span class="pull-right" style="font-size: 10px"> <label ng-click="cate.showAll=!cate.showAll">More
-                                <i class="icon-double-angle-right" ng-show="cate.showAll"></i><i class="icon-double-angle-down" ng-show="!cate.showAll"></i></label></span></legend>
+                        <div>
+                            <div class="title_div">
+                                <span class="pull-right" style="font-size: 10px;height: 50px"> <label ng-click="cate.showAll=!cate.showAll">More
+                                    <i class="icon-double-angle-right" ng-show="cate.showAll"></i><i class="icon-double-angle-down" ng-show="!cate.showAll"></i></label></span>
+                                <h2 class="title_h2">{{cate.name}}
+                                </h2>
+                                <div style="clear: both;"></div>
+                            </div>
                             <div>
-                                <ul class="tags">
+                                <ul class="tags" style="padding-top: 10px">
                                     <li ng-repeat="curatedTag in curatedTags | filter:{category.name: cate.name}"  ng-show="cate.showAll || $index<5"
                                         style="padding-right: 25px;padding-bottom: 30px;float: left">
                                         <a onclick="return false;" ng-click="toogleInterest()" style="background: {{curatedTag.class}};cursor:pointer;">
-                                              <span > {{curatedTag.label}} </span>
+                                              <span > {{curatedTag.label}}    </span>
                                         </a>
                                     </li>
-
-                                    <li style="padding-right: 25px;padding-bottom: 30px;float: left" ng-show="!cate.showAll && curatedTags.length>5">
-                                        <i class="icon-ellipsis-horizontal"></i>
-                                    </li>
                                 </ul>
+                                <div style="clear: both"></div>
                             </div>
                         </div>
                         <br>
@@ -65,7 +66,7 @@
 
         <div id="recommand" style="padding-top: 10px;position: relative;">
             <div class="title_div">
-                <h2 class="title_h2">推荐音乐人</h2>
+                <h2 class="title_h2">推荐用户</h2>
             </div>
 
             <div style="padding:25px {{deviceEnv!='xs'?'10%':'0%'}} 0px {{deviceEnv!='xs'?'10%':'0%'}};">

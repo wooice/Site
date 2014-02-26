@@ -27,7 +27,7 @@ angular.module('header.controllers', [])
             });
 
             $.removeCookie('curSound');
-            $location.path('/guest/login');
+            $location.path('/interest');
         }
 
         $scope.logout = function () {

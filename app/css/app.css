@@ -190,7 +190,7 @@ icon-step-backward.sound_player_button{
     border:1px solid dodgerblue;
 }
 
-.user_selected{border:3px solid dodgerblue}
+.user_selected{border:1px solid dodgerblue}
 
 input.ng-dirty.ng-invalid {
     border: 1px solid darkred;
@@ -212,11 +212,11 @@ input.ng-dirty.ng-valid {
     height:20px;
     line-height:20px;
     position:relative;
-    font-size:8px;
+    font-size:12px;
 }
 
 .tags a{
-    margin-left:20px;
+    margin-left:10px;
     padding:2px 10px 3px 12px;
     background:#9E9E9E;
     color:#fff;

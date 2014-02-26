@@ -1,36 +1,6 @@
 'use strict';
 
 angular.module('guest.controllers', [])
-    .controller('loginPageCtrl', ['$scope', '$location', 'config', '$routeParams', 'Guest', 'PlayList', 'UserService',
-        function ($scope, $location, config, $routeParams, Guest, PlayList, UserService) {
-            $('#login_div').height($(window).height());
-            var undef,
-                v = 3,
-                div = document.createElement('div'),
-                all = div.getElementsByTagName('i');
-
-            while (
-                div.innerHTML = '<!--[if gt IE ' + (++v) + ']><i></i><![endif]-->',
-                    all[0]
-                );
-
-            v = v > 4 ? v : undef;
-            if (v<9)
-            {
-                $('#blocker').modal({
-                    backdrop: 'static',
-                    keyboard: false
-                });
-                return;
-            }
-
-            if ($location.absUrl().indexOf("http://wowoice.cn/") >= 0 || $location.absUrl().indexOf("http://wowoice.com/") >= 0)
-            {
-                window.location = (config.site.url);
-                return;
-            }
-    }])
-
     .controller('loginCtrl', ['$scope', '$location', 'config', '$routeParams', 'Guest', 'PlayList', 'UserService',
         function ($scope, $location, config, $routeParams, Guest, PlayList, UserService) {
 
@@ -65,7 +35,7 @@ angular.module('guest.controllers', [])
         {
             QC.Login.showPopup({
                 appId: "100565532",
-                redirectURI: config.site.url + "/guest/login?action=qqLoginCallback"
+                redirectURI: config.site.url + "/interest?action=qqLoginCallback"
             });
         }
 
@@ -140,7 +110,7 @@ angular.module('guest.controllers', [])
                 Guest.tokenLogin({}, user, function(){
                 $location.url('/stream');
             }, function(){
-                $location.url('/guest/login');
+                $location.url('/interest');
             });
         }
 

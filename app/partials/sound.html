@@ -116,12 +116,12 @@
                 <div class="hidden-xs">
                     <a href="#" class="button button-small button-rounded button-flat action-button"
                        ng-show="mode == 'default' && !userService.validateRoleGuest()"
-                       onclick="return false;" ng-click="toggleLike(sound.id)"><i class="icon-heart"></i>
-                        <span ng-show="sound.soundUserPrefer.like==0">赞之</span></a>
+                       onclick="return false;" ng-click="like(sound)"><i class="icon-heart"></i>
+                        <span ng-show="!sound.soundUserPrefer.like">赞之</span></a>
                     <a href="#" class="button button-small button-rounded button-flat action-button"
                        ng-show="mode == 'default' && !userService.validateRoleGuest()"
-                       onclick="return false;" ng-click="toggleRepost(sound.id)"><i
-                            class="icon-retweet"></i></i> <span ng-show="sound.soundUserPrefer.repost==0">转之</span></a>
+                       onclick="return false;" ng-click="repost(sound)"><i
+                            class="icon-retweet"></i></i> <span ng-show="!sound.soundUserPrefer.repost">转之</span></a>
                     <a href="#" class="button button-small button-rounded button-flat action-button hasTooltip"
                        ng-show="mode == 'default'" onclick="return false;"><i
                             class="icon-share"></i>分享
@@ -217,10 +217,10 @@
                 <div class="visible-xs">
                     <div>
                           <button class="btn btn-xs"  ng-click="toggleLike(sound.id)"><i class="icon-heart"></i>
-                              <span ng-show="sound.soundUserPrefer.like=='0'">赞</span></button>
-                          <button class="btn btn-xs"  ng-click="toggleRepost(sound.id)"><i
+                              <span ng-show="!sound.soundUserPrefer.like">赞</span></button>
+                          <button class="btn btn-xs"  ng-click="repost(sound)"><i
                                   class="icon-retweet"></i> <span
-                                  ng-show="sound.soundUserPrefer.repost==0">转</span></button>
+                                  ng-show="!sound.soundUserPrefer.repost">转</span></button>
                           <button class="btn btn-xs"
                                   ng-show="mode == 'default'"
                                   onclick="return false;" ng-click="togglePromote(sound.id)"><i

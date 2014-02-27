@@ -17,33 +17,9 @@ angular.module('user.stream.controllers', [])
                 $scope.user.profile.avatorUrl = 'img/default_avatar_large.png';
             }
 
-            if ($scope.user.userPrefer.following) {
-                $scope.user.userPrefer.followingString = "关注中";
-            }
-            else {
-                $scope.user.userPrefer.followingString = "关注";
-            }
-
             var external = User.getExternal({userAlias: $routeParams.value}, function () {
                 $scope.user.external =  external;
             });
-
-            $scope.follow = function (userAlias) {
-                if ($scope.user.userPrefer.following) {
-                    var result = UserSocial.unfollow({toUserAlias: userAlias}, null, function (count) {
-                        $scope.user.userPrefer.following = false;
-                        $scope.user.userSocial.followed = result.followed;
-                        $scope.user.userPrefer.followingString = "关注";
-                    });
-                }
-                else {
-                    var result = UserSocial.follow({ toUserAlias: userAlias}, null, function (count) {
-                        $scope.user.userPrefer.following = true;
-                        $scope.user.userSocial.followed = result.followed;
-                        $scope.user.userPrefer.followingString = "关注中";
-                    });
-                }
-            };
 
             $scope.showMessage = function()
             {

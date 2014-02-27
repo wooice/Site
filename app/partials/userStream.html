@@ -44,7 +44,10 @@
                             <!-- social action-->
                             <div style="padding-bottom: 10px;" ng-if="!user.isCurrent">
                                 <button  class="btn btn-primary button-small" onclick="return false;" style="width: 90px"
-                                   ng-click="follow(user.profile.alias)">{{user.userPrefer.followingString}}</button>
+                                   ng-click="follow(user)">
+                                    <span ng-if="!user.userPrefer.following">关注</span>
+                                    <span ng-if="user.userPrefer.following">关注中</span>
+                                </button>
 
                                 <button  class="btn btn-info button-small" onclick="return false;"    style="width: 90px"
                                    ng-click="showMessage(user.profile.alias)"><i class="icon-envelope"></i> 私信</button>

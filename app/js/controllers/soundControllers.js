@@ -80,23 +80,6 @@ angular.module('sound.controllers', [])
                 WooicePlayer.toggle($scope.sound);
             };
 
-            $scope.toggleLike = function (id) {
-                var sound = $scope.sound;
-                if (sound.soundUserPrefer.like) {
-                    var likesCount = SoundSocial.unlike({sound: sound.id}, null, function (count) {
-                        sound.soundUserPrefer.like = 0;
-                        sound.soundSocial.likesCount = parseInt(likesCount.liked);
-                    });
-                }
-                else {
-                    var likesCount = SoundSocial.like({sound: sound.id}, null, function (count) {
-                        sound.soundUserPrefer.like = 1;
-                        sound.soundSocial.likesCount = parseInt(likesCount.liked);
-                    });
-                }
-                return false;
-            };
-
             $scope.togglePromote = function () {
                 if ($scope.sound.priority && $scope.sound.priority == 1) {
                     SoundProSocial.demote({soundId: $scope.sound.id}, null, function () {
@@ -173,38 +156,6 @@ angular.module('sound.controllers', [])
                 $(".tab_li").removeClass("active");
                 $("#" + target + "_li").addClass("active");
                 $scope.reloadTarget(true);
-            };
-
-            $scope.follow = function (activity) {
-                if (activity.owner.userPrefer.following) {
-                    var result = UserSocial.unfollow({toUserAlias: activity.owner.profile.alias}, null, function (count) {
-                        activity.owner.userPrefer.following = false;
-                    });
-                }
-                else {
-                    var result = UserSocial.follow({ toUserAlias: activity.owner.profile.alias}, null, function (count) {
-                        activity.owner.userPrefer.following = true;
-                    });
-                }
-            };
-
-            $scope.toggleRepost = function (id) {
-                var sound = $scope.sound;
-                if (sound.soundUserPrefer.repost) {
-                    var repostsCount = SoundSocial.unrepost({sound: sound.id}, null, function (count) {
-                        sound.soundUserPrefer.repost = 0;
-                        sound.soundUserPrefer.repostWording = "转";
-                        sound.soundSocial.reportsCount = parseInt(repostsCount.reposted);
-                    });
-                }
-                else {
-                    var repostsCount = SoundSocial.repost({sound: sound.id}, null, function (count) {
-                        sound.soundUserPrefer.repost = 1;
-                        sound.soundUserPrefer.repostWording = "";
-                        sound.soundSocial.reportsCount = parseInt(repostsCount.reposted);
-                    });
-                }
-                return false;
             };
 
             $scope.reportSound = function () {

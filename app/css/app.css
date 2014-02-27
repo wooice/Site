@@ -460,3 +460,43 @@ input.ng-dirty.ng-valid {
     -o-border-radius: 0;
     border-radius: 0;
 }
+
+.user_mask{
+    width: 125px;
+    height: 125px;
+    position: absolute;
+    z-index: 2;
+    /*left: 0;*/
+    top: 5px;
+    background-color: #000;
+    opacity: .6;
+    filter: alpha(opacity=60);
+}
+
+.user_mask_info {
+    position: absolute;
+    z-index: 4;
+    right: 20px;
+    bottom: 35px;
+    cursor: pointer;
+    color: white;
+}
+
+.user_mask_follow {
+    position: absolute;
+    z-index: 4;
+    right: 15px;
+    top: 15px;
+    cursor: pointer;
+    color: white;
+}
+
+.user_mask_desc {
+    position: absolute;
+    z-index: 4;
+    left: 10px;
+    bottom: 80px;
+    cursor: pointer;
+    color: white;
+    font-size: 12px;
+}

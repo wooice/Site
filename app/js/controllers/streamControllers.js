@@ -92,30 +92,6 @@ angular.module('stream.controllers', []).
                 WooicePlayer.toggle(sound);
             };
 
-            $scope.toggleLike = function (id) {
-                var sound = null;
-                $.each(CurSoundList.getList(), function (index, oneSound) {
-                    if (oneSound.id == id) {
-                        sound = oneSound;
-                        return;
-                    }
-                });
-
-                if (sound && sound.soundUserPrefer.like) {
-                    var likesCount = SoundSocial.unlike({ sound: sound.id}, null, function (count) {
-                        sound.soundUserPrefer.like = 0;
-                        sound.soundSocial.likesCount = parseInt(likesCount.liked);
-                    });
-                }
-                else {
-                    var likesCount = SoundSocial.like({sound: sound.id}, null, function (count) {
-                        sound.soundUserPrefer.like = 1;
-                        sound.soundSocial.likesCount = parseInt(likesCount.liked);
-                    });
-                }
-                return false;
-            }
-
             $scope.download = function () {
                 var sound = SoundSocial.play({sound: this.sound.id}, null, $.proxy(function (count) {
                     var downloadUrl = sound.url + "&download/" + this.sound.alias + ".mp3";
@@ -183,30 +159,6 @@ angular.module('stream.controllers', []).
                         });
                     }, this));
                 }
-            }
-
-            $scope.toggleRepost = function (id) {
-                var sound = null;
-                $.each(CurSoundList.getList(), function (index, oneSound) {
-                    if (oneSound.id == id) {
-                        sound = oneSound;
-                        return;
-                    }
-                });
-
-                if (sound && sound.soundUserPrefer.repost) {
-                    var repostsCount = SoundSocial.unrepost({sound: sound.id}, null, function (count) {
-                        sound.soundUserPrefer.repost = 0;
-                        sound.soundSocial.reportsCount = parseInt(repostsCount.reposted);
-                    });
-                }
-                else {
-                    var repostsCount = SoundSocial.repost({sound: sound.id}, null, function (count) {
-                        sound.soundUserPrefer.repost = 1;
-                        sound.soundSocial.reportsCount = parseInt(repostsCount.reposted);
-                    });
-                }
-                return false;
             }
 
             $scope.pageNum = 1;

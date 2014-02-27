@@ -44,6 +44,14 @@ angular.module('interest.controllers', [])
                 var users = UserSocial.getRecommandByTags({}, {tags: interestedTags, pageNum: $scope.pageNum, pageSize: $scope.pageSize}, function () {
                     $.each(users, function (index, user) {
                         user.route = config.userStreamPath + user.profile.alias;
+                        if (!user.userPrefer)
+                        {
+                            user.userPrefer = {};
+                        }
+                        if (user.profile.description && user.profile.description.length >= 18)
+                        {
+                            user.profile.descSummary = user.profile.description.substring(0, 18) + "...";
+                        }
                     });
                     $.each(users, function (index, user) {
                         var exist = false;

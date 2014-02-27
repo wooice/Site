@@ -74,7 +74,35 @@
                     <li ng-repeat="recommendUser in recommendUsers"
                         style="padding: 5px;padding-bottom: 10px">
                         <a href="{{recommendUser.route}}">
-                             <img ng-src="{{recommendUser.profile.avatorUrl}}" class="title_link" style="{{deviceEnv=='xs'?'width:100px;height:100px':''}}">
+                             <img ng-src="{{recommendUser.profile.avatorUrl}}" class="title_link"
+                                  ng-mouseover="recommendUser.isHovering=true" style="{{deviceEnv=='xs'?'width:100px;height:100px':''}}">
+                             <a href="{{recommendUser.route}}" >
+                                 <b class="user_mask" ng-show="recommendUser.isHovering"
+                                    ng-mouseleave="recommendUser.isHovering=false"></b>
+                                <b class="user_mask_info" ng-show="recommendUser.isHovering"
+                                   ng-mouseleave="recommendUser.isHovering=false">
+                                         <span title="{{user.userSocial.sounds}}条声音" class="ng-binding">{{recommendUser.userSocial.sounds}}
+                                                <i class="icon-music" title="{{recommendUser.userSocial.sounds}}条声音"></i></span>
+                                            <span style="padding-left: 5px" title="关注{{user.userSocial.following}}人"
+                                                  class="ng-binding">{{recommendUser.userSocial.following}}
+                                                <i class="icon-user" title="关注{{recommendUser.userSocial.following}}人"></i></span>
+                                            <span style="padding-left: 5px" title="{{user.userSocial.followed}}人关注"
+                                                  class="ng-binding">{{recommendUser.userSocial.followed}}
+                                                <i class="icon-group" title="{{recommendUser.userSocial.followed}}人关注"></i></span>
+                                </b>
+                                <b class="user_mask_desc" ng-show="recommendUser.isHovering"
+                                   ng-mouseleave="recommendUser.isHovering=false">
+                                    <span>{{recommendUser.profile.descSummary}}</span>
+                                </b>
+                             </a>
+                            <b class="user_mask_follow" ng-show="recommendUser.isHovering"
+                               ng-mouseleave="recommendUser.isHovering=false">
+                                <a href="#" class="btn btn-primary button-tiny form-control ng-binding"
+                                   onclick="return false;" ng-click="follow(recommendUser)">
+                                    <span ng-if="recommendUser.userPrefer.following">关注中</span>
+                                    <span ng-if="!recommendUser.userPrefer.following">关注</span>
+                                </a>
+                            </b>
                         </a>
                         <div class="user_alias">
                             {{recommendUser.profile.alias}}

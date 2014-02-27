@@ -2,7 +2,7 @@
 
 angular.module('wooice', ['ngRoute', 'ui.bootstrap', 'wooice.directives', 'wooice.config', 'wooice.player', 'wooice.waver', 'angularLocalStorage', 'feedback.services', 'playlist.services',
         'auth.services', 'guest.services', 'profile.services', 'sound.services', 'tag.services', 'storage.services', 'user.services', 'sound.pro.services', 'util.services', 'admin.services',
-        'auth.controllers', 'guest.controllers', 'profile.controllers', 'stream.controllers', 'common.stream.controllers', 'user.stream.controllers', 'user.message.controllers',  'footer.controllers',
+        'page.controllers', 'auth.controllers', 'guest.controllers', 'profile.controllers', 'stream.controllers', 'common.stream.controllers', 'user.stream.controllers', 'user.message.controllers',  'footer.controllers',
         'modal.controllers', 'header.controllers', 'interest.controllers', 'sound.controllers', 'sound.social.controllers', 'player.controllers', 'upload.controllers', 'admin.controllers', 'infringe.controllers']).
 
     config(['$routeProvider', '$httpProvider', '$locationProvider', function ($routeProvider, $httpProvider, $locationProvider) {

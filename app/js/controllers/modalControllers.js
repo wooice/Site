@@ -3,22 +3,9 @@
 /* Controllers */
 
 angular.module('modal.controllers', [])
-    .controller("userModalCtrl", ['$scope', '$routeParams', 'User', 'UserSocial', function ($scope, $routeParams, User, UserSocial) {
+    .controller("userModalCtrl", ['$scope', function ($scope) {
         $scope.hideModal = function(){
             $('#'+ $scope.modalId).modal('hide');
-        };
-
-        $scope.follow = function (user) {
-            if (user.userPrefer.following) {
-                var result = UserSocial.unfollow({toUserAlias: user.profile.alias}, null, function (count) {
-                    user.userPrefer.following = false;
-                });
-            }
-            else {
-                var result = UserSocial.follow({ toUserAlias: user.profile.alias}, null, function (count) {
-                    user.userPrefer.following = true;
-                });
-            }
         };
     }])
     .controller("messageModalCtrl", ['$scope', '$routeParams', 'User', 'UserMessage', function ($scope, $routeParams, User, UserMessage) {

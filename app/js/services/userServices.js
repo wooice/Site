@@ -38,7 +38,7 @@ angular.module('user.services', ['ngCookies']).
         var playMode = 0;
         var avatar = null;
         var unreadMsgs = 0;
-        var volume = 100;
+        var volume = 0;//此处存储100-真实音量
 
         return {
             setupUser: function (user) {

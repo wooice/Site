@@ -82,7 +82,10 @@ angular.module('user.stream.controllers', [])
         $scope.count = function () {
             var defer = $q.defer();
             $scope.$watch('user', function(){
-                defer.resolve($scope.user.userSocial.following);
+                if ($scope.user)
+                {
+                    defer.resolve($scope.user.userSocial.following);
+                }
             });
             return defer.promise;
         }
@@ -118,7 +121,10 @@ angular.module('user.stream.controllers', [])
         $scope.count = function () {
             var defer = $q.defer();
             $scope.$watch('user', function(){
-                defer.resolve($scope.user.userSocial.followed);
+                if ($scope.user)
+                {
+                    defer.resolve($scope.user.userSocial.followed);
+                }
             });
             return defer.promise;
         }

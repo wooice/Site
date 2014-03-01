@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('wooice.player', []).
-    factory('WooicePlayer', ['config',"$rootScope", 'storage', 'CurSoundList', 'PlayList', 'WooiceWaver', 'SoundSocial', 'UserService',
-            function ( config, $rootScope, storage, CurSoundList, PlayList, WooiceWaver, SoundSocial, UserService) {
+    factory('WooicePlayer', ['config', "$rootScope", 'storage', 'CurSoundList', 'PlayList', 'WooiceWaver', 'SoundSocial', 'UserService',
+        function (config, $rootScope, storage, CurSoundList, PlayList, WooiceWaver, SoundSocial, UserService) {
 
             function init() {
                 var settings;
@@ -17,15 +17,19 @@ angular.module('wooice.player', []).
                 );
                 soundData.settings = settings;
 
-                    soundManager.setup({
+                soundManager.setup({
                     url: soundData.settings.swfUrl,
                     preferFlash: soundData.settings.preferFlash
                 });
 
                 return soundData;
             }
+
             var currentSound = {};
             var soundData = init();
+
+            $rootScope.$watch(currentSound, function(){
+            });
 
             soundData.getNextSound = function (id) {
                 return PlayList.getNextSound(id);
@@ -76,16 +80,13 @@ angular.module('wooice.player', []).
                                 }
                             },
                             onplay: function () {
-                                if (currentSound.id && currentSound.id != this.id)
-                                {
+                                if (currentSound.id && currentSound.id != this.id) {
                                     currentSound.isPlaying = false;
                                     soundManager.pause(currentSound.id);
                                 }
-                                currentSound = PlayList.getSound(sound.id);
-                                $rootScope.$apply(function(){
-                                    currentSound.isPlaying = true;
-                                });
+                                currentSound = PlayList.getSound(this.id);
                                 currentSound.isPlaying = true;
+                                soundManager.setVolume(this.id, 100-UserService.getVolume());
                                 soundManager._writeDebug('Starting sound: ' + this.id);
 
                                 var playerStatus = storage.get(this.id + "_player");
@@ -103,6 +104,12 @@ angular.module('wooice.player', []).
                                 });
                             },
                             whileplaying: function () {
+                                currentSound = PlayList.getSound(this.id);
+                                var curPosition = this.position;
+                                $rootScope.$apply(function() {
+                                    currentSound.curPostion = curPosition;
+                                });
+
                                 WooiceWaver.move({
                                     id: this.id,
                                     soundPosition: this.position
@@ -148,7 +155,7 @@ angular.module('wooice.player', []).
                                     id: this.id
                                 });
 
-                                $rootScope.$apply($.proxy(function(){
+                                $rootScope.$apply($.proxy(function () {
                                     PlayList.getSound(this.id).isPlaying = false;
                                 }, this));
 
@@ -174,7 +181,7 @@ angular.module('wooice.player', []).
                                         var sound = PlayList.getNextSound(this.id);
                                         break;
                                 }
-                                $rootScope.$apply($.proxy(function(){
+                                $rootScope.$apply($.proxy(function () {
                                     sound.isPlaying = true;
                                 }, this));
                                 sound.position = 0;
@@ -199,9 +206,8 @@ angular.module('wooice.player', []).
             };
 
             soundData.jump = function (sound) {
-                if (!sound)
-                {
-                     return;
+                if (!sound) {
+                    return;
                 }
                 var soundToJump = null;
                 if (currentSound.id && currentSound.id == sound.id) {
@@ -248,8 +254,7 @@ angular.module('wooice.player', []).
                     else {
                         var soundToPlay = soundManager.getSoundById(input.id);
                         soundToPlay.play();
-                        if (input.position)
-                        {
+                        if (input.position) {
                             soundToPlay.setPosition(input.position);
                         }
                     }
@@ -261,12 +266,11 @@ angular.module('wooice.player', []).
                     var sound = input;
                 }
                 else {
-                    var sound = (currentSound.id)? currentSound: PlayList.getFirstSound();
+                    var sound = (currentSound.id) ? currentSound : PlayList.getFirstSound();
                 }
 
-                if (!sound)
-                {
-                    return ;
+                if (!sound) {
+                    return;
                 }
 
                 if (!soundManager.getSoundById(sound.id)) {
@@ -281,27 +285,25 @@ angular.module('wooice.player', []).
             function setupListeners() {
                 $(window).bind('onJump', $.proxy(function (event, oneSound) {
                     var sound = CurSoundList.getSound(oneSound.id);
-                    if (!sound)
-                    {
+                    if (!sound) {
                         sound = PlayList.getSound(oneSound.id);
                     }
 
                     sound.from = oneSound.from;
                     soundData.jump(sound);
-                    $rootScope.$apply(function(){
+                    $rootScope.$apply(function () {
                         currentSound.isPlaying = currentSound.isPlaying;
                     });
                 }, this));
 
                 $(window).bind('onToggle', $.proxy(function (event, oneSound) {
                     var sound = CurSoundList.getSound(oneSound.id);
-                    if (!sound)
-                    {
+                    if (!sound) {
                         sound = PlayList.getSound(oneSound.id);
                     }
 
                     soundData.toggle(sound);
-                    $rootScope.$apply(function(){
+                    $rootScope.$apply(function () {
                         currentSound.isPlaying = currentSound.isPlaying;
                     });
                 }, this));

@@ -1,5 +1,5 @@
 <div ng-controller="soundDetailCtrl" style="height: 100%">
-    <div id="sound_{{sound.id}}" ng-class="{'default': 'sound_single_item', 'player': 'iframe_player'}[mode]" class="row" style="margin: 0px">
+    <div id="sound_{{sound.id}}" ng-class="{'default': 'sound_single_item', 'player': 'iframe_player'}[mode]" class="row" style="margin: 0px;margin-left: -25px">
         <div id="sound_art_{{sound.id}}" class='sound_art col-md-2 hidden-xs' style="height: 100%;">
             <div id="sound_cover_{{sound.id}}">
                 <div id="sound_cover_ul_{{sound.id}}" class='poster_img'>
@@ -75,7 +75,7 @@
                          style="position: absolute;margin-top:-1;top:71%;left:{{comment.left}};line-height:0px">
                         <div id="sound_comment_in_sound_minor_{{comment.commentId}}" ng-show="!comment.showDetail">
                             <img
-                                 ng-src="{{comment.owner.profile.avatorUrl}}"  style="width: 20px"
+                                 ng-src="{{comment.owner.profile.avatorUrl}}"  style="width: 20px;height: 20px"
                                  ng-mouseover="comment.showDetail=!comment.showDetail">
                         </div>
 
@@ -84,14 +84,14 @@
                                 <a href="{{comment.owner.route}}" title="{{comment.owner.profile.alias}}"
                                    ng-show="mode == 'default'"
                                    style="width: 35px;"><img
-                                        ng-src="{{comment.owner.profile.avatorUrl}}"   style="width: 35px"></a>
+                                        ng-src="{{comment.owner.profile.avatorUrl}}"   style="width: 35px;height: 35px"></a>
                                 <a href="{{comment.owner.route}}" title="{{comment.owner.profile.alias}}"
                                    target='_blank' ng-show="mode == 'player'"
                                    style="width:35px"><img
-                                        ng-src="{{comment.owner.profile.avatorUrl}}" style="width: 35px"></a>
+                                        ng-src="{{comment.owner.profile.avatorUrl}}" style="width: 35px;height: 35px"></a>
                             </div>
                             <div style="height: 12px">
-                                <label onclick="return false;" ng-click="replyInSound()"><span
+                                <label style="cursor: pointer;" onclick="return false;" ng-click="replyInSound()"><span
                                         style="font-size: 12px;color:#4f4f4f">@{{comment.pointAt}}秒:{{comment.comment}}</span></label>
                             </div>
                         </div>
@@ -115,11 +115,11 @@
 
                 <div class="hidden-xs">
                     <a href="#" class="button button-small button-rounded button-flat action-button"
-                       ng-show="mode == 'default' && !userService.validateRoleGuest()"
+                       ng-show="mode == 'default'"
                        onclick="return false;" ng-click="like(sound)"><i class="icon-heart"></i>
                         <span ng-show="!sound.soundUserPrefer.like">赞之</span></a>
                     <a href="#" class="button button-small button-rounded button-flat action-button"
-                       ng-show="mode == 'default' && !userService.validateRoleGuest()"
+                       ng-show="mode == 'default'"
                        onclick="return false;" ng-click="repost(sound)"><i
                             class="icon-retweet"></i></i> <span ng-show="!sound.soundUserPrefer.repost">转之</span></a>
                     <a href="#" class="button button-small button-rounded button-flat action-button hasTooltip"
@@ -153,13 +153,13 @@
                             class="icon-trash"></i></i> 下载</a>
 
                     <div class="pull-right">
-                                     <span ng-show="mode == 'default' && !userService.validateRoleGuest() && sound.owner.alias == userService.getCurUserAlias()">
+                                     <span ng-if="mode == 'default' && !userService.validateRoleGuest() && sound.owner.alias == userService.getCurUserAlias()">
                                         <i class="icon-lock"
-                                           ng-show="sound.comment.mode == 'private' && sound.comment.readonly">留言仅自己可见</i>
+                                           ng-if="sound.comment.mode == 'private' && sound.comment.readonly">留言仅自己可见</i>
                                         <i class="icon-unlock-alt"
-                                           ng-show="sound.comment.mode == 'public' && sound.comment.readonly">留言所有人可见</i>
+                                           ng-if="sound.comment.mode == 'public' && sound.comment.readonly">留言所有人可见</i>
                                          <i class="icon-warning-sign"
-                                            ng-show="sound.comment.mode == 'closed' && sound.comment.readonly">关闭留言</i>
+                                            ng-if="sound.comment.mode == 'closed' && sound.comment.readonly">关闭留言</i>
                                           <select ng-model="sound.comment.mode" ng-show="!sound.comment.readonly"
                                                   style="width: 110px">
                                               <option value="private" ng-selected="sound.comment.mode == 'private'">自己可见
@@ -181,12 +181,12 @@
                                         |
                                     </span>
 
-                                    <span ng-show="mode == 'default' && !userService.validateRoleGuest() && sound.owner.alias == userService.getCurUserAlias()">
+                                    <span ng-if="mode == 'default' && !userService.validateRoleGuest() && sound.owner.alias == userService.getCurUserAlias()">
                                         <i class="icon-lock"
-                                           ng-show="sound.status.value == 'private' && sound.status.readonly">私有</i>
+                                           ng-if="sound.status.value == 'private' && sound.status.readonly">私有</i>
                                         <i class="icon-unlock-alt"
-                                           ng-show="sound.status.value == 'public' && sound.status.readonly">公开</i>
-                                          <select ng-model="sound.status.value" ng-show="!sound.status.readonly"
+                                           ng-if="sound.status.value == 'public' && sound.status.readonly">公开</i>
+                                          <select ng-model="sound.status.value" ng-if="!sound.status.readonly"
                                                   style="width: 70px">
                                               <option value="private" ng-selected="sound.status.value == 'private'">私有
                                               </option>
@@ -232,11 +232,11 @@
                             <span ng-show="mode == 'default' && !userService.validateRoleGuest() && sound.owner.alias == userService.getCurUserAlias()"
                                     style="padding-left: 5px">
                                         <i class="icon-lock"
-                                           ng-show="sound.comment.mode == 'private' && sound.comment.readonly">留言保密</i>
+                                           ng-if="sound.comment.mode == 'private' && sound.comment.readonly">留言保密</i>
                                         <i class="icon-unlock-alt"
-                                           ng-show="sound.comment.mode == 'public' && sound.comment.readonly">留言可见</i>
+                                           ng-if="sound.comment.mode == 'public' && sound.comment.readonly">留言可见</i>
                                          <i class="icon-warning-sign"
-                                            ng-show="sound.comment.mode == 'closed' && sound.comment.readonly">关闭留言</i>
+                                            ng-if="sound.comment.mode == 'closed' && sound.comment.readonly">关闭留言</i>
                                           <select ng-model="sound.comment.mode" ng-show="!sound.comment.readonly"
                                                   style="width: 110px">
                                               <option value="private" ng-selected="sound.comment.mode == 'private'">保密
@@ -258,12 +258,12 @@
                                         |
                                     </span>
 
-                                    <span ng-show="mode == 'default' && !userService.validateRoleGuest() && sound.owner.alias == userService.getCurUserAlias()">
+                                    <span ng-if="mode == 'default' && !userService.validateRoleGuest() && sound.owner.alias == userService.getCurUserAlias()">
                                         <i class="icon-lock"
-                                           ng-show="sound.status.value == 'private' && sound.status.readonly">私有</i>
+                                           ng-if="sound.status.value == 'private' && sound.status.readonly">私有</i>
                                         <i class="icon-unlock-alt"
-                                           ng-show="sound.status.value == 'public' && sound.status.readonly">公开</i>
-                                          <select ng-model="sound.status.value" ng-show="!sound.status.readonly"
+                                           ng-if="sound.status.value == 'public' && sound.status.readonly">公开</i>
+                                          <select ng-model="sound.status.value" ng-if="!sound.status.readonly"
                                                   style="width: 70px">
                                               <option value="private" ng-selected="sound.status.value == 'private'">私有
                                               </option>

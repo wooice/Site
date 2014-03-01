@@ -254,7 +254,6 @@ angular.module('stream.controllers', []).
                         }
                     });
 
-
                     if (CurSoundList.getList().length >= config.soundsPerPage) {
                         $scope.pageNum++;
                     }

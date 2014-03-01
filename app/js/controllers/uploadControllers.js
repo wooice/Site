@@ -306,6 +306,13 @@ angular.module('upload.controllers', [
                 dataType: 'json',
 
                 add: function (e, data) {
+
+                    $('.upload_button').fileupload(
+                        'option',
+                        'dropZone',
+                        null
+                    );
+
                     if (!(/\.(mp3|wma|flac|ogg)$/i).test(data.files[0].name)) {
                         $scope.$apply(function () {
                             $scope.defaultSound.uploadMsgClass = "text-error";
@@ -343,12 +350,6 @@ angular.module('upload.controllers', [
                 },
                 submit: function (e, data) {
                     $scope.defaultSound.isSoundUploading = true;
-
-                    $('.upload_button').fileupload(
-                        'option',
-                        'dropZone',
-                        null
-                    );
 
                     $scope.cancelUpload = function()
                     {

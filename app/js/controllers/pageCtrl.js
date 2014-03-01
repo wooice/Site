@@ -5,6 +5,35 @@
 angular.module('page.controllers', [])
     .controller('pageCtrl', ['$scope', '$rootScope', '$routeParams', 'User', 'UserSocial', 'SoundSocial',
         function ($scope, $rootScope, $routeParams, User, UserSocial, SoundSocial) {
+            $scope.findBootstrapEnvironment = function() {
+                var envs = ['xs', 'sm', 'md', 'lg'];
+
+                var el = $('<div>');
+                el.appendTo($('body'));
+
+                for (var i = envs.length - 1; i >= 0; i--) {
+                    var env = envs[i];
+
+                    el.addClass('hidden-'+env);
+                    if (el.is(':hidden')) {
+                        el.remove();
+                        return env
+                    }
+                };
+            }
+            $rootScope.deviceEnv = $scope.findBootstrapEnvironment();
+
+            $rootScope.formatTime = function(duration) {
+                if (!duration)
+                {
+                    return '';
+                }
+                var minutes = Math.floor(duration/60);
+                var seconds = Math.floor(duration%60);
+
+                return ((minutes>=10)?minutes: ('0'+minutes)) + ":" + ((seconds>=10)?seconds: ('0'+seconds));
+            }
+
             $rootScope.follow = function (user) {
                 if (!user) {
                     return;

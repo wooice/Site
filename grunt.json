@@ -2,6 +2,9 @@
     "concat": {
         "js": {
             "src": [
+                "app/lib/jquery/jquery-2.0.2.min.js",
+                "app/lib/jquery/jquery.cookie.js",
+                "app/lib/jquery-ui-custom/js/jquery-ui-1.10.4.custom.min.js",
                 "app/lib/angular/angular.min.js",
                 "app/lib/angular/angular-route.min.js",
                 "app/lib/angular/angular-resource.min.js",
@@ -9,8 +12,7 @@
                 "app/lib/angular/angular-cookies.min.js",
                 "app/lib/angular-storage/angularLocalStorage.js",
                 "app/lib/angular-ui/ui-bootstrap-tpls-0.6.0.js",
-                "app/lib/jquery/jquery-2.0.2.min.js",
-                "app/lib/jquery/jquery.cookie.js",
+                "app/lib/angular-slider/slider.js",
                 "app/lib/underscore.js/underscore-min.js",
                 "app/lib/underscore.js/underscore.string.min.js",
                 "app/lib/bootstrap/js/bootstrap.min.js",
@@ -18,29 +20,30 @@
                 "app/lib/jquery/qtip2/js/jquery.qtip.min.js",
                 "app/lib/message/js/messenger.min.js",
                 "app/lib/util/md5.js",
-                "tmp/js/scripts.js",
                 "app/lib/wooice/wave.js",
                 "app/lib/wooice/player.js",
                 "app/lib/wooice/waveForm.js",
                 "app/lib/upload/jquery.ui.widget.js",
                 "app/lib/upload/jquery.iframe-transport.js",
                 "app/lib/upload/jquery.fileupload.js",
-                "app/lib/typeahead.js/typeahead.min.js"
+                "app/lib/typeahead.js/typeahead.min.js",
+                "tmp/js/scripts.js"
             ],
             "dest": "tmp/js/scripts.min.js"
         },
         "css": {
             "src": [
+                "app/lib/jquery-ui-custom/css/smoothness/jquery-ui-1.10.4.custom.min.css",
                 "app/lib/bootstrap/css/bootstrap.min.css",
                 "app/lib/bootstrap/css/bootstrap-responsive.min.css",
                 "app/lib/font-awesome/css/font-awesome.min.css",
                 "app/lib/Buttons/css/buttons.css",
-                "app/css/app.css",
                 "app/css/upload/jquery.fileupload-ui.css",
                 "app/lib/typeahead.js/typeahead.js-bootstrap.css",
                 "app/lib/message/css/messenger.css",
                 "app/lib/message/css/messenger-theme-future.css",
-                "app/lib/jquery/qtip2/css/jquery.qtip.min.css"
+                "app/lib/jquery/qtip2/css/jquery.qtip.min.css",
+                "app/css/app.css"
             ],
             "dest": "tmp/css/styles.min.css"
         }

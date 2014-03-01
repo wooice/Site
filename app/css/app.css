@@ -500,3 +500,82 @@ input.ng-dirty.ng-valid {
     color: white;
     font-size: 12px;
 }
+
+.display_panel {
+    position : absolute;
+    background: #2d2d2d;
+    left: -210px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -o-border-radius: 3px;
+    border-radius: 3px;
+    border: 1px solid #171717;
+    cursor: default;
+    width: 250px;
+    height: 250px;
+    display: block;
+}
+
+.display_header {
+    height: 35px;
+    line-height: 35px;
+    background: #2d2d2d;
+    box-sizing: border-box;
+    font-weight: bold;
+    color:#CCC;
+    padding: 0 15px;
+    overflow: hidden;
+    display: block;
+
+}
+
+.display_header:after{
+    content: "";
+    display: table;
+    clear: both;
+}
+
+
+.display_content_div {
+    background: #2d2d2d;
+    display: block;
+}
+
+.display_content {
+    overflow: auto;
+    position: relative;
+    margin: 0 6px 6px;
+    min-height: 20px;
+    background: #4d4d4d;
+    color: #999;
+    height: 206px;
+}
+
+.display_song {
+    height: 40px;
+    line-height: 40px;
+    display: block;
+    position: relative;
+    top: 1px;
+    padding-left: 5px;
+    background: white;
+    color: #666;
+    border-bottom: 1px solid #e6e6e6;
+    cursor: pointer;
+}
+
+.ui-slider-vertical {
+    width: .5em;
+}
+
+.ui-slider .ui-slider-handle {
+    width: 1.0em;
+    height: 1.0em;
+}
+
+.tags_more {
+    font-size: 10px;
+    height: 50px;
+    cursor: pointer;
+}

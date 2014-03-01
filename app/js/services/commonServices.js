@@ -59,6 +59,7 @@ angular.module('sound.services', ['ngResource'])
         };
     }])
     .factory('CurSoundList', ['User', 'UserService','config', function (User, UserService, config) {
+        // Sounds in current page
         var sounds = [];
         return {
             getSound: function(id) {

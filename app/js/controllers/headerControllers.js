@@ -12,6 +12,15 @@ angular.module('header.controllers', [])
         $scope.wooicePlayer =  WooicePlayer;
         $scope.playList = PlayList;
         $scope.userService = UserService;
+        $scope.showVolumePanel = false;
+        $scope.volume = UserService.getVolume();
+
+        $scope.$watch('volume', function(newValue, oldValue){
+            var curSound = WooicePlayer.getCurSound();
+            curSound.volume = 100 - newValue;
+            WooicePlayer.setVolume(curSound, newValue);
+            UserService.setVolume(newValue);
+        });
 
         function postLogout(){
             var token = $.cookie("token");
@@ -114,30 +123,28 @@ angular.module('header.controllers', [])
              PlayList.removeSound(sound);
         }
 
-        $scope.findBootstrapEnvironment = function() {
-            var envs = ['xs', 'sm', 'md', 'lg'];
-
-            var el = $('<div>');
-            el.appendTo($('body'));
-
-            for (var i = envs.length - 1; i >= 0; i--) {
-                var env = envs[i];
-
-                el.addClass('hidden-'+env);
-                if (el.is(':hidden')) {
-                    el.remove();
-                    return env
-                }
-            };
+        $scope.clearPlaylist = function(sound) {
+            PlayList.clearAll();
         }
-        $rootScope.deviceEnv = $scope.findBootstrapEnvironment();
-
 
         $('#search_box').bind('keyup', function (event) {
             if (event.keyCode == 13) {
                 $scope.$apply(function () {
                     $location.url('/stream/match/' + $scope.q);
                 });
+            }
+        });
+
+        $('#playlist_content').hide();
+
+        $scope.togglePlaylist = function(){
+            $('#playlist_content').slideToggle();
+        }
+
+        $('body').click(function(evt) {
+            if(evt.target.id!='playlist_content' && $(evt.target).parents('#playlist_content').length==0
+                && evt.target.id!='playlist_button' && $(evt.target).parents('#playlist_button').length==0) {
+                $('#playlist_content').slideUp();
             }
         });
     }]);

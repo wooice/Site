@@ -31,6 +31,9 @@ angular.module('playlist.services', ['ngResource'])
                         });
                     }
                 },
+                clearAll: function() {
+                    sounds = [];
+                },
                 list: function () {
                     return sounds;
                 },

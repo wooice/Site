@@ -1,0 +1,108 @@
+<div id="tags_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" ng-controller="tagsSelectCtrl">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body row">
+                <div class="col-xs-12 col-md-12">
+                    <div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div ng-repeat="cate in categories | filter:odd">
+                                    <div>
+                                        <div class="title_div">
+                                <span class="pull-right tags_more"> <label style="cursor: pointer;"
+                                                                           ng-click="cate.showAll=!cate.showAll">More
+                                    <i class="icon-double-angle-right" ng-show="cate.showAll"></i><i
+                                            class="icon-double-angle-down" ng-show="!cate.showAll"></i></label>
+                                </span>
+
+                                            <h2 class="title_h2">{{cate.name}}
+                                            </h2>
+
+                                            <div style="clear: both;"></div>
+                                        </div>
+                                        <div>
+                                            <ul class="tags" style="padding-top: 10px">
+                                                <li ng-repeat="curatedTag in curatedTags | filter:{category.name: cate.name}"
+                                                    ng-show="cate.showAll || $index<5"
+                                                    style="padding-right: 25px;padding-bottom: 30px;float: left">
+                                                    <a onclick="return false;" ng-click="toogleInterest()"
+                                                       style="background: {{curatedTag.class}};cursor:pointer;">
+                                                        <span> {{curatedTag.label}}   </span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                            <div style="clear: both"></div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div ng-repeat="cate in categories | filter:even">
+                                    <div>
+                                        <div class="title_div">
+                                <span class="pull-right tags_more"> <label style="cursor: pointer;"
+                                                                           ng-click="cate.showAll=!cate.showAll">More
+                                    <i class="icon-double-angle-right" ng-show="cate.showAll"></i><i
+                                            class="icon-double-angle-down" ng-show="!cate.showAll"></i></label></span>
+
+                                            <h2 class="title_h2">{{cate.name}}
+                                            </h2>
+
+                                            <div style="clear: both;"></div>
+                                        </div>
+                                        <div>
+                                            <ul class="tags" style="padding-top: 10px">
+                                                <li ng-repeat="curatedTag in curatedTags | filter:{category.name: cate.name}"
+                                                    ng-show="cate.showAll || $index<5"
+                                                    style="padding-right: 25px;padding-bottom: 30px;float: left">
+                                                    <a onclick="return false;" ng-click="toogleInterest()"
+                                                       style="background: {{curatedTag.class}};cursor:pointer;">
+                                                        <span> {{curatedTag.label}}    </span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                            <div style="clear: both"></div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div>
+                            <li ng-repeat="newTag in inputTags | filter:{category.name: cate.name}"
+                                style="padding-right: 25px;padding-bottom: 30px;float: left">
+                                <a onclick="return false;" ng-click="toogleInterest()"
+                                   style="background: {{curatedTag.class}};cursor:pointer;">
+                                    <span> {{newTag}}    </span>
+                                </a>
+                            </li>
+                        </div>
+                        <div class="form-group">
+                            <div class="controls">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="icon-tags"></i></span>
+                                    <input type="text" class="form-control" placeholder="其他标签.."
+                                           ng-model="inputTag" typeahead="tag.label for tag in searchTags($viewValue) | filter:$viewValue"
+                                           typeahead-loading="loadingTags" typeahead-on-select="addInputTag()" required>
+                                    <i ng-show="loadingTags" class="glyphicon glyphicon-refresh"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary" ng-click="()">完成
+                </button>
+                <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>

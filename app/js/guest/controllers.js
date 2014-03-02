@@ -106,8 +106,8 @@ angular.module('guest.controllers', [])
 
         if ($routeParams.relogin == 'true' && $.cookie('token'))
         {
-            var user = {userId: UserService.getCurUserAlias(), token: $.cookie('token')};;
-                Guest.tokenLogin({}, user, function(){
+            var user = {userId: UserService.getCurUserAlias(), token: $.cookie('token')};
+            Guest.tokenLogin({}, user, function(){
                 $location.url('/stream');
             }, function(){
                 $location.url('/interest');

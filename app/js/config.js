@@ -5,27 +5,27 @@
 angular.module('wooice.config', []).constant(
 	'config',
 	{
-//		site : {
-//			url : 'http://localhost'
-//		},
-//		service : {
-//			url : 'http:///localhost/Services',
-//            url_noescp : 'http:///localhost/Services'
-//		},
-//        storage: {
-//            wave: 'http://wooice-wave-dev.u.qiniudn.com'
-//        },
-
-        site : {
-            url : 'http://www.wowoice.com'
-        },
-        service : {
-            url : 'http://www.wowoice.com/Services',
-            url_noescp : 'http://www.wowoice.com/Services'
-        },
+		site : {
+			url : 'http://localhost'
+		},
+		service : {
+			url : 'http:///localhost/Services',
+            url_noescp : 'http:///localhost/Services'
+		},
         storage: {
-             wave: 'http://wowoice-wave.u.qiniudn.com'
+            wave: 'http://wooice-wave-dev.u.qiniudn.com'
         },
+
+//        site : {
+//            url : 'http://www.wowoice.com'
+//        },
+//        service : {
+//            url : 'http://www.wowoice.com/Services',
+//            url_noescp : 'http://www.wowoice.com/Services'
+//        },
+//        storage: {
+//             wave: 'http://wowoice-wave.u.qiniudn.com'
+//        },
 
         userStreamPath: 'stream/',
         soundsPerPage: 4,

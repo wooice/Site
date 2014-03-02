@@ -38,7 +38,7 @@ angular.module('wooice', ['ngRoute', 'ui.bootstrap', 'ui.slider', 'wooice.direct
                     case 401:
                         if ($.cookie("rememberUser"))
                         {
-                            $location.url('guest/login?relogin=true');
+                            $location.url('interest?relogin=true');
                         }
                         else
                         {

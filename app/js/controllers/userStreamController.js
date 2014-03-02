@@ -61,7 +61,9 @@ angular.module('user.stream.controllers', [])
         });
 
         $scope.showFollowingUser = function(){
-            $("#" + $scope.modalId).modal();
+            $("#" + $scope.modalId).modal({
+                backdrop : false
+            });
         }
 
         $scope.list = function (page) {
@@ -100,7 +102,9 @@ angular.module('user.stream.controllers', [])
         });
 
         $scope.showFollowedUser = function(){
-            $("#" + $scope.modalId).modal();
+            $("#" + $scope.modalId).modal({
+                backdrop : false
+            });
         }
 
         $scope.list = function (page) {

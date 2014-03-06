@@ -11,7 +11,7 @@
                 "app/lib/angular/angular-animate.min.js",
                 "app/lib/angular/angular-cookies.min.js",
                 "app/lib/angular-storage/angularLocalStorage.js",
-                "app/lib/angular-ui/ui-bootstrap-tpls-0.6.0.js",
+                "app/lib/angular-ui/ui-bootstrap-tpls-0.10.0.js",
                 "app/lib/angular-slider/slider.js",
                 "app/lib/underscore.js/underscore-min.js",
                 "app/lib/underscore.js/underscore.string.min.js",

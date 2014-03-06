@@ -116,7 +116,7 @@
     <div class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
             <li ng-if="!userService.validateRoleGuest()">
-                <a href="#" title="你关注的声音推送" ng-click="goto('/stream')">关注</a>
+                <a href="#" onclick="return false;" title="你关注的声音推送" ng-click="goto('/stream')">关注</a>
             </li>
             <li>
                 <a href="#" onclick="return false;" ng-click="goto('/interest')" title="发现你感兴趣的声音">发现</a>
@@ -139,12 +139,12 @@
                    class='sound_player_button'
                    ng-class="wooicePlayer.getCurSound().isPlaying? 'icon-pause': 'icon-play'"
                    ng-click="togglePause()"></i></a></li>
-            <li ng-show="wooicePlayer.getCurSound().id">
+            <li ng-if="wooicePlayer.getCurSound().id">
                 <a href="{{wooicePlayer.getCurSound().title.route}}">
                     <span style="color: white">{{wooicePlayer.getCurSound().title.alias}}</span>
                 </a>
             </li>
-            <li>
+            <li ng-if="wooicePlayer.getCurSound().id">
                 <a style="color: #999;font-size: 12px" onclick="return false;">
                     <span ng-if="wooicePlayer.getCurSound().curPostion>0">{{formatTime(wooicePlayer.getCurSound().curPostion/1000)}}</span>
                     <span ng-if="wooicePlayer.getCurSound().curPostion>0 && wooicePlayer.getCurSound().duration>0">/</span>
@@ -166,7 +166,6 @@
             <li>
                 <a id="playlist_button" style="cursor: pointer;" ng-click="togglePlaylist()"><i class="icon-th-list"
                                                                                                 title="播放列表"></i></a>
-
                 <span id="playlist_content" class="display_panel">
                         <span class="display_header" ng-click="clearPlaylist()">播放列表<span
                                 style="font-size: 12px;font-weight: normal"> ({{playList.list().length}})</span>

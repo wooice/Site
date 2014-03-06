@@ -31,30 +31,11 @@ angular.module('upload.controllers', [
                 }
             }
 
-            $scope.addNewTag = function() {
-                var label = $("#tags").val();
-                if (label) {
-                    if ($.inArray(label, $scope.defaultSound.tags) != -1) {
-                        return;
-                    }
-                    $scope.defaultSound.tags.push(label);
-                    $("#tags").val("");
-                    $("#tags").attr("placeholder", "请再多打几个");
-                }
-            }
-
-            $scope.addTag = function(){
-                var label = $("#tags").val();
-                if (label) {
-                    if ($.inArray(label, $scope.defaultSound.tags) != -1) {
-                        return;
-                    }
-                    $scope.$apply(function () {
-                        $scope.defaultSound.tags.push(label);
-                    });
-                    $("#tags").val("");
-                    $("#tags").attr("placeholder", "请再多打几个");
-                }
+            $scope.showTags = function() {
+                $("#tags_modal").modal({
+                    keyboard: false,
+                    backdrop: 'static'
+                });
             }
 
             $scope.discard = function()

@@ -37,7 +37,7 @@ angular.module('modal.controllers', [])
 
         $scope.reset();
     }])
-    .controller("tagsSelectCtrl", ['$scope', '$http', 'config', function ($scope, $http, config) {
+    .controller("tagsSelectCtrl", ['$scope', '$http', 'config', 'Tag', function ($scope, $http, config, Tag) {
         $scope.curatedTags = [];
         $scope.inputTags = [];
         $scope.inputTag = null;
@@ -58,53 +58,84 @@ angular.module('modal.controllers', [])
         });
 
         var tags = Tag.curated({}, function () {
-            var interestedTags = [];
             $.each(tags, function (index, tag) {
-                if (tag.interested) {
-                    tag.class = "#0089e0";
-                    interestedTags.push(tag.label);
-                }
-                else {
-                    tag.class = 'gray';
-                }
+                tag.class = 'gray';
                 $scope.curatedTags.push(tag);
             });
         });
 
         $scope.toogleInterest = function () {
-            var curatedTag = this.curatedTag;
-
-            if (curatedTag.interested) {
-                curatedTag.class = "gray";
-                curatedTag.interested = false;
-                //TODO: REMOVE THIS TAG FROM INPUT TAGS
-            }
-            else {
-                curatedTag.class = "#0089e0";
-                curatedTag.interested = true;
-                $scope.inputTags.push(curatedTag);
-            }
+            this.curatedTag.interested = !this.curatedTag.interested;
         };
 
         $scope.searchTags = function(queryString){
-            return $http.get(config.service.url_noescp + '/tag/list?term=' + queryString, {
-            }).then(function(res){
+            return $http
+                ({
+                    method: 'GET',
+                    url: config.service.url_noescp + '/tag/list?term=' + queryString
+                })
+                .then(function($res){
                     var tags = [];
-                    $.each(res, function (index, tag) {
-                        tags.push(tag);
-                    });
+                    if ($res)
+                    {
+                        $.each($res.data, function (index, tag) {
+                            tags.push(tag);
+                        });
+                    }
+
                     return tags;
-            });
+                });
         };
 
         $scope.addInputTag = function(){
-            $scope.inputTags.push($scope.inputTag);
+            if(!$scope.inputTag)
+            {
+                return;
+            }
+
+            var isCurated = false;
+            $.each($scope.curatedTags, function(index, curatedTag){
+                if (curatedTag.label === $scope.inputTag)
+                {
+                    curatedTag.interested = true;
+                    isCurated = true;
+                }
+            });
+
+            if (!isCurated && $.inArray($scope.inputTag, $scope.inputTags) === -1)
+            {
+                $scope.inputTags.push($scope.inputTag);
+            }
+
+            $scope.inputTag = null;
         }
 
-        $scope.addTagsToSound = function()
+        $scope.removeTag = function (label) {
+            $scope.inputTags = jQuery.grep($scope.inputTags, function (value) {
+                return value != label;
+            });
+            $("#tag_" + label).remove();
+        }
+
+        $scope.attachTags = function()
         {
-            $scope.defaultSound.tags.$scope.inputTags($scope.inputTags);
-            $('#tags_modal').hide();
+            if ($scope.defaultSound)
+            {
+                $scope.defaultSound.tags = [];
+
+                $.each($scope.curatedTags, function (index, tag) {
+                    if (tag.interested)
+                    {
+                        $scope.defaultSound.tags.push(tag.label);
+                    }
+                });
+
+                $.each($scope.inputTags, function (index, tag) {
+                     $scope.defaultSound.tags.push(tag);
+                });
+
+                $('#tags_modal').modal('hide');
+            }
         }
     }])
 ;

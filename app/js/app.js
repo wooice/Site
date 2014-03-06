@@ -5,7 +5,8 @@ angular.module('wooice', ['ngRoute', 'ui.bootstrap', 'ui.slider', 'wooice.direct
         'page.controllers', 'auth.controllers', 'guest.controllers', 'profile.controllers', 'stream.controllers', 'common.stream.controllers', 'user.stream.controllers', 'user.message.controllers',  'footer.controllers',
         'modal.controllers', 'header.controllers', 'interest.controllers', 'sound.controllers', 'sound.social.controllers', 'player.controllers', 'upload.controllers', 'admin.controllers', 'infringe.controllers']).
 
-    config(['$routeProvider', '$httpProvider', '$locationProvider', function ($routeProvider, $httpProvider, $locationProvider) {
+    config(['$routeProvider', '$httpProvider', '$locationProvider',
+        function ($routeProvider, $httpProvider, $locationProvider) {
         $routeProvider.
             when('/stream', {templateUrl: 'partials/commonStream.html', controller: ''}).
             when('/stream/:value', {templateUrl: 'partials/userStream.html', controller: 'userBasicController'}).
@@ -28,7 +29,7 @@ angular.module('wooice', ['ngRoute', 'ui.bootstrap', 'ui.slider', 'wooice.direct
             when('/auth/resetPass', {templateUrl: 'partials/auth/resetPass.html', controller: 'resetPassCtrl'}).
             otherwise({redirectTo: '/'});
 
-        var httpErrors = ['$q', '$location', function ($q, $location) {
+        var httpErrors = ['$q', '$location', function ($q) {
             var success = function (response) {
                 return response;
             };
@@ -36,15 +37,9 @@ angular.module('wooice', ['ngRoute', 'ui.bootstrap', 'ui.slider', 'wooice.direct
             var error = function (response) {
                 switch (response.status) {
                     case 401:
-                        if ($.cookie("rememberUser"))
+                        if (!(response.config && response.config.url && response.config.url.indexOf("auth/isAlive") > -1))
                         {
-                            $location.url('interest?relogin=true');
-                        }
-                        else
-                        {
-                            $('#login_modal').modal({
-                                keyboard: false
-                            });
+                            $('#login_modal').modal();
                         }
 
                         return $q.reject(response);
@@ -70,7 +65,7 @@ angular.module('wooice', ['ngRoute', 'ui.bootstrap', 'ui.slider', 'wooice.direct
         $httpProvider.responseInterceptors.push(httpErrors);
     }])
 
-    .run(function ($rootScope, config, $location, $anchorScroll, $routeParams, Auth, UserService, Guest) {
+    .run(function ($rootScope, config, $location, $anchorScroll, $routeParams, Auth, UserService, Guest, PlayList, storage) {
         $rootScope.config = config;
 
         var routesThatDontRequireAuth = ['/guest', '/auth', '/interest', '/stream', '/sound'];
@@ -101,20 +96,6 @@ angular.module('wooice', ['ngRoute', 'ui.bootstrap', 'ui.slider', 'wooice.direct
         }
 
         $rootScope.$on('$locationChangeStart', function (event, next, current) {
-                if (!$location.url() || $location.url()=="/")
-                {
-                    if (UserService.validateRoleGuest())
-                    {
-                        $location.path('interest');
-                        return;
-                    }
-                    $location.path('stream');
-                }
-
-                if (noCheck($location.url()) || routeGuest($location.url())) {
-                    return;
-                }
-
                 var user = Auth.isAlive(null, function(){
                     if (!user || !user.profile)
                     {
@@ -141,8 +122,53 @@ angular.module('wooice', ['ngRoute', 'ui.bootstrap', 'ui.slider', 'wooice.direct
 
                         return;
                     }
+
+                    if (!$location.url() || $location.url() == '/')
+                    {
+                        $location.path('/interest');
+                    }
                 }, function(){
-                    $('#error_modal').modal();
+                    if (storage && storage.get("rememberUser") && storage.get('token') && storage.get('userId'))
+                    {
+                        var user = {userId: storage.get('userId'),
+                            token: storage.get('token')};
+
+                        Guest.tokenLogin({}, user, function(curUser){
+                            $('#login_modal').modal('hide');
+
+                            UserService.setupUser({
+                                userAlias: curUser.profile.alias,
+                                role: curUser.userRoles[0].role
+                            });
+                            UserService.setColor(curUser.profile.color);
+                            UserService.setAvatar(curUser.profile.avatorUrl);
+
+                            $.cookie('show_verify', false);
+
+                            PlayList.setup();
+                        }, function(){
+                            UserService.setupUser(null);
+                            $('#login_modal').modal();
+                        });
+
+                        if (!$location.url() || $location.url() == '/')
+                        {
+                            $location.path('/interest');
+                        }
+                    }
+                    else
+                    {
+                        UserService.setupUser(null);
+                        if (noCheck($location.url()) || routeGuest($location.url())) {
+                            return;
+                        }
+
+                        if (!$location.url() || $location.url() == '/')
+                        {
+                            $location.path('/interest');
+                        }
+                        $('#login_modal').modal();
+                    }
                 });
         });
 

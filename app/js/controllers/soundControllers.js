@@ -575,8 +575,12 @@ angular.module('sound.controllers', [])
                     loadCommentsInSound();
                 }
 
+                var hasSoundPlaying = false;
+                if (WooicePlayer.getCurSound() && WooicePlayer.getCurSound().isPlaying){
+                    hasSoundPlaying = true;
+                }
                 var soundPlayStatus = storage.get($scope.sound.id + "_player");
-                if (soundPlayStatus && soundPlayStatus.playing)
+                if (soundPlayStatus && soundPlayStatus.playing && !hasSoundPlaying)
                 {
                     WooicePlayer.play($scope.sound);
                 }

@@ -29,6 +29,7 @@
         </div>
     </div>
 </div>
+
 <div style="width: 80%">
 <div id="progresspart" class="row" style="display:none;padding-left: 15px">
 
@@ -66,7 +67,7 @@
                        class="icon-spinner icon-spin icon-large"></i>{{defaultSound.imgUploadMsg}}
                 </div>
                 <img ng-src="{{defaultSound.posterUrl}}" id="poster_img" class="img-responsive">
-                  <span style="margin-top: -60px;margin-left: 85px" ng-show="!defaultSound.uplodingPoster"
+                  <span style="margin-top: -60px;margin-left: 30%" ng-show="!defaultSound.uplodingPoster"
                         class="button button-small button-rounded button-flat action-button fileinput-button">
                     <span tooltip="上传成功后请点击'保存声音信息'按钮确认保存海报">上传海报</span>
                     <input id="poster_upload" type="file" name="file">
@@ -80,55 +81,63 @@
                   </span>
             </div>
             <div class="col-md-7">
-                <div style="padding-left: 30px">
+                <div style="padding-left: 30px;padding-top: 20px">
                     <div id="profile_info" class="{{defaultSound.profileMsgClass}}">
                         {{ defaultSound.profileMsg}}
                     </div>
                     <div style="width: 100%;padding: 5px">
-                        <label style="color:rgb(51, 51, 51)"><span style="color: red">*</span>声音名称</label>
+                        <label style="color:rgb(51, 51, 51);width: 100%"  class="title_div">
+                            <span style="color: red">*</span>
+                            <span  class="title_h2" style="font-size: 15px;padding-right: 10px">声音名称</span>
+                        </label>
                         <input type="text" id="name" name="name" placeholder="请输入这段声音的名称..."
-                               ng-model="defaultSound.name" required
+                               ng-model="defaultSound.name" required style="margin-top: -2px"
                                class="form-control">
-                    </div>
-
-                    <div style="width: 100%;padding: 5px;padding-bottom: 15px">
-                        <label style="color:rgb(51, 51, 51)">声音标签</label>
-
-                        <div>
-                                <span id="tags_div" ng-repeat="tag in defaultSound.tags">
-                                    <span class="btn-group green" style="padding: 5px;padding-right: 15px;"
-                                          id="tag_{{tag}">
-                                        <span style="font-size: 10px">
-                                            <i ng-show="tag.curated" class='icon-certificate'></i><i
-                                                class="icon-tag "> {{tag}}</i> <i class="icon-remove"
-                                                                                  ng-click="removeTag(tag)"></i>
-                                        </span>
-                                    </span>
-                                </span>
-                        </div>
-
-                        <div>
-                            <input type="text" id="tags" name="tags" class="form-control" placeholder="添加一个标签..."
-                                   tooltip="丰富的标签会让声音更被更多人发现">
-                            <button class="button button-rounded button-flat-primary button-small"
-                                    ng-click="addNewTag()">添加
-                            </button>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
         <div>
 
-            <div style="width: 100%;padding: 5px">
-                <label style="color:rgb(51, 51, 51)">声音描述</label>
-                <textarea id="description" name="description" placeholder="请介绍这段声音..."
+            <div style="width: 100%;padding: 5px;padding-top: 0px">
+                <div style="width: 100%;padding: 15px;padding-left: 0px;padding-bottom: 0px">
+                    <label style="color:rgb(51, 51, 51);width: 25%" class="title_div">
+                        <span class="title_h2" style="font-size: 15px;padding-right: 10px">声音标签</span>
+                        <button class="btn btn-success button-tiny" style="padding-left: 8px;padding-right: 8px;height: 24px"
+                                ng-click="showTags()"><i class="icon-plus"></i>
+                        </button>
+                    </label>
+
+                    <div>
+                        <ul class="tags" style="padding-top: 20px">
+                            <li ng-repeat="newTag in defaultSound.tags"
+                                style="padding-right: 25px;padding-bottom: 30px;float: left">
+                                <a id="tag_{{newTag}}" onclick="return false;"
+                                   style="background: #0089e0;cursor:pointer;">
+                                    <span>
+                                        {{newTag}}
+                                    </span>
+                                </a>
+                            </li>
+                        </ul>
+                        <div style="clear: both"></div>
+                    </div>
+
+                    <ng-include src="'partials/modals/tags.html'"></ng-include>
+                </div>
+
+                <label style="color:rgb(51, 51, 51);width: 100%" class="title_div">
+                    <span class="title_h2" style="font-size: 15px;">声音描述</span>
+                </label>
+                <textarea id="description" name="description" placeholder="请介绍这段声音..." style="margin-top: -7px"
                           ng-model="defaultSound.description" class="form-control"></textarea>
 
                 <div style="padding-top: 15px">
                     <div class="row">
                         <div class="col-md-4" style="width: 145px">
-                            <label style="color:rgb(51, 51, 51)">隐私</label> <br>
+                            <label style="color:rgb(51, 51, 51);width: 100%;border-bottom:0px"  class="title_div">
+                                <span class="title_h2" style="font-size: 15px;border-bottom:0px">隐私</span>
+                            </label>
 
                             <div class="btn-group">
                                 <button type="button" class="btn btn-primary" ng-model="defaultSound.status"
@@ -142,7 +151,9 @@
                         </div>
 
                         <div class="col-md-3" style="padding: 0px">
-                            <label style="color:rgb(51, 51, 51)">评论模式</label><br>
+                            <label style="color:rgb(51, 51, 51);width: 100%;border-bottom:0px"  class="title_div">
+                                <span  class="title_h2" style="font-size: 15px;border-bottom:0px">评论模式</span>
+                            </label><br>
 
                             <div class="btn-group" style="padding-top: 8px">
                                 <select ng-model="defaultSound.commentMode"
@@ -152,7 +163,8 @@
                         </div>
 
                         <div class="col-md-4" style="width: 145px">
-                            <label style="color:rgb(51, 51, 51)">声音类型</label>
+                            <label style="color:rgb(51, 51, 51);width: 100%;border-bottom:0px"  class="title_div">
+                                <span  class="title_h2" style="font-size: 15px;border-bottom:0px">声音类型</span></label>
                             <br>
 
                             <div class="btn-group">
@@ -169,9 +181,9 @@
 
                         <div class="col-md-2 btn-group" data-toggle="buttons-radio" style="padding: 15px;"
                              ng-show="defaultSound.recordType == 'original'">
-                            <label ng-click="showMore=!showMore" style="color: gray;margin-top: 20px;cursor: pointer;"><b>更多..</b>
-                                <i ng-show="!showMore" class="icon-chevron-right"></i>
-                                <i ng-show="showMore" class="icon-chevron-down"></i>
+                            <label ng-click="showMore=!showMore" style="color: gray;margin-top: 20px;cursor: pointer;"><b>更多</b>
+                                <i ng-show="!showMore" class="icon-double-angle-right"></i>
+                                <i ng-show="showMore" class="icon-double-angle-down"></i>
                             </label>
                         </div>
                     </div>
@@ -181,7 +193,9 @@
                         <hr>
                         <div class="row" style="padding-bottom: 10px">
                             <div class="btn-group col-md-6" data-toggle="buttons-radio" style="padding-top: 5px">
-                                <label>版权注册编码－ISWC编码(可选)</label>
+                                <label style="color:rgb(51, 51, 51);width: 100%;border-bottom:0px"  class="title_div">
+                                    <span  class="title_h2" style="font-size: 15px;border-bottom:0px">版权(ISWC)编码(可选)</span>
+                                </label>
 
                                 <div class="text-warning"
                                      ng-show="upload_form.rightNumber.$dirty && upload_form.rightNumber.$invalid">
@@ -191,13 +205,15 @@
                                     </small>
                                 </div>
 
-                                <input type="text" name="rightNumber" class="form-control"
+                                <input type="text" name="rightNumber" class="form-control" style="margin-top: -3px"
                                        ng-model="defaultSound.soundRight.rightNumber" ng-pattern="/^\d{16}$/"
                                        tooltip="已注册的作品可填写注册编码，该编码将用于版权验证">
                             </div>
 
                             <div class="col-md-6" style="padding-left:50px;">
-                                <label style="color:rgb(51, 51, 51)">允许下载</label>
+                                <label style="color:rgb(51, 51, 51);width: 100%;border-bottom:0px"  class="title_div">
+                                    <span  class="title_h2" style="font-size: 15px;border-bottom:0px">允许下载</span>
+                                </label>
                                 <br>
 
                                 <div class="btn-group">

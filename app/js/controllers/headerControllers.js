@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('header.controllers', [])
-    .controller('headerCtrl', ['$scope', '$rootScope', '$location', '$routeParams', '$timeout', 'User', 'CurSoundList', 'UserService', 'PlayList', 'WooicePlayer','Feedback',
-    function ($scope, $rootScope, $location, $routeParams, $timeout, User,CurSoundList, UserService, PlayList, WooicePlayer, Feedback) {
+    .controller('headerCtrl', ['$scope', '$rootScope', '$location', '$routeParams', '$timeout', 'User', 'CurSoundList', 'UserService', 'PlayList', 'WooicePlayer','Feedback','storage',
+    function ($scope, $rootScope, $location, $routeParams, $timeout, User,CurSoundList, UserService, PlayList, WooicePlayer, Feedback, storage) {
         $scope.q = $routeParams.q;
         $scope.userAlias = UserService.getCurUserAlias();
         $scope.userAvatar = UserService.getAvatar();
@@ -23,19 +23,18 @@ angular.module('header.controllers', [])
         });
 
         function postLogout(){
-            var token = $.cookie("token");
-            if (!token)
-            {
-                UserService.setupUser(null);
-            }
+            UserService.setupUser(null);
+
+            $.removeCookie('curSound');
+            storage.remove("token");
+            storage.remove("rememberUser");
+            storage.remove("userId");
 
             $.globalMessenger().post({
                 message: "感谢您的使用",
-                hideAfter: 10,
+                hideAfter: 5,
                 showCloseButton: true
             });
-
-            $.removeCookie('curSound');
             $location.path('/interest');
         }
 

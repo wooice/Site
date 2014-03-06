@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('guest.controllers', [])
-    .controller('loginCtrl', ['$scope', '$location', 'config', '$routeParams', 'Guest', 'PlayList', 'UserService',
-        function ($scope, $location, config, $routeParams, Guest, PlayList, UserService) {
+    .controller('loginCtrl', ['$scope', '$location', 'config', '$routeParams', 'Guest', 'PlayList', 'UserService', 'storage', '$rootScope',
+        function ($scope, $location, config, $routeParams, Guest, PlayList, UserService, storage, $rootScope) {
 
         $('#login_div').height($(window).height());
         var undef,
@@ -104,28 +104,15 @@ angular.module('guest.controllers', [])
             });
         }
 
-        if ($routeParams.relogin == 'true' && $.cookie('token'))
-        {
-            var user = {userId: UserService.getCurUserAlias(), token: $.cookie('token')};
-            Guest.tokenLogin({}, user, function(){
-                $location.url('/stream');
-            }, function(){
-                $location.url('/interest');
-            });
-        }
-
         $scope.userId = "";
         $scope.password = "";
         $scope.rememberUser = false;
         $scope.verifyCode = "";
         $scope.showVerify = $.cookie('show_verify');
         $scope.error;
-        if ($.cookie("rememberUser"))
-        {
-            $scope.rememberUser = true;
-        }
 
-        $scope.toLogin = function () {
+        $scope.toLogin = function ()
+        {
             var user = {userId: $scope.userId, password: md5($scope.password), rememberUser:$scope.rememberUser};   ;
             if ($scope.verifyCode)
             {
@@ -153,32 +140,41 @@ angular.module('guest.controllers', [])
             });
             UserService.setColor(user.profile.color);
             UserService.setAvatar(user.profile.avatorUrl);
+
+            $.cookie('show_verify', false);
+
+            PlayList.setup();
+
             $.globalMessenger().post({
                 message: user.profile.alias + "，欢迎回来！",
                 hideAfter: 5,
                 showCloseButton: true
             });
-            PlayList.setup();
+
 
             if ($scope.rememberUser)
             {
-                $.cookie("token", user.authToken, {
-                    expires : 7
-                });
-                $.cookie("rememberUser", true, {
-                    expires : 7
-                });
+                storage.set("token", user.authToken);
+                storage.set("rememberUser", 'true');
+                storage.set("userId", user.profile.alias);
             }
             else
             {
-                $.removeCookie("token");
-                $.removeCookie("rememberUser");
-            }
-            $.cookie('show_verify', false);
-            if (!UserService.validateRoleGuest()) {
-                $location.url('/interest');
+                storage.remove("token");
+                storage.remove("rememberUser");
+                storage.remove("userId");
             }
         }
+
+         if (UserService.validateRoleGuest() && storage.get("rememberUser") && storage.get('token') && storage.get('userId'))
+         {
+             var user = {userId: storage.get('userId'), token: storage.get('token')};
+             Guest.tokenLogin({}, user, function(curUser){
+                 postLogin(curUser);
+             }, function(){
+                 $('#login_modal').modal();
+             });
+         }
     }])
 
     .controller('registerCtrl', ['$scope', '$location', 'Guest', 'UserService', 'User', 'config', function ($scope, $location, Guest, UserService, User, config) {

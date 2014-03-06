@@ -1,6 +1,6 @@
 <div id="tags_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true" ng-controller="tagsSelectCtrl">
-    <div class="modal-dialog">
+    <div class="modal-dialog" style="width: 70%">
         <div class="modal-content">
             <div class="modal-body row">
                 <div class="col-xs-12 col-md-12">
@@ -27,7 +27,7 @@
                                                     ng-show="cate.showAll || $index<5"
                                                     style="padding-right: 25px;padding-bottom: 30px;float: left">
                                                     <a onclick="return false;" ng-click="toogleInterest()"
-                                                       style="background: {{curatedTag.class}};cursor:pointer;">
+                                                       style="background: {{curatedTag.interested? '#0089e0': 'gray'}};cursor:pointer;">
                                                         <span> {{curatedTag.label}}   </span>
                                                     </a>
                                                 </li>
@@ -59,7 +59,7 @@
                                                     ng-show="cate.showAll || $index<5"
                                                     style="padding-right: 25px;padding-bottom: 30px;float: left">
                                                     <a onclick="return false;" ng-click="toogleInterest()"
-                                                       style="background: {{curatedTag.class}};cursor:pointer;">
+                                                       style="background: {{curatedTag.interested? '#0089e0': 'gray'}};cursor:pointer;">
                                                         <span> {{curatedTag.label}}    </span>
                                                     </a>
                                                 </li>
@@ -73,35 +73,44 @@
                         </div>
                     </div>
 
+
                     <div>
                         <div>
-                            <li ng-repeat="newTag in inputTags | filter:{category.name: cate.name}"
-                                style="padding-right: 25px;padding-bottom: 30px;float: left">
-                                <a onclick="return false;" ng-click="toogleInterest()"
-                                   style="background: {{curatedTag.class}};cursor:pointer;">
-                                    <span> {{newTag}}    </span>
-                                </a>
-                            </li>
+                            <ul class="tags" style="padding-top: 10px">
+                                <li ng-repeat="newTag in inputTags"
+                                    style="padding-right: 25px;padding-bottom: 30px;float: left">
+                                    <a id="tag_{{newTag}}" onclick="return false;"
+                                       style="background: #0089e0;cursor:pointer;">
+                                    <span style="padding-right: 10px">
+                                        {{newTag}}
+                                    </span>
+
+                                    <span>
+                                          <i class="icon-remove" ng-click="removeTag(newTag)"></i>
+                                    </span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <div style="clear: both"></div>
                         </div>
-                        <div class="form-group">
-                            <div class="controls">
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="icon-tags"></i></span>
-                                    <input type="text" class="form-control" placeholder="其他标签.."
-                                           ng-model="inputTag" typeahead="tag.label for tag in searchTags($viewValue) | filter:$viewValue"
-                                           typeahead-loading="loadingTags" typeahead-on-select="addInputTag()" required>
-                                    <i ng-show="loadingTags" class="glyphicon glyphicon-refresh"></i>
+                        <form ng-submit="addInputTag()" style="padding-top: 15px">
+                            <div class="form-group">
+                                <div class="controls">
+                                    <div class="input-group">
+                                            <span class="input-group-addon"><i class="icon-tags"></i>
+                                            <i ng-show="loadingTags" class="icon-spinner icon-spin"></i></span>
+                                        <input type="text" ng-model="inputTag" class="form-control"
+                                               placeholder="添加其他标签..">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-primary" ng-click="()">完成
-                </button>
-                <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                <button class="btn btn-primary" ng-click="attachTags()">完成</button>
             </div>
         </div>
     </div>

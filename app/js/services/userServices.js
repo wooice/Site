@@ -23,7 +23,7 @@ angular.module('user.services', ['ngCookies']).
             getFollowing: {method: "GET", params:{action: 'following', pageSize: 3}, isArray: true }
         });
     }]).
-    factory('UserService', ['User', '$cookies', function (User, $cookies) {
+    factory('UserService', ['User', '$cookies', 'storage', function (User, $cookies, storage) {
         var currentUser = {userAlias: '', role: 'guest', loginType: 'wowoice'};
         if ($cookies.role)
         {
@@ -38,6 +38,7 @@ angular.module('user.services', ['ngCookies']).
         var playMode = 0;
         var avatar = null;
         var unreadMsgs = 0;
+        var volume = 0;//此处存储100-真实音量
 
         return {
             setupUser: function (user) {
@@ -86,7 +87,7 @@ angular.module('user.services', ['ngCookies']).
             getTimeCapacity: function() {
                if (this.validateRoleUser())
                {
-                    return 120;
+                    return 30;
                }
                if (this.validateRolePro())
                {
@@ -185,6 +186,21 @@ angular.module('user.services', ['ngCookies']).
             {
                 unreadMsgs = newUnreadMsgs;
                 $cookies.unreadMsgs = "" + newUnreadMsgs;
+            },
+            getVolume: function()
+            {
+                if (storage.get('volume'))
+                {
+                    return storage.get('volume');
+                }
+                else
+                {
+                    return volume;
+                }
+            },
+            setVolume: function(newVolume){
+                volume = newVolume;
+                storage.set('volume', newVolume);
             }
         };
     }])

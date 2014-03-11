@@ -1,5 +1,5 @@
-<form name="login" class="form-horizontal" style="padding-top: 30px;" ng-controller="loginCtrl">
-    <div class="hidden-xs" style="padding-top: 60px"></div>
+<form name="login" class="form-horizontal" style="padding-top: 10px;" ng-controller="loginCtrl">
+    <div class="hidden-xs" style="padding-top: 25px"></div>
     <div class="form-group" style="margin-bottom: 5px">
         <b>WOWOICE</b>登陆
     </div>
@@ -45,6 +45,7 @@
         <img style="padding-left: 20px"
              ng-src="{{config.service.url_noescp + '/auth/verify/image?refesh=' + refresh}}"
              ng-click="refresh=!refresh" title="看不清单击更换验证码">
+
         <div class="controls">
             <input type="text" class="form-control" id="verifyCode" name="verifyCode"
                    placeholder="验证码" ng-model="verifyCode">
@@ -95,4 +96,46 @@
             </div>
         </div>
     </div>
+    <div class="row" style="background-color:#F7F7F8;background-attachment: scroll;background-clip: border-box;background-image: url(img/footer_top_bg.jpg) ;
+            background-position:top center; background-repeat:no-repeat;background-origin: padding-box;">
+        <p align="center"
+           style="font-size: 12px;color: gray;background-clip:border-box;background-size:auto;padding-bottom: 5px;padding-top: 10px;">
+            Copyright © 2013 WOWOICE
+            <a href="#comms" onclick="return false;" style="padding-left: 25px"
+               data-toggle="modal">联系我们</a>
+            <span style="padding-left: 30px" class="hidden-xs">沪ICP备13042199号-2</span>
+        </p>
+    </div>
 </form>
+
+<div id="comms" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <form style="margin-bottom: 0px">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <b style="font-size: 21px">联系我们</b>
+                </div>
+
+                <div class="modal-body row">
+                    <div class="col-md-2"></div>
+                    <div class="col-xs-12 col-md-10">
+                        <label><i class="icon-envelope"></i>
+                                <span style="padding-left: 15px"><a
+                                        href="mailto:communications@wowoice.com">communications@wowoice.com</a></span></label>
+                    </div>
+                    <!--<div>-->
+                    <!--<label><i class="icon-weibo"></i><span style="padding-left: 18px"><a-->
+                    <!--href="http://weibo.com/wowoice"-->
+                    <!--target="_blank">wowoice</a></span></label>-->
+                    <!--</div>-->
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

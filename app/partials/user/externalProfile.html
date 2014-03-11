@@ -1,34 +1,38 @@
 <div ng-controller="externalProfileCtrl">
-    <legend><i class="icon-sitemap"></i> 外站信息</legend>
+    <div class="title_div">
+        <h2 class="title_h2"><i class="icon-sitemap"></i> 外站信息</h2>
+    </div>
+
     <div style="padding-bottom: 10px">
         <span class="{{messageClass}}">{{message}}</span>
     </div>
     <form name="external" style="padding-left: 30px">
-        <div  class="text-warning" style="padding-left: 100px;padding-bottom: 10px">
+        <div class="text-warning" style="padding-left: 100px;padding-bottom: 10px">
             <span class="error"
-                   ng-show="external.$invalid">
+                  ng-show="external.$invalid">
                 请输入正确的网址
             </span>
         </div>
-    <table style="width: 100%">
-        <tr ng-repeat="site in userExternal.sites">
-            <td><img src="img/logo/{{site.name}}.png" class="external_logo"/></td>
-            <td>
-                <input class="form-control" name="{{site.displayName}}" type="url" placeholder="{{site.displayName}}" ng-model="site.url">
-            </td>
-        </tr>
+        <table style="width: 100%">
+            <tr ng-repeat="site in userExternal.sites">
+                <td><img src="img/logo/{{site.name}}.png" class="external_logo"/></td>
+                <td>
+                    <input class="form-control" name="{{site.displayName}}" type="url"
+                           placeholder="{{site.displayName}}" ng-model="site.url">
+                </td>
+            </tr>
 
-        <tr>
-            <td></td>
-            <td  style="padding-top: 10px">
-                <button class="btn btn-default pull-right"   ng-disabled="external.$invalid"
-                   onclick="return false;" ng-click="saveProfile()">
-                    <span>保存信息</span>
-                </button>
-            </td>
-        </tr>
-    </table>
-     </form>
+            <tr>
+                <td></td>
+                <td style="padding-top: 10px">
+                    <button class="btn btn-default pull-right" ng-disabled="external.$invalid"
+                            onclick="return false;" ng-click="saveProfile()">
+                        <span>保存信息</span>
+                    </button>
+                </td>
+            </tr>
+        </table>
+    </form>
     <div>
 
     </div>

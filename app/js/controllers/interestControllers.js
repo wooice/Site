@@ -6,18 +6,11 @@ angular.module('interest.controllers', [])
     .controller('interestCtrl', ['$scope', 'config', '$routeParams', 'Tag', 'UserSocial',
         function ($scope, config, $routeParams, Tag, UserSocial) {
             $scope.pageNum = 1;
-            $scope.pageSize = 11;
+            $scope.pageSize = 8;
             $scope.curatedTags = [];
             $scope.recommendUsers = [];
             $scope.includePage = "";
-
-            $scope.odd = function (cate) {
-                return cate.id % 2 == 0;
-            }
-
-            $scope.even = function (cate) {
-                return cate.id % 2 == 1;
-            }
+            $scope.curCategory = '音乐流派';
 
             var categories = Tag.categories({}, function () {
                 $.each(categories, function (index, cate) {
@@ -30,7 +23,7 @@ angular.module('interest.controllers', [])
                 var interestedTags = [];
                 $.each(tags, function (index, tag) {
                     if (tag.interested) {
-                        tag.class = "#0089e0";
+                        tag.class = "#191919";
                         interestedTags.push(tag.label);
                     }
                     else {
@@ -40,11 +33,15 @@ angular.module('interest.controllers', [])
                 });
 
                 $scope.includePage = "partials/stream.html";
-
                 var users = UserSocial.getRecommandByTags({}, {tags: interestedTags, pageNum: $scope.pageNum, pageSize: $scope.pageSize}, function () {
                     $.each(users, function (index, user) {
-                        users.class = "";
                         user.route = config.userStreamPath + user.profile.alias;
+                        if (!user.userPrefer) {
+                            user.userPrefer = {};
+                        }
+                        if (user.profile.description && user.profile.description.length >= 18) {
+                            user.profile.descSummary = user.profile.description.substring(0, 18) + "...";
+                        }
                     });
                     $.each(users, function (index, user) {
                         var exist = false;
@@ -60,17 +57,15 @@ angular.module('interest.controllers', [])
                 });
             });
 
-            $scope.toogleInterest = function () {
-                $scope.includePage = null;
+            $scope.toogleInterest = function (curatedTag) {
                 $scope.$apply();
-                var curatedTag = this.curatedTag;
 
                 if (curatedTag.interested) {
                     curatedTag.class = "gray";
                     curatedTag.interested = false;
                 }
                 else {
-                    curatedTag.class = "#0089e0";
+                    curatedTag.class = "#191919";
                     curatedTag.interested = true;
                 }
 
@@ -80,6 +75,7 @@ angular.module('interest.controllers', [])
                         interestedTags.tags.push(curatedTag.label);
                     }
                 });
+                $scope.curatedTags.change = !$scope.curatedTags.change;
 
                 var users = UserSocial.getRecommandByTags({}, interestedTags, function () {
                     $.each(users, function (index, user) {
@@ -97,41 +93,6 @@ angular.module('interest.controllers', [])
                             $scope.recommendUsers.push(user);
                         }
                     });
-                });
-
-                $scope.includePage = "partials/stream.html";
-            }
-
-            $scope.toogleFollow = function () {
-                var recommendUser = this.recommendUser;
-                if (recommendUser.follow) {
-                    recommendUser.follow = false;
-                    recommendUser.class = "";
-                }
-                else {
-                    recommendUser.follow = true;
-                    recommendUser.class = "user_selected";
-                }
-            }
-
-            $scope.save = function () {
-                var followedUser = [];
-
-                $.each($scope.recommendUsers, function (index, user) {
-                    if (user.follow) {
-                        followedUser.push(user);
-                    }
-                });
-
-                $.each(followedUser, function (index, user) {
-                    UserSocial.follow({toUserAlias: user.profile.alias}, null, function () {
-                            $scope.msg = "关注成功，你将接收他们的上传与分享的声音";
-                            $scope.msgClass = "text-success";
-                        }, function () {
-                            $scope.msg = "关注失败，请稍后再试";
-                            $scope.msgClass = "text-warning";
-                        }
-                    );
                 });
             }
 

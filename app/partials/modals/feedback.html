@@ -3,9 +3,10 @@
     <form name="feedback" style="margin-bottom: 0px">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <b id="myModalLabel" style="font-size: 21px">意见反馈</b>
+                <div class="modal-header" style="border-bottom:0px">
+                    <div class="title_div">
+                        <h2 class="title_h2">意见反馈</h2>
+                    </div>
                 </div>
                 <div class="modal-body" style="padding-left: 40px">
                     <div>
@@ -29,7 +30,7 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
-                    <button class="btn btn-primary" ng-click="sendFeedback()" ng-disabled="feedback.$invalid">保存
+                    <button class="btn btn-primary" ng-click="sendFeedback()" ng-disabled="feedback.$invalid">发生
                     </button>
                 </div>
             </div>

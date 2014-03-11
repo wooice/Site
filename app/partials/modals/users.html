@@ -4,9 +4,11 @@
     <form style="margin-bottom: 0px">
         <div class="modal-dialog" style="width: 1000px;">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header" style="border-bottom:0px">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <b style="font-size: 16px;text-align: center">{{title}}</b>
+                    <div class="title_div">
+                        <h2 class="title_h2">{{title}}</h2>
+                    </div>
                 </div>
 
                 <div class="modal-body row" style="padding-bottom: 0px">
@@ -20,7 +22,7 @@
                                                                   style="width: 75px;height: 75px"></a>
                                 </div>
                                 <div style="padding-left: 95px">
-                                    <a href="{{user.route}}" ng-click="hideModal()">{{user.profile.alias}}</a>
+                                    <a href="{{user.route}}" ng-click="hideModal()"><span style="overflow: hidden">{{user.profile.alias}}</span></a>
 
                                     <div style="padding-top: 5px">
                                         <span title="{{user.userSocial.sounds}}条声音" class="ng-binding">{{user.userSocial.sounds}}
@@ -43,6 +45,9 @@
                                 </div>
                             </div>
 
+                            <div style="text-align: center" ng-if="users.length==0">
+                                <h3>暂无用户</h3>
+                            </div>
                             <pagination data="users" load-func="list" count-all-func="count"
                                         style="width: 95%;margin-top: 0px;margin-bottom: 0px"/>
                         </div>

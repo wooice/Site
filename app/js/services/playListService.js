@@ -1,6 +1,5 @@
 angular.module('playlist.services', ['ngResource'])
     .factory('PlayListService', ['$resource', 'config', function ($resource, config) {
-
         return $resource(config.service.url + '/sound/playlist', {}, {
             get: {method: 'GET', params: { }, isArray: true},
             add: {method: 'POST', params: { }, isArray: false},
@@ -8,8 +7,8 @@ angular.module('playlist.services', ['ngResource'])
         });
     }
     ])
-    .factory('PlayList', ['User', 'UserService', 'PlayListService', 'SoundUtilService', 'CurSoundList', 'config',
-        function (User, UserService, PlayListService, SoundUtilService, CurSoundList, config) {
+    .factory('PlayList', ['User', 'UserService', 'PlayListService', 'SoundUtilService', 'CurSoundList', 'config', 'storage',
+        function (User, UserService, PlayListService, SoundUtilService, CurSoundList, config, storage) {
             var sounds = [];
 
             if (!UserService.validateRoleGuest()) {
@@ -20,6 +19,14 @@ angular.module('playlist.services', ['ngResource'])
                     });
                 });
             }
+            else
+            {
+                if (storage.get('guest_list') && $.isArray(storage.get('guest_list')))
+                {
+                    sounds = storage.get('guest_list');
+                }
+            }
+
             return {
                 setup: function () {
                     if (!UserService.validateRoleGuest()) {
@@ -30,6 +37,9 @@ angular.module('playlist.services', ['ngResource'])
                             });
                         });
                     }
+                },
+                clearAll: function() {
+                    sounds = [];
                 },
                 list: function () {
                     return sounds;
@@ -44,6 +54,7 @@ angular.module('playlist.services', ['ngResource'])
                         }
                     }
                     sounds.push(sound);
+                    storage.set('guest_list', sounds);
                 },
                 removeSound: function (sound) {
                     for (var i = 0; i < sounds.length; i++) {
@@ -59,6 +70,8 @@ angular.module('playlist.services', ['ngResource'])
                             }
                         }
                     }
+
+                    storage.set('guest_list', sounds);
                 },
                 getSound: function (id) {
                     for (var i = 0; i < sounds.length; i++) {

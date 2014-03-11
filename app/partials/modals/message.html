@@ -3,24 +3,26 @@
     <form style="margin-bottom: 0px">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header" style="border-bottom:0px">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <b style="font-size: 16px;"> 私信框 <i class="icon-pencil"></i></b>
+                    <div class="title_div">
+                        <h2 class="title_h2">私信框 <i class="icon-pencil"></i></h2>
+                    </div>
                 </div>
                 <div class="modal-body row">
                     <div class="col-xs-12 col-md-12">
                         <div ng-show="!isSent">
-                            <form>
+                            <form name="messageForm">
                                 <div class="form-group">
                                     <label for="message_subject">标题</label>
-                                    <input type="text" class="form-control" id="message_subject" placeholder="请输入标题.." ng-model="topic">
+                                    <input type="text" class="form-control" id="message_subject" placeholder="请输入标题.." ng-model="topic" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="message_content">消息内容</label>
-                                    <textarea  class="form-control" rows="5" id="message_content" placeholder="请输入消息内容.." ng-model="content"></textarea>
+                                    <textarea  class="form-control" rows="5" id="message_content" placeholder="请输入消息内容.." ng-model="content" required></textarea>
                                 </div>
 
-                                <button type="submit" class="btn btn-default pull-right" ng-click="sendMessage()" ng-disabled="sending">发送消息</button>
+                                <button type="submit" class="btn btn-default pull-right" ng-click="sendMessage()" ng-disabled="sending || messageForm.$invalid">发送消息</button>
                             </form>
                         </div>
 

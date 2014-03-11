@@ -6,11 +6,11 @@ angular.module('wooice.config', []).constant(
 	'config',
 	{
 //		site : {
-//			url : 'http://192.168.1.3:8080/Site/app'
+//			url : 'http://localhost'
 //		},
 //		service : {
-//			url : 'http:///192.168.1.3\\:8080/Services',
-//            url_noescp : 'http:///192.168.1.3:8080/Services'
+//			url : 'http:///localhost/Services',
+//            url_noescp : 'http:/s/localhost/Services'
 //		},
 //        storage: {
 //            wave: 'http://wooice-wave-dev.u.qiniudn.com'

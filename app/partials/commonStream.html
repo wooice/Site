@@ -3,10 +3,13 @@
 <div role="main">
 
     <div class="row">
-        <div class="col-md-1 hidden-xs">
+        <div class="col-md-2 hidden-xs">
         </div>
 
-        <div class="col-md-7 col-xs-12">
+        <div class="col-md-6 col-xs-12">
+            <div class="title_div">
+                <h2 class="title_h2">您关注的声音流</h2>
+            </div>
             <ng-include src="'partials/stream.html'"></ng-include>
         </div>
 
@@ -17,7 +20,7 @@
                         <span class="pull-right">
                             <i style="cursor:pointer" ng-show="recommendUsers.length > 0"
                                class='button button-small button-pill'
-                               ng-click="save()">关注选定用户</i>
+                               ng-click="save()">关注</i>
                          </span>
                     </legend>
 
@@ -29,7 +32,7 @@
                             <div ng-show="$index < 4">
                                 <div class="user {{recommendUser.class}}">
                                     <a href="#" onclick="return false;">
-                                        <img ng-src="{{recommendUser.profile.avatorUrl}}" class="img-responsive user_avatar_oval">
+                                        <img ng-src="{{recommendUser.profile.avatorUrl}}" class="user_avatar_oval" style="width: 37px;height: 37px">
                                     </a>
                                 </div>
                                 <div class="user_alias">
@@ -38,12 +41,15 @@
                             </div>
                         </div>
                     </div>
-                    <div ng-if="recommendUsers.length == 0" style="padding-left: 15px">
+                    <div ng-if="!loadingUsers && recommendUsers.length == 0" style="padding-left: 15px">
                         暂无用户推荐
+                    </div>
+                    <div ng-if="loadingUsers">
+                        <span><i class="icon-spinner icon-spin"></i>努力加载中...</span>
                     </div>
                 </div>
 
-                <div style="padding-top: 35px;height:150px">
+                <div style="padding-top: 35px;height:150px;font-size: 12px">
                     <legend style="font-size: 13px">为您推荐的声音 </legend>
 
                     <div ng-if="recommendSounds.length > 0"  class="row">
@@ -51,7 +57,7 @@
                             <div ng-show="$index < 4">
                                 <div>
                                     <a href='{{recommendSound.route}}'>
-                                        <img ng-src="{{recommendSound.profile.poster.url}}" class="img-responsive user_avatar_oval">
+                                        <img ng-src="{{recommendSound.profile.poster.url}}" class="user_avatar_oval"  style="width: 37px;height: 37px">
                                     </a>
                                 </div>
                                 <div style="word-wrap: break-word;text-align: center">
@@ -61,8 +67,11 @@
                         </div>
                     </div>
 
-                    <div ng-if="recommendSounds.length == 0" style="padding-left: 15px">
+                    <div ng-if="!loadingSounds && recommendSounds.length == 0" style="padding-left: 15px">
                         暂无声音推荐
+                    </div>
+                    <div ng-if="loadingSounds">
+                        <span><i class="icon-spinner icon-spin"></i>努力加载中...</span>
                     </div>
                 </div>
             </div>

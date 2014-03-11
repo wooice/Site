@@ -1,12 +1,14 @@
 'use strict';
 
-angular.module('wooice', ['ngRoute', 'ui.bootstrap', 'wooice.directives', 'wooice.config', 'wooice.player', 'wooice.waver', 'angularLocalStorage', 'feedback.services', 'playlist.services',
+angular.module('wooice', ['ngRoute', 'ui.bootstrap', 'ui.slider', 'wooice.directives', 'wooice.config', 'wooice.player', 'wooice.waver', 'angularLocalStorage', 'feedback.services', 'playlist.services',
         'auth.services', 'guest.services', 'profile.services', 'sound.services', 'tag.services', 'storage.services', 'user.services', 'sound.pro.services', 'util.services', 'admin.services',
-        'auth.controllers', 'guest.controllers', 'profile.controllers', 'stream.controllers', 'common.stream.controllers', 'user.stream.controllers', 'user.message.controllers',  'footer.controllers',
+        'page.controllers', 'auth.controllers', 'guest.controllers', 'profile.controllers', 'stream.controllers', 'common.stream.controllers', 'user.stream.controllers', 'user.message.controllers',  'footer.controllers',
         'modal.controllers', 'header.controllers', 'interest.controllers', 'sound.controllers', 'sound.social.controllers', 'player.controllers', 'upload.controllers', 'admin.controllers', 'infringe.controllers']).
 
-    config(['$routeProvider', '$httpProvider', '$locationProvider', function ($routeProvider, $httpProvider, $locationProvider) {
+    config(['$routeProvider', '$httpProvider', '$locationProvider',
+        function ($routeProvider, $httpProvider, $locationProvider) {
         $routeProvider.
+            when('/', {templateUrl: 'partials/cover.html', controller: 'coverCtrl'}).
             when('/stream', {templateUrl: 'partials/commonStream.html', controller: ''}).
             when('/stream/:value', {templateUrl: 'partials/userStream.html', controller: 'userBasicController'}).
             when('/stream/:filter/:value', {templateUrl: 'partials/commonStream.html', controller: ''}).
@@ -21,7 +23,6 @@ angular.module('wooice', ['ngRoute', 'ui.bootstrap', 'wooice.directives', 'wooic
             when('/upload', {templateUrl: 'partials/upload.html', controller: 'soundUploadCtrl'}).
             when('/interest', {templateUrl: 'partials/interest.html', controller: 'interestCtrl'}).
             when('/copyright', {templateUrl: 'partials/copyright.html', controller: ''}).
-            when('/guest/login', {templateUrl: 'partials/guest/login.html', controller: ''}).
             when('/guest/register', {templateUrl: 'partials/guest/register.html', controller: 'registerCtrl'}).
             when('/guest/forgetPass', {templateUrl: 'partials/guest/forgetPass.html', controller: 'forgetPassCtrl'}).
             when('/auth/confirm', {templateUrl: 'partials/auth/confirm.html', controller: 'confirmControl'}).
@@ -29,7 +30,7 @@ angular.module('wooice', ['ngRoute', 'ui.bootstrap', 'wooice.directives', 'wooic
             when('/auth/resetPass', {templateUrl: 'partials/auth/resetPass.html', controller: 'resetPassCtrl'}).
             otherwise({redirectTo: '/'});
 
-        var httpErrors = ['$q', '$location', function ($q, $location) {
+        var httpErrors = ['$q', '$location', function ($q) {
             var success = function (response) {
                 return response;
             };
@@ -37,15 +38,9 @@ angular.module('wooice', ['ngRoute', 'ui.bootstrap', 'wooice.directives', 'wooic
             var error = function (response) {
                 switch (response.status) {
                     case 401:
-                        if ($.cookie("rememberUser"))
+                        if (!(response.config && response.config.url && response.config.url.indexOf("auth/isAlive") > -1))
                         {
-                            $location.url('guest/login?relogin=true');
-                        }
-                        else
-                        {
-                            $('#login_modal').modal({
-                                keyboard: false
-                            });
+                            $('#login_modal').modal();
                         }
 
                         return $q.reject(response);
@@ -71,10 +66,10 @@ angular.module('wooice', ['ngRoute', 'ui.bootstrap', 'wooice.directives', 'wooic
         $httpProvider.responseInterceptors.push(httpErrors);
     }])
 
-    .run(function ($rootScope, config, $location, $anchorScroll, $routeParams, Auth, UserService, Guest) {
+    .run(function ($rootScope, config, $location, $anchorScroll, $routeParams, Auth, UserService, Guest, PlayList, storage) {
         $rootScope.config = config;
 
-        var routesThatDontRequireAuth = ['/guest', '/auth', '/sound'];
+        var routesThatDontRequireAuth = ['/guest', '/auth', '/interest', '/stream', '/sound'];
         var routesThatForAdmins = ['/admin'];
         var routesNoCheck = ["/player", "/iframe"];
 
@@ -102,20 +97,6 @@ angular.module('wooice', ['ngRoute', 'ui.bootstrap', 'wooice.directives', 'wooic
         }
 
         $rootScope.$on('$locationChangeStart', function (event, next, current) {
-                if (!$location.url() || $location.url()=="/")
-                {
-                    if (UserService.validateRoleGuest())
-                    {
-                        $location.path('guest/login');
-                        return;
-                    }
-                    $location.path('stream');
-                }
-
-                if (noCheck($location.url()) || routeGuest($location.url())) {
-                    return;
-                }
-
                 var user = Auth.isAlive(null, function(){
                     if (!user || !user.profile)
                     {
@@ -143,7 +124,43 @@ angular.module('wooice', ['ngRoute', 'ui.bootstrap', 'wooice.directives', 'wooic
                         return;
                     }
                 }, function(){
-                    $('#error_modal').modal();
+                    if (storage && storage.get("rememberUser") && storage.get('token') && storage.get('userId'))
+                    {
+                        var user = {userId: storage.get('userId'),
+                            token: storage.get('token')};
+
+                        Guest.tokenLogin({}, user, function(curUser){
+                            $('#login_modal').modal('hide');
+
+                            UserService.setupUser({
+                                userAlias: curUser.profile.alias,
+                                role: curUser.userRoles[0].role
+                            });
+                            UserService.setColor(curUser.profile.color);
+                            UserService.setAvatar(curUser.profile.avatorUrl);
+
+                            $.cookie('show_verify', false);
+
+                            PlayList.setup();
+                        }, function(){
+                            UserService.setupUser(null);
+                            $('#login_modal').modal();
+                        });
+                    }
+                    else
+                    {
+                        UserService.setupUser(null);
+                        if (noCheck($location.url()) || routeGuest($location.url())) {
+                            return;
+                        }
+
+                        if (!$location.url() || $location.url()=="" || $location.url()=="/" || $location.url()=="/#mission")
+                        {
+                            return;
+                        }
+
+                        $('#login_modal').modal();
+                    }
                 });
         });
 

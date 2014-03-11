@@ -163,6 +163,9 @@
 
                 context.fillStyle = getColor(index, index / waveWidth, 'lower');
                 context.fillRect(index * widthPerLine, waveHeight * mainLinePerctg, widthPerLine, waveHeight * shadowPerctg * data);
+
+                context.fillStyle = getStatusColor(index, index / waveWidth);
+                context.fillRect(index * widthPerLine, waveHeight * mainLinePerctg, 1, 0.8);
             });
         }
 
@@ -201,6 +204,17 @@
                 return y == 'upper' ? (!playStatus && onHover) ? loadedUpperDeeperColor : loadedUpperColor : loadedLowerColor;
             }
             return   y == 'upper' ? ((!playStatus && onHover) ? loadedUpperColor : defaultUpperColor) : (defaultLowerColor);
+        }
+
+        function getStatusColor(index, x){
+            if (x < soundPosition / soundDuration)
+            {
+                return 'white';
+            }
+            else
+            {
+                return 'black';
+            }
         }
 
         function onMouseMove(evt) {

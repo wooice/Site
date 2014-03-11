@@ -1,25 +1,25 @@
-<div ng-controller="soundDetailCtrl" style="height: 100%">
+<div id="sound_detail" ng-controller="soundDetailCtrl" style="height: 100%">
     <div id="sound_{{sound.id}}" ng-class="{'default': 'sound_single_item', 'player': 'iframe_player'}[mode]" class="row" style="margin: 0px;margin-left: -25px">
-        <div id="sound_art_{{sound.id}}" class='sound_art col-md-2 hidden-xs' style="height: 100%;">
+        <div id="sound_art_{{sound.id}}" class='sound_art col-md-2 hidden-xs' style="height: 100%;padding: 0px;padding-right: 10px">
             <div id="sound_cover_{{sound.id}}">
                 <div id="sound_cover_ul_{{sound.id}}" class='poster_img'>
                     <div class="{{imgUploadMsgClass}}" style="font-size: 10px">
                         <i ng-show="imgUploadMsgClass == 'text-info'"
                            class="icon-spinner icon-spin icon-large"></i>{{ imgUploadMsg}}
                     </div>
-                    <img id="poster_img" ng-src="{{sound.poster}}" class="img-responsive">
+                    <img id="poster_img" ng-src="{{sound.poster}}" class="img-responsive img-thumbnail">
 
-                    <div style="padding-top: 5px"
+                    <div style="padding-top: 5px;padding-left: 15%"
                          ng-show="mode == 'default' && !userService.validateRoleGuest() && sound.owner.alias == userService.getCurUserAlias()">
                                   <span ng-show="!isUploadingPoster"
-                                        class="button button-small button-rounded button-flat form-control fileinput-button">
-                                    <span>传海报</span>
+                                        class="btn btn-default btn-xs fileinput-button">
+                                    <span>上传海报</span>
                                     <input id="poster_upload" type="file" name="file">
                                   </span>
 
                                     <span ng-click="cancelImageUpload()" id="cancel_img_upload"
                                           ng-show="isUploadingPoster"
-                                          class="button button-small button-rounded button-flat form-control fileinput-button">
+                                          class="btn btn-default btn-xs fileinput-button">
                                     <i class="icon-ban-circle icon-white"></i>
                                         <span>取消上传</span>
                                   </span>
@@ -69,13 +69,13 @@
                 </div>
             </div>
 
-            <div id="sound_player_body_{{sound.id}}" class='sound_player_body' style="cursor:pointer">
+            <div id="sound_player_body_{{sound.id}}" class='sound_player_body' style="cursor:pointer;height: 100px">
                 <div id="sound_wave_{{sound.id}}" class='sound_player_wave' style="position: relative;">
                     <div ng-repeat="comment in commentsInsound"
                          style="position: absolute;margin-top:-1;top:71%;left:{{comment.left}};line-height:0px">
                         <div id="sound_comment_in_sound_minor_{{comment.commentId}}" ng-show="!comment.showDetail">
                             <img
-                                 ng-src="{{comment.owner.profile.avatorUrl}}"  style="width: 20px;height: 20px"
+                                 ng-src="{{comment.owner.profile.avatorUrl}}"  style="width: 16px;height: 16px"
                                  ng-mouseover="comment.showDetail=!comment.showDetail">
                         </div>
 
@@ -84,7 +84,7 @@
                                 <a href="{{comment.owner.route}}" title="{{comment.owner.profile.alias}}"
                                    ng-show="mode == 'default'"
                                    style="width: 35px;"><img
-                                        ng-src="{{comment.owner.profile.avatorUrl}}"   style="width: 35px;height: 35px"></a>
+                                        ng-src="{{comment.owner.profile.avatorUrl}}"   style="width: 28px;height: 28px"></a>
                                 <a href="{{comment.owner.route}}" title="{{comment.owner.profile.alias}}"
                                    target='_blank' ng-show="mode == 'player'"
                                    style="width:35px"><img
@@ -114,15 +114,15 @@
                 </div>
 
                 <div class="hidden-xs">
-                    <a href="#" class="button button-small button-rounded button-flat action-button"
+                    <a href="#" class="btn btn-default btn-xs action-button"
                        ng-show="mode == 'default'"
                        onclick="return false;" ng-click="like(sound)"><i class="icon-heart"></i>
                         <span ng-show="!sound.soundUserPrefer.like">赞之</span></a>
-                    <a href="#" class="button button-small button-rounded button-flat action-button"
+                    <a href="#" class="btn btn-default btn-xs action-button"
                        ng-show="mode == 'default'"
                        onclick="return false;" ng-click="repost(sound)"><i
                             class="icon-retweet"></i></i> <span ng-show="!sound.soundUserPrefer.repost">转之</span></a>
-                    <a href="#" class="button button-small button-rounded button-flat action-button hasTooltip"
+                    <a href="#" class="btn btn-default btn-xs action-button hasTooltip"
                        ng-show="mode == 'default'" onclick="return false;"><i
                             class="icon-share"></i>分享
                     </a>
@@ -140,14 +140,14 @@
                                target="_blank"    style="border: 0;width: 32px;height: 32px" title="分享到新浪微博"><img src="img/logo/sina.png" style="width: 35px"/></a>
                         </div>
                     </div>
-                    <a href="#" class="button button-small button-rounded button-flat action-button"
+                    <a href="#" class="btn btn-default btn-xs action-button"
                        ng-show="mode == 'default' && (userService.validateRolePro() || userService.validateRolesPro())"
                        onclick="return false;" ng-click="togglePromote(sound.id)"><i
                             class="icon-star"></i>
                         <span ng-show="!sound.priority || sound.priority == 0">优先</span>
                     </a>
 
-                    <a href="#" class="button button-small button-rounded button-flat action-button"
+                    <a href="#" class="btn btn-default btn-xs action-button"
                        ng-show="sound.downloadable"
                        onclick="return false;" ng-click="download()"><i
                             class="icon-trash"></i></i> 下载</a>
@@ -211,6 +211,12 @@
                         <i class="icon-retweet stat_icon"></i>{{sound.soundSocial.reportsCount}}
                         |
                         <i class="icon-comment stat_icon"></i>{{sound.soundSocial.commentsCount}}
+                        |
+                        <button class="btn btn-default btn-xs"  ng-click="showMore=!showMore">
+                            <span>more</span>
+                            <i ng-if="!showMore" class="icon-chevron-down"></i>
+                            <i ng-if="showMore" class="icon-chevron-up"></i>
+                        </button>
                     </div>
             </div>
 
@@ -295,11 +301,11 @@
         </div>
     </div>
 
-    <div class="animate-switch-container"
-         ng-switch on="mode">
+    <div class="animate-switch-container" ng-switch on="mode" ng-show="showMore" style="padding-top: 15px">
         <div ng-switch-when="default">
             <ng-include src="'partials/soundSocial.html'"></ng-include>
         </div>
+
         <div ng-switch-when="player"></div>
     </div>
 </div>

@@ -1,144 +1,124 @@
-<style>
-    html {
-        overflow-y: scroll
-    }
-</style>
-
 <ng-include src="'partials/header.html'"></ng-include>
 
-<div class="row">
+<div class="row" style="margin-top: -40px;background-color: #F2F5F8;">
     <div class="col-md-2 col-xs-1"></div>
-    <div class="col-md-8 col-xs-10" style="padding-top: 0px">
-        <div id="tags">
-            <div class="row">
-                <div class="col-md-6">
-                    <div ng-repeat="cate in categories | filter:odd">
-                        <div>
-                            <div class="title_div">
-                                <span class="pull-right tags_more"> <label style="cursor: pointer;"
-                                        ng-click="cate.showAll=!cate.showAll">More
-                                    <i class="icon-double-angle-right" ng-show="cate.showAll"></i><i
-                                            class="icon-double-angle-down" ng-show="!cate.showAll"></i></label>
-                                </span>
+    <div class="col-md-8 col-xs-10" style="padding-top: 50px;{{deviceEnv=='xs'?'':'width:870px'}}">
 
-                                <h2 class="title_h2">{{cate.name}}
-                                </h2>
-
-                                <div style="clear: both;"></div>
-                            </div>
-                            <div>
-                                <ul class="tags" style="padding-top: 10px">
-                                    <li ng-repeat="curatedTag in curatedTags | filter:{category.name: cate.name}"
-                                        ng-show="cate.showAll || $index<5"
-                                        style="padding-right: 25px;padding-bottom: 30px;float: left">
-                                        <a onclick="return false;" ng-click="toogleInterest()"
-                                           style="background: {{curatedTag.class}};cursor:pointer;">
-                                            <span> {{curatedTag.label}}   </span>
-                                        </a>
-                                    </li>
-                                </ul>
-                                <div style="clear: both"></div>
-                            </div>
-                        </div>
-                        <br>
-                    </div>
+        <div id="recommand" style="position: relative;{{deviceEnv=='xs'?'':'height: 580px'}}" class="row">
+            <div class="col-xs-12 col-md-9">
+                <div class="title_div">
+                    <h2 class="title_h2"><i class="icon-compass"></i> 推荐用户</h2>
                 </div>
 
-                <div class="col-md-6">
-                    <div ng-repeat="cate in categories | filter:even">
-                        <div>
-                            <div class="title_div">
-                                <span class="pull-right tags_more"> <label style="cursor: pointer;"
-                                        ng-click="cate.showAll=!cate.showAll">More
-                                    <i class="icon-double-angle-right" ng-show="cate.showAll"></i><i
-                                            class="icon-double-angle-down" ng-show="!cate.showAll"></i></label></span>
+                <div style="background-color: white">
+                    <ul class="users_display" style="padding: 0 0 0 10px;color: rgb(119, 119, 119);">
+                        <li ng-repeat="recommendUser in recommendUsers">
+                            <a href="{{recommendUser.route}}" class="avatar_a">
+                                <img ng-src="{{recommendUser.profile.avatorUrl}}" class="title_link"
+                                     style="{{deviceEnv=='xs'?'width:100px;height:100px':''}}">
 
-                                <h2 class="title_h2">{{cate.name}}
-                                </h2>
-
-                                <div style="clear: both;"></div>
-                            </div>
-                            <div>
-                                <ul class="tags" style="padding-top: 10px">
-                                    <li ng-repeat="curatedTag in curatedTags | filter:{category.name: cate.name}"
-                                        ng-show="cate.showAll || $index<5"
-                                        style="padding-right: 25px;padding-bottom: 30px;float: left">
-                                        <a onclick="return false;" ng-click="toogleInterest()"
-                                           style="background: {{curatedTag.class}};cursor:pointer;">
-                                            <span> {{curatedTag.label}}    </span>
-                                        </a>
-                                    </li>
-                                </ul>
-                                <div style="clear: both"></div>
-                            </div>
-                        </div>
-                        <br>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="recommand" style="padding-top: 10px;position: relative;">
-            <div class="title_div">
-                <h2 class="title_h2">推荐用户</h2>
-            </div>
-
-            <div style="padding:25px {{deviceEnv!='xs'?'10%':'0%'}} 0px {{deviceEnv!='xs'?'10%':'0%'}};">
-                <ul class="users_display" style="padding: 0px;">
-                    <li ng-repeat="recommendUser in recommendUsers"
-                        style="padding: 5px;padding-bottom: 10px">
-                        <a href="{{recommendUser.route}}">
-                            <img ng-src="{{recommendUser.profile.avatorUrl}}" class="title_link"
-                                 ng-mouseenter="recommendUser.isHovering=true"
-                                 style="{{deviceEnv=='xs'?'width:100px;height:100px':''}}">
-
-                            <div ng-show="recommendUser.isHovering" ng-mouseleave="recommendUser.isHovering=false">
-                                <a href="{{recommendUser.route}}">
+                                <i class="avatar_cover">
                                     <b class="user_mask"></b>
                                     <b class="user_mask_info">
-                                         <span title="{{user.userSocial.sounds}}条声音" class="ng-binding">{{recommendUser.userSocial.sounds}}
-                                                <i class="icon-music"
-                                                   title="{{recommendUser.userSocial.sounds}}条声音"></i></span>
-                                            <span style="padding-left: 5px" title="关注{{user.userSocial.following}}人"
-                                                  class="ng-binding">{{recommendUser.userSocial.following}}
-                                                <i class="icon-user"
-                                                   title="关注{{recommendUser.userSocial.following}}人"></i></span>
-                                            <span style="padding-left: 5px" title="{{user.userSocial.followed}}人关注"
-                                                  class="ng-binding">{{recommendUser.userSocial.followed}}
-                                                <i class="icon-group"
-                                                   title="{{recommendUser.userSocial.followed}}人关注"></i></span>
+                                             <span title="{{user.userSocial.sounds}}条声音" class="ng-binding">{{recommendUser.userSocial.sounds}}
+                                                    <i class="icon-music"
+                                                       title="{{recommendUser.userSocial.sounds}}条声音"></i></span>
+                                                <span style="padding-left: 5px" title="关注{{user.userSocial.following}}人"
+                                                      class="ng-binding">{{recommendUser.userSocial.following}}
+                                                    <i class="icon-user"
+                                                       title="关注{{recommendUser.userSocial.following}}人"></i></span>
+                                                <span style="padding-left: 5px" title="{{user.userSocial.followed}}人关注"
+                                                      class="ng-binding">{{recommendUser.userSocial.followed}}
+                                                    <i class="icon-group"
+                                                       title="{{recommendUser.userSocial.followed}}人关注"></i></span>
                                     </b>
                                     <b class="user_mask_desc">
                                         <span>{{recommendUser.profile.descSummary}}</span>
                                     </b>
-                                </a>
-                                <b class="user_mask_follow">
-                                    <a href="#" class="btn btn-primary button-tiny form-control ng-binding"
-                                       onclick="return false;" ng-click="follow(recommendUser)">
-                                        <span ng-if="recommendUser.userPrefer.following">关注中</span>
-                                        <span ng-if="!recommendUser.userPrefer.following">关注</span>
-                                    </a>
-                                </b>
+                                    <b class="user_mask_follow">
+                                        <btn class="btn btn-primary button-tiny form-control ng-binding"
+                                           onclick="return false;" ng-click="follow(recommendUser)">
+                                            <span ng-if="recommendUser.userPrefer.following">关注中</span>
+                                            <span ng-if="!recommendUser.userPrefer.following">关注</span>
+                                        </btn>
+                                    </b>
+                                </i>
+                            </a>
+
+                            <div class="user_alias">
+                                {{recommendUser.profile.alias}}
                             </div>
-                        </a>
+                        </li>
+                    </ul>
+                    <div style="clear: both;padding-bottom: 10px"></div>
+                </div>
 
-                        <div class="user_alias">
-                            {{recommendUser.profile.alias}}
-                        </div>
-                    </li>
-                </ul>
-                <div style="clear: both"></div>
+                <div ng-if="recommendUsers.length == 0">
+                    暂无用户推荐
+                </div>
+            </div>
+
+            <div class="col-md-3 hidden-xs">
+                <div class="title_div">
+                    <h2 class="title_h2" style="font-size: 17px"><i class="icon-question-sign"></i> 帮助</h2>
+                </div>
+                <div style="background-color: white">
+                    <ul style="padding-left: 20px;font-size: 12px">
+                        <li style="padding: 5px;padding-left: 0px">
+                            <a href="/copyright">使用WOWOICE的版权说明</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
-        <div ng-if="recommendUsers.length == 0">
-            暂无用户推荐
-        </div>
 
-        <div style="padding-top: 15px;position: relative">
-            <div class="title_div">
-                <h2 class="title_h2">推荐声音</h2>
+    </div>
+    <div class="col-md-2 col-xs-1"></div>
+</div>
+
+<div class="row">
+    <div class="col-md-2 col-xs-1"></div>
+    <div class="col-md-8 col-xs-10" style="padding-top: 0px;{{deviceEnv=='xs'?'':'width:870px'}}">
+        <div style="padding-top: 15px;position: relative" class="row">
+            <div class="col-md-9 col-xs-12">
+                <div class="title_div">
+                    <h2 class="title_h2"><i class="icon-tasks"></i> 推荐声音</h2>
+                </div>
+                <ng-include src="includePage" autoscroll></ng-include>
             </div>
-            <ng-include src="includePage" autoscroll></ng-include>
+
+            <div class="col-md-3 hidden-xs">
+                <div class="title_div">
+                    <h2 class="title_h2" style="font-size: 17px"><i class="icon-tags"></i> 标签</h2>
+                </div>
+                <div style="border-bottom:2px solid #E6E6E6;height: 60px;background-color: #ffffff">
+                    <div style="display: inline;float: left;line-height: 20px;padding: 10px 0 10px 0px">
+                        <a class="tag_cat" href="#" onclick="return false;" ng-click="curCategory='音乐流派'"
+                           style="color: {{curCategory=='音乐流派'?'black':''}}">音乐流派</a>
+                        <a class="tag_cat" href="#" onclick="return false;" ng-click="curCategory='乐器演奏'"
+                           style="color: {{curCategory=='乐器演奏'?'black':''}}">乐器演奏</a>
+                        <a class="tag_cat" href="#" onclick="return false;" ng-click="curCategory='戏曲曲艺'"
+                           style="color: {{curCategory=='戏曲曲艺'?'black':''}}">戏曲曲艺</a>
+                        <a class="tag_cat" href="#" onclick="return false;" ng-click="curCategory='人声朗读'"
+                           style="color: {{curCategory=='人声朗读'?'black':''}}">人声朗读</a>
+                    </div>
+                </div>
+
+                <div>
+                    <div>
+                        <ul class="tags" style="padding-top: 10px;padding-left: 4%">
+                            <li ng-repeat="curatedtag in curatedTags | filter:{category.name: curCategory}"
+                                style="padding-right: 25px;padding-bottom: 30px;float: left">
+                                <a onclick="return false;" ng-click="toogleInterest(curatedtag)"
+                                   style="background: {{curatedtag.class}};cursor:pointer;">
+                                    <span> {{curatedtag.label}}</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <div style="clear: both"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="col-md-2 col-xs-1"></div>

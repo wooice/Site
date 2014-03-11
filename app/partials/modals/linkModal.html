@@ -1,0 +1,42 @@
+<div id="link_panel" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" ng-controller="SyncLinkCtrl">
+    <form style="margin-bottom: 0px" name="link_form">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body row">
+                    <div class="col-md-1"></div>
+                    <div class="col-xs-12 col-md-10">
+                        <div class="title_div" style="font-size: 17px">
+                            <h2 class="title_h2">同步音频</h2>
+                        </div>
+
+                        <div style="padding: 15px">
+                            <span>请输入您要同步到WOWOICE的音频地址</span>
+
+                            <div style="padding: 10px 0 10px 0">
+                                <div class="text-warning"
+                                     ng-show="link_form.soundLink.$dirty && link_form.soundLink.$invalid">
+                                        <span ng-show="link_form.soundLink.$error.url">
+                                            请输入正确的网址
+                                        </span>
+                                    <small ng-show="link_form.soundLink.$error.pattern">
+                                        请输入正确的链接地址，可以同步的音频配类型包括mp3, wma, flac, ogg
+                                    </small>
+                                </div>
+                                <input type="url" name="soundLink" ng-model="defaultSound.soundLink" class="form-control"
+                                       placeholder="http://..." ng-pattern="/(mp3|wma|flac|ogg)/">
+                            </div>
+                            <span style="font-size: 12px;color: gray;">* 同步前请确保您输入的链接可正常访问</span>
+                        </div>
+                    </div>
+                    <div class="col-md-1"></div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+                    <button class="btn btn-primary" ng-click="syncToWowoice()" ng-disabled="link_form.$invalid">开始同步</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

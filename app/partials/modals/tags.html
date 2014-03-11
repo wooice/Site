@@ -21,13 +21,13 @@
 
                                             <div style="clear: both;"></div>
                                         </div>
-                                        <div>
+                                        <div style="background-color: #ffffff">
                                             <ul class="tags" style="padding-top: 10px">
                                                 <li ng-repeat="curatedTag in curatedTags | filter:{category.name: cate.name}"
                                                     ng-show="cate.showAll || $index<5"
                                                     style="padding-right: 25px;padding-bottom: 30px;float: left">
                                                     <a onclick="return false;" ng-click="toogleInterest()"
-                                                       style="background: {{curatedTag.interested? '#0089e0': 'gray'}};cursor:pointer;">
+                                                       style="background: {{curatedTag.interested? '#191919': 'gray'}};cursor:pointer;">
                                                         <span> {{curatedTag.label}}   </span>
                                                     </a>
                                                 </li>
@@ -53,13 +53,13 @@
 
                                             <div style="clear: both;"></div>
                                         </div>
-                                        <div>
+                                        <div style="background-color: #ffffff">
                                             <ul class="tags" style="padding-top: 10px">
                                                 <li ng-repeat="curatedTag in curatedTags | filter:{category.name: cate.name}"
                                                     ng-show="cate.showAll || $index<5"
                                                     style="padding-right: 25px;padding-bottom: 30px;float: left">
                                                     <a onclick="return false;" ng-click="toogleInterest()"
-                                                       style="background: {{curatedTag.interested? '#0089e0': 'gray'}};cursor:pointer;">
+                                                       style="background: {{curatedTag.interested? '#191919': 'gray'}};cursor:pointer;">
                                                         <span> {{curatedTag.label}}    </span>
                                                     </a>
                                                 </li>
@@ -80,7 +80,7 @@
                                 <li ng-repeat="newTag in inputTags"
                                     style="padding-right: 25px;padding-bottom: 30px;float: left">
                                     <a id="tag_{{newTag}}" onclick="return false;"
-                                       style="background: #0089e0;cursor:pointer;">
+                                       style="background: #191919;cursor:pointer;">
                                     <span style="padding-right: 10px">
                                         {{newTag}}
                                     </span>

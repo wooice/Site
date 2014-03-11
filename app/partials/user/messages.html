@@ -4,6 +4,9 @@
         <div class="col-md-2 hidden-xs">
         </div>
         <div class="col-md-8 col-xs-12">
+            <div class="title_div" style="padding-top: -10px">
+                <h2 class="title_h2">私信列表</h2>
+            </div>
             <div ng-if="messages.length > 0">
                 <div ng-repeat="message in messages" class="row"
                      style="padding-top: 10px; padding-bottom: 6;font-size:12px;border-bottom:1px solid #bfbfcf;background-color: {{(!hasUnRead())?'#fbfbfc':''}}">

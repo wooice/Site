@@ -8,6 +8,7 @@ angular.module('wooice', ['ngRoute', 'ui.bootstrap', 'ui.slider', 'wooice.direct
     config(['$routeProvider', '$httpProvider', '$locationProvider',
         function ($routeProvider, $httpProvider, $locationProvider) {
         $routeProvider.
+            when('/', {templateUrl: 'partials/cover.html', controller: 'coverCtrl'}).
             when('/stream', {templateUrl: 'partials/commonStream.html', controller: ''}).
             when('/stream/:value', {templateUrl: 'partials/userStream.html', controller: 'userBasicController'}).
             when('/stream/:filter/:value', {templateUrl: 'partials/commonStream.html', controller: ''}).
@@ -122,11 +123,6 @@ angular.module('wooice', ['ngRoute', 'ui.bootstrap', 'ui.slider', 'wooice.direct
 
                         return;
                     }
-
-                    if (!$location.url() || $location.url() == '/')
-                    {
-                        $location.path('/interest');
-                    }
                 }, function(){
                     if (storage && storage.get("rememberUser") && storage.get('token') && storage.get('userId'))
                     {
@@ -150,11 +146,6 @@ angular.module('wooice', ['ngRoute', 'ui.bootstrap', 'ui.slider', 'wooice.direct
                             UserService.setupUser(null);
                             $('#login_modal').modal();
                         });
-
-                        if (!$location.url() || $location.url() == '/')
-                        {
-                            $location.path('/interest');
-                        }
                     }
                     else
                     {
@@ -163,10 +154,11 @@ angular.module('wooice', ['ngRoute', 'ui.bootstrap', 'ui.slider', 'wooice.direct
                             return;
                         }
 
-                        if (!$location.url() || $location.url() == '/')
+                        if (!$location.url() || $location.url()=="" || $location.url()=="/" || $location.url()=="/#mission")
                         {
-                            $location.path('/interest');
+                            return;
                         }
+
                         $('#login_modal').modal();
                     }
                 });

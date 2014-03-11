@@ -87,7 +87,7 @@ angular.module('user.services', ['ngCookies']).
             getTimeCapacity: function() {
                if (this.validateRoleUser())
                {
-                    return 120;
+                    return 30;
                }
                if (this.validateRolePro())
                {

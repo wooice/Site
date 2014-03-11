@@ -123,7 +123,7 @@
             </li>
         </ul>
 
-        <form class="navbar-form navbar-left" role="search" style="padding-left: 5%">
+        <form class="navbar-form navbar-left" role="search" style="padding-left: 2%">
             <div class="form-group">
                 <input type="text" id="search_box" class="form-control" ng-model="q" placeholder="寻找一段声音...">
             </div>
@@ -139,9 +139,9 @@
                    class='sound_player_button'
                    ng-class="wooicePlayer.getCurSound().isPlaying? 'icon-pause': 'icon-play'"
                    ng-click="togglePause()"></i></a></li>
-            <li ng-if="wooicePlayer.getCurSound().id">
-                <a href="{{wooicePlayer.getCurSound().title.route}}">
-                    <span style="color: white">{{wooicePlayer.getCurSound().title.alias}}</span>
+            <li ng-if="wooicePlayer.getCurSound().id" style="max-width:100px;overflow: hidden">
+                <a href="{{wooicePlayer.getCurSound().title.route}}" style="padding-left: 0px;padding-right: 0px">
+                    <div style="color: white;height: 20px;overflow: hidden">{{wooicePlayer.getCurSound().title.alias}}</div>
                 </a>
             </li>
             <li ng-if="wooicePlayer.getCurSound().id">
@@ -164,8 +164,10 @@
             </a>
             </li>
             <li>
-                <a id="playlist_button" style="cursor: pointer;" ng-click="togglePlaylist()"><i class="icon-th-list"
-                                                                                                title="播放列表"></i></a>
+                <a id="playlist_button" style="cursor: pointer;" ng-click="togglePlaylist()">
+                    <i class="icon-th-list" title="播放列表"></i>
+                    <i class="badge">{{playList.list().length}}</i>
+                </a>
                 <span id="playlist_content" class="display_panel">
                         <span class="display_header" ng-click="clearPlaylist()">播放列表<span
                                 style="font-size: 12px;font-weight: normal"> ({{playList.list().length}})</span>
@@ -174,7 +176,6 @@
 
                     <span class="display_content_div">
                         <div class="display_content"><span style="color: white">{{showPlaylist}}</span>
-
                             <div ng-repeat="sound in playList.list()" class="display_song"
                                  style="width: 100%;background: {{sound.isPlaying?'#39c':'white'}};">
                                 <span style="padding-left: 10px;padding-right: 10px" class="pull-left">
@@ -229,10 +230,8 @@
                 <a title="个人配置"
                    href="#" onclick="return false;" ng-click="goto('/profile')"><i class="icon-cog"></i></a>
             </li>
-            <li style="padding-right: 50px" ng-if="!userService.validateRoleGuest()"><a href="#" onclick="return false;"
-                                                                                        ng-click="goto('/upload')"
-                                                                                        title="声音上传"><i
-                    class="icon-cloud-upload"></i></a>
+            <li style="padding-right: 50px" ng-if="!userService.validateRoleGuest()">
+                <a href="#" onclick="return false;" ng-click="goto('/upload')" title="声音上传">分享</a>
             </li>
             <li><a href="#feedback" onclick="return false;" data-toggle="modal" title="意见反馈"><i
                     class="icon-edit"></i></a></li>

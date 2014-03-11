@@ -8,6 +8,8 @@ angular.module('modal.controllers', [])
             $('#'+ $scope.modalId).modal('hide');
         };
     }])
+    .controller("SyncLinkCtrl", ['$scope', function ($scope) {
+    }])
     .controller("messageModalCtrl", ['$scope', '$routeParams', 'User', 'UserMessage', function ($scope, $routeParams, User, UserMessage) {
         $scope.reset = function(){
             $scope.topic="";

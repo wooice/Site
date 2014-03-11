@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('wooice.player', []).
-    factory('WooicePlayer', ['config', "$rootScope", 'storage', 'CurSoundList', 'PlayList', 'WooiceWaver', 'SoundSocial', 'UserService',
-        function (config, $rootScope, storage, CurSoundList, PlayList, WooiceWaver, SoundSocial, UserService) {
+    factory('WooicePlayer', ['config', "$rootScope", '$location', 'storage', 'CurSoundList', 'PlayList', 'WooiceWaver', 'SoundSocial', 'UserService',
+        function (config, $rootScope, $location, storage, CurSoundList, PlayList, WooiceWaver, SoundSocial, UserService) {
 
             function init() {
                 var settings;
@@ -94,6 +94,12 @@ angular.module('wooice.player', []).
                                     playerStatus.playing = true;
                                     storage.set(this.id + "_player", playerStatus);
                                 }
+
+                                if ($location.path() && $location.path().indexOf("/sound/")>-1
+                                    && $location.path()!==("/sound/"+currentSound.alias))
+                                {
+                                    $location.url("/sound/"+currentSound.alias);
+                                }
                             },
                             whileloading: function () {
                                 soundManager._writeDebug(this.id + ': loading ' + this.bytesLoaded + ' / ' + this.bytesTotal);
@@ -142,6 +148,12 @@ angular.module('wooice.player', []).
                                 if (playerStatus) {
                                     playerStatus.playing = true;
                                     storage.set(this.id + "_player", playerStatus);
+                                }
+
+                                if ($location.path() && $location.path().indexOf("/sound/")>-1
+                                    && $location.path()!==("/sound/"+currentSound.alias))
+                                {
+                                    $location.url("/sound/"+currentSound.alias);
                                 }
                             },
                             onfinish: function () {

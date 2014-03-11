@@ -10,14 +10,7 @@ angular.module('interest.controllers', [])
             $scope.curatedTags = [];
             $scope.recommendUsers = [];
             $scope.includePage = "";
-
-            $scope.odd = function (cate) {
-                return cate.id % 2 == 0;
-            }
-
-            $scope.even = function (cate) {
-                return cate.id % 2 == 1;
-            }
+            $scope.curCategory = '音乐流派';
 
             var categories = Tag.categories({}, function () {
                 $.each(categories, function (index, cate) {
@@ -30,7 +23,7 @@ angular.module('interest.controllers', [])
                 var interestedTags = [];
                 $.each(tags, function (index, tag) {
                     if (tag.interested) {
-                        tag.class = "#0089e0";
+                        tag.class = "#191919";
                         interestedTags.push(tag.label);
                     }
                     else {
@@ -40,16 +33,13 @@ angular.module('interest.controllers', [])
                 });
 
                 $scope.includePage = "partials/stream.html";
-
                 var users = UserSocial.getRecommandByTags({}, {tags: interestedTags, pageNum: $scope.pageNum, pageSize: $scope.pageSize}, function () {
                     $.each(users, function (index, user) {
                         user.route = config.userStreamPath + user.profile.alias;
-                        if (!user.userPrefer)
-                        {
+                        if (!user.userPrefer) {
                             user.userPrefer = {};
                         }
-                        if (user.profile.description && user.profile.description.length >= 18)
-                        {
+                        if (user.profile.description && user.profile.description.length >= 18) {
                             user.profile.descSummary = user.profile.description.substring(0, 18) + "...";
                         }
                     });
@@ -67,17 +57,15 @@ angular.module('interest.controllers', [])
                 });
             });
 
-            $scope.toogleInterest = function () {
-                $scope.includePage = null;
+            $scope.toogleInterest = function (curatedTag) {
                 $scope.$apply();
-                var curatedTag = this.curatedTag;
 
                 if (curatedTag.interested) {
                     curatedTag.class = "gray";
                     curatedTag.interested = false;
                 }
                 else {
-                    curatedTag.class = "#0089e0";
+                    curatedTag.class = "#191919";
                     curatedTag.interested = true;
                 }
 
@@ -87,6 +75,7 @@ angular.module('interest.controllers', [])
                         interestedTags.tags.push(curatedTag.label);
                     }
                 });
+                $scope.curatedTags.change = !$scope.curatedTags.change;
 
                 var users = UserSocial.getRecommandByTags({}, interestedTags, function () {
                     $.each(users, function (index, user) {
@@ -105,8 +94,6 @@ angular.module('interest.controllers', [])
                         }
                     });
                 });
-
-                $scope.includePage = "partials/stream.html";
             }
 
         }]);

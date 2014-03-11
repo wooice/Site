@@ -3,10 +3,13 @@
 <div role="main">
 
     <div class="row">
-        <div class="col-md-1 hidden-xs">
+        <div class="col-md-2 hidden-xs">
         </div>
 
-        <div class="col-md-7 col-xs-12">
+        <div class="col-md-6 col-xs-12">
+            <div class="title_div">
+                <h2 class="title_h2">您关注的声音流</h2>
+            </div>
             <ng-include src="'partials/stream.html'"></ng-include>
         </div>
 
@@ -29,7 +32,7 @@
                             <div ng-show="$index < 4">
                                 <div class="user {{recommendUser.class}}">
                                     <a href="#" onclick="return false;">
-                                        <img ng-src="{{recommendUser.profile.avatorUrl}}" class="img-responsive user_avatar_oval">
+                                        <img ng-src="{{recommendUser.profile.avatorUrl}}" class="user_avatar_oval" style="width: 37px;height: 37px">
                                     </a>
                                 </div>
                                 <div class="user_alias">
@@ -54,7 +57,7 @@
                             <div ng-show="$index < 4">
                                 <div>
                                     <a href='{{recommendSound.route}}'>
-                                        <img ng-src="{{recommendSound.profile.poster.url}}" class="img-responsive user_avatar_oval">
+                                        <img ng-src="{{recommendSound.profile.poster.url}}" class="user_avatar_oval"  style="width: 37px;height: 37px">
                                     </a>
                                 </div>
                                 <div style="word-wrap: break-word;text-align: center">

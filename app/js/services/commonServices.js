@@ -121,7 +121,8 @@ angular.module('storage.services', []).
             getSoundUploadURL: {method: 'GET', params: { action: 'upload', type: 'sound'}, isArray: false},
             getImageUploadURL: {method: 'GET', params: { action: 'upload', type: 'image'}, isArray: false},
             getDownloadURL: {method: 'GET', params: { action: 'download'}, isArray: false},
-            upload: {method: 'POST', params: { action: 'upload'}, isArray: false}
+            upload: {method: 'POST', params: { action: 'upload'}, isArray: false},
+            syncSound: {method: 'POST', params: {action: 'sync' , isArray: false}}
         });
     }])
 

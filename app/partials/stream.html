@@ -1,4 +1,4 @@
-<div id="sound_streams" ng-controller="streamCtrl" style="padding-top: 15px">
+<div id="sound_streams" ng-controller="streamCtrl">
     <a href="#" onclick="return false;" ng-click="loadStream('true')" class="pull-right"><i
             class="icon-refresh"></i></a>
 
@@ -11,20 +11,20 @@
                 class="icon-refresh">刷新</i></a>
     </div>
 
-    <!--Body content-->
-    <div ng-repeat="sound in curSoundList.getList()"  ng-class-even="'player_even'" ng-class-odd="'player_odd'" >
+    <!--sound streams-->
+    <div ng-repeat="sound in curSoundList.getList()"  ng-class-even="'player_even'" ng-class-odd="'player_odd'">
         <div id="sound_{{sound.id}}" class='sound_item row' style="margin-right: 0px;margin-left: 0px">
-            <div id="sound_art_{{sound.id}}" class='sound_art col-md-2 hidden-xs' style="margin-right: -15px;margin-left: -10px">
+            <div id="sound_art_{{sound.id}}" class='sound_art col-md-2 hidden-xs' style="padding-left: 5px;padding-right: 10px">
                 <div id="sound_cover_{{sound.id}}">
-                    <div id="sound_cover_ul_{{sound.id}}" class='poster_img'>
+                    <div id="sound_cover_ul_{{sound.id}}" class='poster_img' style="padding-top: 45%">
                         <a href="{{sound.title.route}}">
-                            <img ng-src="{{sound.poster}}" class="img-responsive">
+                            <img ng-src="{{sound.poster}}" style="width: 80px;">
                         </a>
                     </div>
                 </div>
             </div>
 
-            <div id="sound_player_{{sound.id}}" class='sound_player col-md-10 col-xs-12' style="padding-left: 0px;padding-right: 0px;">
+            <div id="sound_player_{{sound.id}}" class='sound_player col-md-10 col-xs-12' style="padding-left: 0px;padding-right: 5px;">
                 <div class="pull-right">
                     <div style="font-size: 12px;color: gray" class="pull-right">
                         {{sound.createdTime}} <span ng-if="user.profile && user.profile.alias!=sound.owner.alias"><span class="badge">转</span></span>
@@ -76,7 +76,7 @@
                 </div>
                 <div id="sound_player_footer_{{sound.id}}" class='sound_player_footer'>
                     <div id="sound_commentbox_{{sound.id}}" style="display: none">
-                        <form ng-submit="comment()" style="margin-bottom:0px; padding-top: 2px;padding-bottom: 5px">
+                        <form ng-submit="comment(sound)" style="margin-bottom:0px; padding-top: 2px;padding-bottom: 5px">
                             <input type="text" id="sound_commentbox_input_{{sound.id}}"
                                    class="form-control input-sm"
                                    placeholder="请留下您的评论...">
@@ -86,14 +86,14 @@
 
                     <div class="row" style="margin: 0px">
                         <div class="col-md-5 hidden-xs" style="padding-left: 0px;padding-right: 0px">
-                            <a href="#" class="button button-tiny button-rounded  button-flat action-button"
+                            <a href="#" class="btn btn-default btn-xs action-button"
                                onclick="return false;" ng-click="like(sound)"><i class="icon-heart"></i></i>
                                 <span ng-show="!sound.soundUserPrefer.like">赞</span></a>
-                            <a href="#" class="button button-tiny button-rounded  button-flat action-button"
+                            <a href="#" class="btn btn-default btn-xs action-button"
                                onclick="return false;" ng-click="repost(sound)"><i
                                     class="icon-retweet"></i></i> <span
                                     ng-show="!sound.soundUserPrefer.repost">转</span></a>
-                            <a href="#" class="button button-tiny button-rounded button-flat action-button hasTooltip"
+                            <a href="#" class="btn btn-default btn-xs action-button hasTooltip"
                                onclick="return false;"
                                     ><i class="icon-share"></i>分享
                             </a>
@@ -113,12 +113,12 @@
                                             src="img/logo/sina.png"  style="width: 35px"/></a>
                                 </div>
                             </div>
-                            <a href="#" class="button button-tiny button-rounded button-flat action-button"
-                               ng-show="sound.owner.alias == userService.getCurUserAlias()"
+                            <a href="#" class="btn btn-default btn-xs action-button"
+                               ng-if="sound.owner.alias == userService.getCurUserAlias() || userService.validateRoleAdmin()"
                                onclick="return false;" ng-click="delete()"><i
                                     class="icon-trash"></i></i> 删除</a>
 
-                            <a href="#" class="button button-tiny button-rounded button-flat action-button"
+                            <a href="#" class="btn btn-default btn-xs action-button"
                                ng-show="sound.downloadable" onclick="return false;" ng-click="download()"><i
                                     class="icon-trash"></i></i> 下载</a>
                         </div>
@@ -133,7 +133,7 @@
                                         class="icon-retweet"></i></i> <span
                                         ng-show="!sound.soundUserPrefer.repost">转</span></button>
                             </span>
-                            <span  ng-show="sound.owner.alias == userService.getCurUserAlias()">
+                            <span  ng-if="sound.owner.alias == userService.getCurUserAlias()">
                                 <button class="btn btn-xs" ng-click="delete()"><i
                                         class="icon-trash"></i></i> 删
                                 </button>
@@ -175,7 +175,11 @@
         </div>
     </div>
 
-    <div ng-show="isloading" style="text-align: center">
+    <div style="text-align: center;border-bottom: 2px solid #E6E6E6;line-height: 30px;cursor: pointer" ng-click="loadStream()" ng-show="curSoundList.getList().length > 0">
+        <span ng-show="!isloading" style="color:gray;font-size: 13px">加载更多...</span>
+    </div>
+
+    <div ng-show="isloading" style="text-align: center;">
         <i class="icon-spinner icon-spin icon-large"></i> 努力加载中...
     </div>
 
@@ -208,7 +212,4 @@
         </div>
     </div>
 
-    <p id="back_top" class="hidden-xs">
-        <a><span></span></a>
-    </p>
 </div>

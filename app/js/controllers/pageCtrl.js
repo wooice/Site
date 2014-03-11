@@ -3,8 +3,32 @@
 /* Controllers */
 
 angular.module('page.controllers', [])
-    .controller('pageCtrl', ['$scope', '$rootScope', '$routeParams', 'User', 'UserSocial', 'SoundSocial',
-        function ($scope, $rootScope, $routeParams, User, UserSocial, SoundSocial) {
+    .controller('pageCtrl', ['$scope', '$rootScope', '$routeParams', 'User', 'UserSocial', 'SoundSocial', 'PlayList', 'WooicePlayer', 'WooiceWaver', 'storage',
+        function ($scope, $rootScope, $routeParams, User, UserSocial, SoundSocial, PlayList, WooicePlayer, WooiceWaver, storage) {
+
+            window.onbeforeunload = function (event) {
+                // when user leave the page, record the current status of the sound.
+                for (var soundIndex in PlayList.list()) {
+                    var oneSound = WooicePlayer.getSoundFromPlayer(PlayList.list()[soundIndex].id);
+
+                    if (oneSound && oneSound.position != null) {
+                        var playing = false;
+                        var curSound = WooicePlayer.getCurSound();
+                        if (curSound && curSound.id == oneSound.id) {
+                            playing = curSound.isPlaying;
+                        }
+                        storage.set(oneSound.id + "_player", {
+                            id: oneSound.id,
+                            from: oneSound.position,
+                            playing: playing
+                        });
+                    }
+                }
+
+                //record wave status
+                WooiceWaver.recordWaveStatus();
+            }
+
             $scope.findBootstrapEnvironment = function() {
                 var envs = ['xs', 'sm', 'md', 'lg'];
 
@@ -90,4 +114,22 @@ angular.module('page.controllers', [])
                 }
             };
 
+            function toTopBar(toTopEle, mainBody) {
+                this.backToTop = toTopEle;
+                this.mainBody = mainBody;
+                this.load = function () {
+                    this.backToTop.fadeOut();
+                    $(window).bind('scroll', $.proxy(function (event) {
+                        $(window).scrollTop() > 300 ? this.backToTop.show() : this.backToTop.hide();
+                    }, this));
+                    this.backToTop.bind('click', function (event) {
+                        if (event) {
+                            event.preventDefault();
+                        }
+                        $("html, body").animate({scrollTop: 0}, 1000);
+                    });
+                }
+            }
+
+            new toTopBar($('#back_top'), $(document)).load();
         }]);

@@ -1,135 +1,148 @@
 <div class="row" ng-controller="basicProfileCtrl">
-    <div class="title_div">
-        <h2 class="title_h2"><i class="icon-wrench"></i> 基本信息</h2>
-    </div>
-
-    <div class="col-xs-3  hidden-xs"  style="padding-top: 35px">
-        <div class="{{posterUploadMsgClass}}">
-            <i ng-show="uplodingPoster"
-               class="icon-spinner icon-spin icon-large"></i>{{posterUploadMsg}}
-        </div>
-        <img src="{{user.profile.avatorUrl}}" id="poster_img" height="200" width="200">
-                  <span style="margin-top: -60px;margin-left: 50px" ng-show="!uplodingPoster"
-                        class="button button-small button-rounded button-flat action-button fileinput-button">
-                    <span>上传头像</span>
-                    <input id="avatar_upload" type="file" name="file" onchange="previewImage();">
-                  </span>
-
-                 <span style="margin-top: -60px;margin-left: 50px" id="cancel_button" ng-show="uplodingPoster"
-                       class="button button-small button-rounded button-flat action-button fileinput-button">
-                     <i class="icon-ban-circle icon-white"></i>
-                    <span>取消上传</span>
-                 </span>
-    </div>
-
     <form name="the_form" class="form-horizontal">
-
-        <div class="col-md-7 col-xs-12" style="padding-left: 30px;padding-top: 20px">
-            <div style="padding-bottom: 10px" ng-show="message">
-                <span class="{{messageClass}}">{{message}}</span>
+        <!--basic part-->
+        <div class="row">
+            <div class="title_div">
+                <h2 class="title_h2"><i class="icon-wrench"></i> 基本信息</h2>
             </div>
-            <div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div style="padding-bottom: 10px">
-                            <label>ID</label>
 
-                            <div class="text-warning"
-                                 ng-show="the_form.alias.$dirty && the_form.alias.$invalid">
-                                <small class="text-warning"
-                                       ng-show="the_form.alias.$error.unique">
-                                    用户名已被使用，请重新选择
-                                </small>
-                            </div>
-                            <input type="text" name="alias" placeholder="姓" ng-model="user.profile.alias"
-                                   class="form-control"
-                                   alias-unique="alias">
-                        </div>
-                        <div style="padding-bottom: 10px">
-                            <label>姓</label>
-                            <input type="text" placeholder="姓" ng-model="user.profile.lastName" class="form-control">
-                        </div>
-                        <div style="padding-bottom: 10px">
-                            <label>名</label>
-                            <input type="text" placeholder="名" ng-model="user.profile.firstName" class="form-control">
-                        </div>
+            <div style="padding-left: 10%">
+                <div class="col-xs-3  hidden-xs" style="padding-top: 35px">
+                    <div class="{{posterUploadMsgClass}}">
+                        <i ng-show="uplodingPoster"
+                           class="icon-spinner icon-spin icon-large"></i>{{posterUploadMsg}}
                     </div>
-                    <div class="col-md-6">
-                        <div style="padding-bottom: 10px">
-                            <label>性别</label>
+                    <img src="{{user.profile.avatorUrl}}" id="poster_img" height="180" width="180">
+                      <span style="margin-top: -60px;margin-left: 50px" ng-show="!uplodingPoster"
+                            class="button button-small button-rounded button-flat action-button fileinput-button">
+                        <span>上传头像</span>
+                        <input id="avatar_upload" type="file" name="file" onchange="previewImage();">
+                      </span>
 
-                            <div style="padding-bottom: 12px">
-                                <span style="padding-right: 5px"><i class="icon-male" title="男生"> </i><input
-                                        type="radio"
-                                        ng-model="user.profile.gender"
-                                        value="man"></span>
-                                 <span style="padding-right: 5px"><i class="icon-female" title="女生"> </i><input
-                                         type="radio" ng-model="user.profile.gender"
-                                         value="women"></span>
-                               <span style="padding-right: 5px"> <i class="icon-question" title="保密"> </i><input
-                                       type="radio"
-                                       ng-model="user.profile.gender" value="unset"> </span>
+                     <span style="margin-top: -60px;margin-left: 50px" id="cancel_button" ng-show="uplodingPoster"
+                           class="button button-small button-rounded button-flat action-button fileinput-button">
+                         <i class="icon-ban-circle icon-white"></i>
+                        <span>取消上传</span>
+                     </span>
+                </div>
+
+                <div class="col-md-7 col-xs-12" style="padding-left: 30px;padding-top: 20px">
+                    <div style="padding-bottom: 10px" ng-show="message">
+                        <span class="{{messageClass}}">{{message}}</span>
+                    </div>
+                    <div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div style="padding-bottom: 10px">
+                                    <label>ID</label>
+
+                                    <div class="text-warning"
+                                         ng-show="the_form.alias.$dirty && the_form.alias.$invalid">
+                                        <small class="text-warning"
+                                               ng-show="the_form.alias.$error.unique">
+                                            用户名已被使用，请重新选择
+                                        </small>
+                                    </div>
+                                    <input type="text" name="alias" placeholder="姓" ng-model="user.profile.alias"
+                                           class="form-control"
+                                           alias-unique="alias">
+                                </div>
+                                <div style="padding-bottom: 10px">
+                                    <label>姓</label>
+                                    <input type="text" placeholder="姓" ng-model="user.profile.lastName"
+                                           class="form-control">
+                                </div>
+                                <div style="padding-bottom: 10px">
+                                    <label>名</label>
+                                    <input type="text" placeholder="名" ng-model="user.profile.firstName"
+                                           class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div style="padding-bottom: 10px">
+                                    <label>性别</label>
+
+                                    <div style="padding-bottom: 12px">
+                                    <span style="padding-right: 5px"><i class="icon-male" title="男生"> </i><input
+                                            type="radio"
+                                            ng-model="user.profile.gender"
+                                            value="man"></span>
+                                     <span style="padding-right: 5px"><i class="icon-female" title="女生"> </i><input
+                                             type="radio" ng-model="user.profile.gender"
+                                             value="women"></span>
+                                   <span style="padding-right: 5px"> <i class="icon-question" title="保密"> </i><input
+                                           type="radio"
+                                           ng-model="user.profile.gender" value="unset"> </span>
+                                    </div>
+                                </div>
+                                <div style="padding-bottom: 10px">
+                                    <label>城市</label>
+                                    <input type="text" placeholder="城市" ng-model="user.profile.city"
+                                           class="form-control">
+                                </div>
+                                <div style="padding-bottom: 10px">
+                                    <label>国家</label>
+                                    <input type="text" placeholder="国家" ng-model="user.profile.country"
+                                           class="form-control">
+                                </div>
                             </div>
                         </div>
-                        <div style="padding-bottom: 10px">
-                            <label>城市</label>
-                            <input type="text" placeholder="城市" ng-model="user.profile.city" class="form-control">
-                        </div>
-                        <div style="padding-bottom: 10px">
-                            <label>国家</label>
-                            <input type="text" placeholder="国家" ng-model="user.profile.country" class="form-control">
+                        <div>
+                            <label>个人描述</label>
+                            <textarea class="form-control" ng-model="user.profile.description"
+                                      placeholder="介绍你自己..."></textarea>
                         </div>
                     </div>
                 </div>
-                <div>
-                    <label>个人描述</label>
-                    <textarea class="form-control" ng-model="user.profile.description"
-                              placeholder="介绍你自己..."></textarea>
-                </div>
+            </div>
+        </div>
+
+        <!--player part-->
+        <div style="padding-top: 15px">
+            <div class="title_div">
+                <h2 class="title_h2"><i class="icon-expand"></i> 播放器偏好</h2>
             </div>
 
             <div style="padding-top: 15px">
-                <label>播放器颜色偏好</label>
-                <ul style="list-style-type: none;padding-left: 4%">
+                <ul style="list-style-type: none;padding-left: 10%">
                     <li data-ng-repeat="color in colors"
                         style="width: 55px;height:20px;list-style-type: none;display: table-cell;padding-right:15px">
-                        <span  ng-click="chooiceColor()" >
-                            <span ng-show="color.upper != 'random'">
-                                  <span style="background-color: {{color.upper}} !important;height: 25px;display: block">
-                                  </span>
-                                  <span style="background-color: {{color.lower}} !important;height: 25px;display: block">
-                                  </span>
+                            <span ng-click="chooiceColor()">
+                                <span ng-show="color.upper != 'random'">
+                                      <span style="background-color: {{color.upper}} !important;height: 25px;display: block">
+                                      </span>
+                                      <span style="background-color: {{color.lower}} !important;height: 25px;display: block">
+                                      </span>
+                                </span>
+                                <span ng-show="color.upper == 'random'">
+                                    <i class="icon-question icon-5x"></i>
+                                </span>
                             </span>
-                            <span ng-show="color.upper == 'random'">
-                                <i class="icon-question icon-5x"></i>
+                    </li>
+
+                    <li style="width: 55%">
+                        <span ng-show="user.profile.color.upper != 'random'">
+                            <span style="background-color: {{user.profile.color.upper}} !important;height: 10px;display: block">
                             </span>
+                            <span style="background-color: {{user.profile.color.lower}} !important;height: 10px;display: block">
+                            </span>
+                        </span>
+                        <span ng-show="user.profile.color.upper == 'random'">
+                               <i class="icon-question icon-2x"></i>
                         </span>
                     </li>
                 </ul>
-                <div class="col-md-12">
-                    <span ng-show="user.profile.color.upper != 'random'">
-                        <span style="background-color: {{user.profile.color.upper}} !important;height: 10px;display: block">
-                        </span>
-                        <span style="background-color: {{user.profile.color.lower}} !important;height: 10px;display: block">
-                        </span>
-                    </span>
-                    <span ng-show="user.profile.color.upper == 'random'">
-                           <i class="icon-question icon-2x"></i>
-                    </span>
-                </div>
-            </div>
-
-            <div class="pull-right" style="padding-top: 15px">
-                <button id="save_button" href="#"
-                        class="btn btn-default form-control"
-                        ng-disabled="the_form.$invalid"
-                        onclick="return false;" ng-click="saveProfile()">
-                    <span>保存信息</span>
-                </button>
             </div>
         </div>
 
-
+        <div class="pull-right" style="padding-top: 15px">
+            <button id="save_button" href="#"
+                    class="btn btn-default form-control"
+                    ng-disabled="the_form.$invalid"
+                    onclick="return false;" ng-click="saveProfile()">
+                <span>保存信息</span>
+            </button>
+        </div>
     </form>
 </div>
 <ng-include src="'partials/footer.html'"></ng-include>

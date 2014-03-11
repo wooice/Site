@@ -3,66 +3,77 @@
 /* Controllers */
 
 angular.module('user.stream.controllers', [])
-    .controller('userBasicController', ['$scope', 'config', '$routeParams', 'User', 'UserSocial', 'UserService',
-        function ($scope, config, $routeParams, User, UserSocial, UserService) {
-        $scope.curAlias = UserService.getCurUserAlias();
-        var user = User.get({userAlias: $routeParams.value}, function () {
-            $scope.user = user;
+    .controller('userBasicController', ['$scope', '$timeout', 'config', '$routeParams', 'User', 'UserSocial', 'UserService',
+        function ($scope, $timeout, config, $routeParams, User, UserSocial, UserService) {
+            $scope.curAlias = UserService.getCurUserAlias();
 
-            if (user.profile.alias == UserService.getCurUserAlias()) {
-                $scope.user.isCurrent = true;
-            }
+//            $scope.$on('$viewContentLoaded', function () {
+//                $timeout(function(){
+//                    $(document).blurjs({
+//                        source: '#user_info_div',
+//                        radius: 7
+//                    });
+//                }, 500);
+//            });
 
-            if (!$scope.user.profile.avatorUrl || $scope.user.profile.avatorUrl=="img/default_avatar.png") {
-                $scope.user.profile.avatorUrl = 'img/default_avatar_large.png';
-            }
+            var user = User.get({userAlias: $routeParams.value}, function () {
+                $scope.user = user;
 
-            var external = User.getExternal({userAlias: $routeParams.value}, function () {
-                $scope.user.external =  external;
+                if (user.profile.alias == UserService.getCurUserAlias()) {
+                    $scope.user.isCurrent = true;
+                }
+
+                if (!$scope.user.profile.avatorUrl || $scope.user.profile.avatorUrl == "img/default_avatar.png") {
+                    $scope.user.profile.avatorUrl = 'img/default_avatar_large.png';
+                }
+
+                var external = User.getExternal({userAlias: $routeParams.value}, function () {
+                    $scope.user.external = external;
+                });
+
+                $scope.showMessage = function () {
+                    $('#message_modal').modal();
+                }
+            });
+        }])
+    .controller('userHistoryCtrl', ['$scope', 'config', '$routeParams', 'Sound', 'SoundUtilService', 'UserService',
+        function ($scope, config, $routeParams, Sound, SoundUtilService, UserService) {
+            $scope.userService = UserService;
+            var histories = Sound.loadHistory({pageNum: 1, soundsPerPage: 6}, function () {
+                $scope.histories = [];
+                $.each(histories, function (index, history) {
+                    $scope.histories.push(SoundUtilService.buildSound(history));
+                });
+            });
+        }])
+    .controller('userSocialController', ['$scope', 'config', '$routeParams', 'UserSocial', 'UserService',
+        function ($scope, config, $routeParams, UserSocial, UserService) {
+            $scope.routeParams = $routeParams;
+            $scope.userService = UserService;
+            var followed = UserSocial.getFollowed({userAlias: $routeParams.value, pageNum: 1}, function () {
+                $.each(followed, function (index, user) {
+                    user.route = config.userStreamPath + user.profile.alias;
+                });
+                $scope.followed = followed;
             });
 
-            $scope.showMessage = function()
-            {
-                $('#message_modal').modal();
-            }
-        });
-    }])
-    .controller('userHistoryCtrl', ['$scope', 'config', '$routeParams', 'Sound', 'SoundUtilService', 'UserService', function ($scope, config, $routeParams, Sound, SoundUtilService, UserService) {
-        $scope.userService = UserService;
-        var histories = Sound.loadHistory({pageNum: 1, soundsPerPage: 6}, function(){
-            $scope.histories = [];
-            $.each(histories, function(index, history){
-                $scope.histories.push(SoundUtilService.buildSound(history));
+            var following = UserSocial.getFollowing({userAlias: $routeParams.value, pageNum: 1}, function () {
+                $.each(following, function (index, user) {
+                    user.route = config.userStreamPath + user.profile.alias;
+                });
+                $scope.following = following;
             });
-        });
-    }])
-    .controller('userSocialController', ['$scope', 'config', '$routeParams', 'UserSocial', 'UserService', function ($scope, config, $routeParams, UserSocial, UserService) {
-        $scope.routeParams = $routeParams;
-        $scope.userService = UserService;
-        var followed = UserSocial.getFollowed({userAlias: $routeParams.value, pageNum: 1}, function () {
-            $.each(followed, function (index, user) {
-                user.route = config.userStreamPath + user.profile.alias;
-            });
-            $scope.followed = followed;
-        });
-
-        var following = UserSocial.getFollowing({userAlias: $routeParams.value, pageNum: 1}, function () {
-            $.each(following, function (index, user) {
-                user.route = config.userStreamPath + user.profile.alias;
-            });
-            $scope.following = following;
-        });
-    }])
+        }])
     .controller('userFollowingCtrl', ['$scope', 'config', '$routeParams', 'UserSocial', '$q', '$timeout', function ($scope, config, $routeParams, UserSocial, $q, $timeout) {
-        $scope.users=[];
-        $timeout(function(){
-            $scope.modalId= "following_users_modal";
-            $scope.title = $routeParams.value + "关注的声音";
+        $scope.users = [];
+        $timeout(function () {
+            $scope.modalId = "following_users_modal";
+            $scope.title = "关注";
         });
 
-        $scope.showFollowingUser = function(){
+        $scope.showFollowingUser = function () {
             $("#" + $scope.modalId).modal({
-                backdrop : false
+                backdrop: false
             });
         }
 
@@ -83,9 +94,8 @@ angular.module('user.stream.controllers', [])
 
         $scope.count = function () {
             var defer = $q.defer();
-            $scope.$watch('user', function(){
-                if ($scope.user)
-                {
+            $scope.$watch('user', function () {
+                if ($scope.user) {
                     defer.resolve($scope.user.userSocial.following);
                 }
             });
@@ -95,15 +105,15 @@ angular.module('user.stream.controllers', [])
     }])
 
     .controller('userFollowedCtrl', ['$scope', 'config', '$routeParams', 'UserSocial', '$q', '$timeout', function ($scope, config, $routeParams, UserSocial, $q, $timeout) {
-        $scope.users=[];
-        $timeout(function(){
+        $scope.users = [];
+        $timeout(function () {
             $scope.modalId = "followed_users_modal";
-            $scope.title = $routeParams.value + "的Fans";
+            $scope.title = "Fans";
         });
 
-        $scope.showFollowedUser = function(){
+        $scope.showFollowedUser = function () {
             $("#" + $scope.modalId).modal({
-                backdrop : false
+                backdrop: false
             });
         }
 
@@ -124,9 +134,8 @@ angular.module('user.stream.controllers', [])
 
         $scope.count = function () {
             var defer = $q.defer();
-            $scope.$watch('user', function(){
-                if ($scope.user)
-                {
+            $scope.$watch('user', function () {
+                if ($scope.user) {
                     defer.resolve($scope.user.userSocial.followed);
                 }
             });
